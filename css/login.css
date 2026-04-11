@@ -1,0 +1,100 @@
+/* /css/login.css */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.login-card {
+    background-color: var(--bg-card);
+    width: 100%;
+    max-width: 400px;
+    padding: 40px;
+    border-radius: var(--radius-md);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-top: 4px solid var(--accent-red); /* Detalle institucional rojo */
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.login-header p {
+    color: var(--text-muted);
+    font-size: 14px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-size: 13px;
+    margin-bottom: 8px;
+    color: var(--text-muted);
+}
+
+.input-group input {
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 12px 15px;
+    border-radius: var(--radius-md);
+    outline: none;
+    transition: var(--transition);
+}
+
+.input-group input:focus {
+    border-color: var(--accent-red);
+}
+
+.btn-login {
+    width: 100%;
+    background-color: var(--accent-red);
+    color: white;
+    border: none;
+    padding: 14px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: var(--transition);
+    margin-top: 10px;
+}
+
+.btn-login:hover {
+    background-color: var(--accent-red-hover);
+}
+
+.error-msg {
+    color: var(--accent-red);
+    font-size: 13px;
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.login-footer {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.login-footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 14px;
+    transition: var(--transition);
+}
+
+.login-footer a:hover {
+    color: var(--text-main);
+}

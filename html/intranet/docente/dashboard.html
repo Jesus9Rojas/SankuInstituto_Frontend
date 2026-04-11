@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Docente - Intranet</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/intranet.css">
+</head>
+<body>
+
+    <div class="intranet-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <h2>Instituto Superior<span> SANKU</span></h2>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="#" data-target="vista-inicio-docente" class="nav-item active">Mi Carga Académica</a>
+                <a href="#" data-target="vista-asistencia" class="nav-item">Toma de Asistencia</a>
+                <a href="#" data-target="vista-calificar" class="nav-item">Registro de Notas</a>
+            </nav>
+            <div class="sidebar-footer">
+                <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button id="btnMenuMobile" class="btn-icon">☰</button>
+                    <div>
+                        <h1 id="saludoUsuario">Bienvenido, Docente</h1>
+                        <p>Ciclo Académico 2026-I</p>
+                    </div>
+                </div>
+                <div class="topbar-right">
+                    <div class="user-profile" id="btnPerfil">
+                        <div class="avatar" style="background-color: #4caf50;">D</div> <span id="rolUsuario">Docente</span>
+                        <span class="dropdown-arrow">▼</span>
+                        
+                        <div class="profile-dropdown" id="menuPerfil">
+                            <a href="#" id="btnCerrarSesionTopbar" style="color: var(--accent-red);">Cerrar Sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="vistas-container">
+                
+                <section id="vista-inicio-docente" class="vista-seccion activa" style="display: block;">
+                    <div class="dashboard-grid">
+                        <div class="card info-card">
+                            <h3>Clases de Hoy</h3>
+                            <div class="card-value">2</div>
+                            <p class="text-muted">Próxima: 18:00 hrs - Lab 402</p>
+                        </div>
+                        <div class="card info-card accent-card">
+                            <h3>Cursos Asignados</h3>
+                            <ul class="notification-list">
+                                <li>Desarrollo de Sistemas III (Sección A)</li>
+                                <li>Base de Datos Avanzada (Sección B)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="vista-asistencia" class="vista-seccion" style="display: none;">
+                    <div class="card" style="margin: 40px;">
+                        <div class="action-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                            <h2>Asistencia: Desarrollo de Sistemas III</h2>
+                            <span class="text-muted">Fecha: 11 de Abril</span>
+                        </div>
+                        
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>N°</th>
+                                    <th>Alumno</th>
+                                    <th>Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>1</td>
+                                    <td>García, Carlos</td>
+                                    <td>
+                                        <div class="toggle-group">
+                                            <button class="btn-toggle present active">Presente</button>
+                                            <button class="btn-toggle absent">Falta</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>2</td>
+                                    <td>López, Ana</td>
+                                    <td>
+                                        <div class="toggle-group">
+                                            <button class="btn-toggle present active">Presente</button>
+                                            <button class="btn-toggle absent">Falta</button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="btn-login" style="margin-top: 20px; width: auto; padding: 10px 30px;">Guardar Asistencia</button>
+                    </div>
+                </section>
+
+                <section id="vista-calificar" class="vista-seccion" style="display: none;">
+                    <div class="card" style="margin: 40px; border-top: 4px solid var(--accent-red);">
+                        <h2>Registro de Notas: Desarrollo de Sistemas III</h2>
+                        <p class="text-muted" style="margin-bottom: 20px;">Las notas se guardan automáticamente al presionar Enter o cambiar de celda.</p>
+                        
+                        <div class="table-responsive">
+                            <table class="data-table excel-table">
+                                <thead>
+                                    <tr>
+                                        <th>Alumno</th>
+                                        <th>PC1 (20%)</th>
+                                        <th>PC2 (20%)</th>
+                                        <th>Parcial (30%)</th>
+                                        <th>Final (30%)</th>
+                                        <th>Promedio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>García, Carlos</td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value="14"></td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value="15"></td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value=""></td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value=""></td>
+                                        <td class="promedio-celda text-muted">--</td>
+                                    </tr>
+                                    <tr>
+                                        <td>López, Ana</td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value="18"></td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value="19"></td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value=""></td>
+                                        <td><input type="number" min="0" max="20" class="nota-input" value=""></td>
+                                        <td class="promedio-celda text-muted">--</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <span id="saveIndicator" style="color: #4caf50; font-size: 14px; margin-top: 15px; display: inline-block; opacity: 0; transition: opacity 0.3s;">
+                            ✓ Cambios guardados
+                        </span>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/auth.js"></script> 
+    <script src="/js/intranet/dashboard_docente.js"></script>
+    <script src="/js/ui_layout.js"></script>
+</body>
+</html>

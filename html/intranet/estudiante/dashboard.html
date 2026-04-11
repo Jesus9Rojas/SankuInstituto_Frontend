@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Estudiante - Intranet</title>
+    <link rel="stylesheet" href="/css/variables.css">
+    <link rel="stylesheet" href="/css/intranet.css">
+</head>
+<body>
+<div class="intranet-layout">
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h2>Instituto Superior<span> SANKU</span></h2>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" data-target="vista-inicio" class="nav-item active">Inicio</a>
+            <a href="#" data-target="vista-cursos" class="nav-item">Mis Cursos</a>
+            <a href="#" data-target="vista-matricula" class="nav-item">Matrícula</a>
+            <a href="#" data-target="vista-notas" class="nav-item">Historial y Notas</a>
+        </nav>
+        <div class="sidebar-footer">
+            <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header class="topbar">
+            <div class="topbar-left">
+                <button id="btnMenuMobile" class="btn-icon">☰</button>
+                <div>
+                    <h1 id="saludoUsuario">Bienvenido, Estudiante</h1>
+                    <p>Ciclo Académico 2026-I</p>
+                </div>
+            </div>
+            
+            <div class="topbar-right">
+                <div class="user-profile" id="btnPerfil">
+                    <div class="avatar">E</div>
+                    <span id="rolUsuario">Estudiante</span>
+                    <span class="dropdown-arrow">▼</span>
+                    
+                    <div class="profile-dropdown" id="menuPerfil">
+                        <a href="#">Mi Perfil</a>
+                        <a href="#">Configuración</a>
+                        <hr>
+                        <a href="#" id="btnCerrarSesionTopbar" style="color: var(--accent-red);">Cerrar Sesión</a>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <div class="vistas-container">
+            
+            <section id="vista-inicio" class="vista-seccion activa" style="display: block;">
+                <div class="dashboard-grid">
+                    <div class="card info-card">
+                        <h3>Promedio Ponderado</h3>
+                        <div class="card-value">16.5</div>
+                        <p class="status text-green">Estado: Regular</p>
+                    </div>
+                    <div class="card info-card">
+                        <h3>Próxima Clase Hoy</h3>
+                        <div class="card-value" style="font-size: 20px;">Desarrollo Frontend</div>
+                        <p class="text-muted">Laboratorio 402 • 18:00 - 20:15</p>
+                    </div>
+                    <div class="card info-card accent-card">
+                        <h3>Avisos Importantes</h3>
+                        <ul class="notification-list">
+                            <li>Matrícula extemporánea hasta el viernes.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <section id="vista-cursos" class="vista-seccion" style="display: none;">
+                <div class="card" style="margin: 40px;">
+                    <h2>Mis Cursos Matriculados</h2>
+                    <p class="text-muted">Selecciona un curso para ver el sílabo y materiales.</p>
+                    <ul class="notification-list" style="margin-top: 20px;">
+                        <li>📘 Desarrollo de Sistemas III - Prof. Mendoza</li>
+                        <li>📗 Base de Datos Avanzada - Prof. Torres</li>
+                        <li>📙 Diseño de Interfaces (UI/UX) - Prof. Salas</li>
+                    </ul>
+                </div>
+            </section>
+
+            <section id="vista-matricula" class="vista-seccion" style="display: none;">
+                <div class="card" style="margin: 40px; border-top: 4px solid var(--accent-red);">
+                    <h2>Proceso de Matrícula</h2>
+                    <p>Tu turno de matrícula inicia el: <strong>15 de Abril, 08:00 AM</strong></p>
+                    <button class="btn-login" style="width: auto; padding: 10px 20px; margin-top: 15px; opacity: 0.5; cursor: not-allowed;">Iniciar Selección de Cursos</button>
+                </div>
+            </section>
+
+            <section id="vista-notas" class="vista-seccion" style="display: none;">
+                <div class="card" style="margin: 40px;">
+                    <h2>Historial Académico</h2>
+                    <p class="text-muted">Registro oficial de calificaciones.</p>
+                    </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+    <script src="/js/auth.js"></script> 
+    <script src="/js/intranet/dashboard_estudiante.js"></script>
+    <script src="/js/ui_layout.js"></script>
+</body>
+</html>

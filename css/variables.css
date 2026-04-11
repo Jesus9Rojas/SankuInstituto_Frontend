@@ -1,0 +1,28 @@
+:root {
+  --bg-dark: #121212;         /* Fondo principal profundo */
+  --bg-card: #1e1e1e;         /* Fondo para tarjetas y contenedores */
+  --bg-input: #2d2d2d;        /* Fondo para campos de texto */
+  
+  --accent-red: #e50914;      /* Rojo principal (estilo moderno) */
+  --accent-red-hover: #b20710;/* Rojo oscuro para hover en botones */
+  
+  --text-main: #f5f5f5;       /* Texto principal (blanco humo para no cansar la vista) */
+  --text-muted: #a0a0a0;      /* Texto secundario (gris claro) */
+  --border-color: #333333;    /* Bordes sutiles */
+
+  --font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --radius-md: 8px;          
+  --transition: 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+}
