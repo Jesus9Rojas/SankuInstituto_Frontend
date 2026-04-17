@@ -1,0 +1,23 @@
+:root {
+  /* Tema Institucional: Salud y Educación (Light Mode) */
+  --bg-main: #ffffff;           /* Fondo principal blanco */
+  --bg-section: #e2eef8;        /* Fondo celeste muy sutil */
+  --bg-card1:rgb(218, 64, 64);
+  --bg-card2:rgb(243, 162, 39); 
+  --bg-card3: #4d5ce7; 
+  --bg-card4: #9829e2;            /* Fondo tarjetas */
+  --bg-input: #eef2f5;          
+  
+  --color-primary: #0056b3;     /* Azul Institucional */
+  --color-primary-hover: #004494; 
+  --color-accent: #00a8ff;      /* Celeste brillante */
+  
+  --text-main: #2c3e50;         /* Texto oscuro principal */
+  --text-muted: #6c7a89;        /* Texto secundario */
+  --border-color: #e1e8ed;      
+
+  --font-family: 'Poppins', sans-serif;
+  --radius-md: 8px;           
+  --transition: 0.3s ease;
+  --shadow-card: 0 5px 20px rgba(0, 86, 179, 0.08);
+}

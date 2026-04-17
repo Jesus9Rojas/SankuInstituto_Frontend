@@ -1,0 +1,53 @@
+/* /css/seccion-contacto.css */
+.grid-contacto {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+.contacto-info {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pin-ubicacion {
+    font-size: 50px;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.contacto-titulo {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 24px;
+}
+
+.contacto-caja {
+    padding: 30px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--color-primary);
+}
+
+.contacto-caja h4 {
+    margin-bottom: 20px;
+    font-size: 20px;
+}
+
+.contacto-caja h4 i, .contacto-caja p i {
+    margin-right: 10px;
+}
+
+.divisor-contacto {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 15px 0;
+}
+
+.contacto-mapa {
+    min-height: 400px;
+}

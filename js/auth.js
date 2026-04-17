@@ -51,3 +51,25 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// --- LÓGICA PARA EL OJITO DE LA CONTRASEÑA ---
+    const togglePassword = document.getElementById("togglePassword");
+    const passwordInput = document.getElementById("password");
+
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener("click", function () {
+            // Alternamos el tipo de input entre "password" y "text"
+            const tipoActual = passwordInput.getAttribute("type");
+            if (tipoActual === "password") {
+                passwordInput.setAttribute("type", "text");
+                // Cambiamos el icono a un ojito tachado
+                this.classList.remove("fa-eye");
+                this.classList.add("fa-eye-slash");
+            } else {
+                passwordInput.setAttribute("type", "password");
+                // Volvemos al icono del ojito normal
+                this.classList.remove("fa-eye-slash");
+                this.classList.add("fa-eye");
+            }
+        });
+    }

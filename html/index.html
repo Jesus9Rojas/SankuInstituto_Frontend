@@ -3,47 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instituto Tecnológico Superior</title>
-    <link rel="stylesheet" href="/css/variables.css">
-    <link rel="stylesheet" href="/css/global.css">
-</head>
-<body>
+    <title>Instituto Tech - Inicio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <nav class="public-navbar">
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="../css/styles/seccion-contacto.css">
+    <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
+    <link rel="stylesheet" href="../css/animation.css"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-main">
+
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
         <div class="public-logo">
-            <h1>Instituto<span> SANKU</span></h1>
+            <h1 class="text-primary">Instituto<span class="text-accent">Tech</span></h1>
         </div>
         <div class="public-links">
-            <a href="index.html">Inicio</a>
-            <a href="programas.html">Programas de Estudio</a>
-            <a href="login.html" class="btn-acceso">Acceso Intranet</a>
-        </div>
+            <a href="index.html" class="nav-link nav-active">Inicio</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <div class="dropdown-content bg-card border-card">
+                    <a href="gestion.html" class="dropdown-link">Gestión Administrativa</a>
+                    <a href="farmacia.html" class="dropdown-link">Farmacia Técnica</a>
+                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
+                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link">Cursos Cortos</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>  
     </nav>
 
-    <header class="hero-section">
-        <h2>Transforma tu pasión en una profesión tecnológica</h2>
-        <p>Estudia carreras de alta demanda con metodología práctica, laboratorios modernos y docentes expertos en la industria.</p>
-        <a href="programas.html" class="btn-acceso" style="font-size: 18px; padding: 15px 30px;">Descubre nuestras carreras</a>
+    <header class="hero-section hero-inicio fade-in-up">
+        <h2 class="text-white">Formando Profesionales de Excelencia</h2>
+        <p class="hero-subtitle">Estudia carreras técnicas de alta demanda con metodología práctica y docentes expertos.</p>
+        <a href="nosotros.html" class="btn-acceso btn-lg pulse-btn">Conoce nuestra propuesta</a>
     </header>
 
-    <section class="contenedor-seccion">
-        <h2 class="seccion-titulo">Nuestro <span>Campus</span></h2>
-        <div style="width: 100%; border-radius: 8px; overflow: hidden; border: 1px solid var(--border-color);">
-            <iframe 
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d124855.3341851498!2d-77.080244!3d-12.0620882!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9105c5f619ee3ec3%3A0x14206cb9cc452e4a!2sLima!5e0!3m2!1ses-419!2spe!4v1690000000000!5m2!1ses-419!2spe" 
-                width="100%" 
-                height="400" 
-                style="border:0; filter: invert(90%) hue-rotate(180deg);" 
-                allowfullscreen="" 
-                loading="lazy">
-            </iframe>
+    <section class="contenedor-seccion bg-section fade-in-up delay-1">
+        <h2 class="seccion-titulo">Inicia tu camino al <span class="text-accent">Éxito</span></h2>
+        <div class="grid-beneficios">
+            <div class="beneficio-item icon-hover">
+                <div class="circulo-icono bg-card1 shadow-card"><i class="fa-solid fa-lightbulb text-white"></i></div>
+                <h3>Ideas de Negocios</h3>
+                <p class="text-muted">Te impulsamos a alcanzar tus objetivos y el sueño de tu propia empresa.</p>
+            </div>
+            <div class="beneficio-item icon-hover">
+                <div class="circulo-icono bg-card2 shadow-card"><i class="fa-solid fa-chalkboard-user text-white"></i></div>
+                <h3>Experiencia</h3>
+                <p class="text-muted">Nuestros profesores trabajan en lo que enseñan diariamente.</p>
+            </div>
+            <div class="beneficio-item icon-hover">
+                <div class="circulo-icono bg-card3 shadow-card"><i class="fa-solid fa-medal text-white"></i></div>
+                <h3>Becas</h3>
+                <p class="text-muted">Reconocemos y premiamos tu esfuerzo académico con incentivos.</p>
+            </div>
+            <div class="beneficio-item icon-hover">
+                <div class="circulo-icono bg-card4 shadow-card"><i class="fa-regular fa-clock text-white"></i></div>
+                <h3>Horarios</h3>
+                <p class="text-muted">Tenemos horarios flexibles que se ajustan a tu ritmo de vida.</p>
+            </div>
         </div>
     </section>
 
-    <footer class="public-footer">
-        <h2>Instituto<span>Tech</span></h2>
-        <p class="text-muted" style="margin-top: 10px;">© 2026 Todos los derechos reservados.</p>
-    </footer>
+    <section class="contenedor-seccion bg-main fade-in-up delay-2" style="padding: 0;">
+        <div class="grid-contacto shadow-card">
+            <div class="contacto-info bg-main">
+                <h2 class="contacto-titulo ">Conoce nuestras Oficinas</h2>
+                <div class="pin-ubicacion text-accent"><i class="fa-solid fa-location-dot"></i></div>
+                <h3 class="contacto-titulo text-main">Calle Lima 434 - Ica</h3>
+                <div class="contacto-caja bg-section text-main">
+                    <h4 class="text-accent"><i class="fa-regular fa-address-book"></i> Contáctanos</h4>
+                    <p><i class="fa-solid fa-phone text-muted"></i> 956 636 678</p>
+                    <hr class="divisor-contacto">
+                    <p><i class="fa-solid fa-phone-volume text-muted"></i> 056 639368</p>
+                    <hr class="divisor-contacto">
+                    <p><i class="fa-solid fa-envelope text-muted"></i> info@instituto.edu.pe</p>
+                </div>
+            </div>
+            <div class="contacto-mapa">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3870.366406253456!2d-75.7310496!3d-14.0673323!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9110e2eb33c5e03b%3A0x6b10292ba5714041!2sPlaza%20de%20Armas%20de%20Ica!5e0!3m2!1ses!2spe!4v1700000000000!5m2!1ses!2spe" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+            </div>
+        </div>
+    </section>
 
+    <footer class="public-footer bg-section border-top">
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h3 class="text-primary">Noticias</h3>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Convenio con empresas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Feria Vocacional 2026</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Infórmate</h3>
+                <ul>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> ¿Quiénes Somos?</a></li>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Programas</h3>
+                <ul>
+                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-muted">
+            <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
+        </div>
+    </footer>
 </body>
 </html>

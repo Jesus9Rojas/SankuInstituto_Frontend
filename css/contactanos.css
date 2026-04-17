@@ -1,0 +1,85 @@
+/* /css/contactanos.css */
+
+.contacto-layout {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr; /* El formulario es un poco más ancho que la decoración */
+    background-color: var(--bg-card);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+}
+
+/* El panel lateral azul */
+.contacto-decoracion {
+    background: linear-gradient(135deg, #1181f9, #0bbceb);
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.contacto-decoracion h2 { 
+    font-size: 32px; 
+    margin-bottom: 20px; 
+    line-height: 1.3; 
+    font-weight: 600;
+}
+
+.formulario-caja {
+    padding: 50px;
+}
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+/* Labels ahora usan el color principal de la marca (Azul oscuro) */
+.form-group label {
+    display: block;
+    color: var(--color-primary); 
+    font-size: 14px;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+/* Inputs estilizados modernos */
+.form-input {
+    width: 100%;
+    background-color: var(--bg-input); /* Un fondo gris muy suave */
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-main);
+    padding: 12px 15px;
+    font-size: 15px;
+    font-family: var(--font-family);
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Efecto al hacer clic en el input */
+.form-input:focus { 
+    border-color: var(--color-accent);
+    box-shadow: 0 0 0 3px rgba(0, 168, 255, 0.15); /* Resplandor celeste */
+    background-color: var(--bg-main);
+}
+
+/* Textarea para que no se deforme */
+textarea.form-input {
+    resize: vertical;
+    min-height: 100px;
+}
+
+/* Responsividad para Móviles */
+@media (max-width: 900px) {
+    .contacto-layout {
+        grid-template-columns: 1fr; /* Pone un bloque debajo del otro */
+    }
+    
+    .contacto-decoracion {
+        padding: 40px 30px;
+        text-align: center;
+    }
+    
+    .formulario-caja {
+        padding: 40px 20px;
+    }
+}

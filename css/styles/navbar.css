@@ -1,0 +1,141 @@
+/* /css/navbar.css */
+.public-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 5%;
+    background-color: rgba(253, 253, 253, 0.95);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.shadow-navbar {
+    box-shadow: var(--shadow-card); 
+    border-bottom: 1px solid var(--border-color); 
+}
+
+.public-logo h1 {
+    font-size: 24px;
+    color: var(--text-main);
+}
+
+.public-logo span {
+    color: var(--accent-red);
+}
+
+.public-links {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    height: 100%; 
+}
+
+.public-links a {
+    color: var(--text-main);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+.public-links a:hover {
+    color: var(--accent-red);
+}
+
+.blur-nav {
+    background-color: rgba(255, 255, 255, 0.85) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.nav-link { 
+    color: var(--text-main); 
+    font-weight: 500; 
+    position: relative;
+    padding-bottom: 5px;
+    transition: var(--transition); 
+}
+
+/* Línea animada que aparece al pasar el mouse */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--color-primary);
+    transition: width 0.3s ease;
+}
+
+.nav-link:hover::after, .nav-active::after {
+    width: 100%;
+}
+
+.nav-link:hover { 
+    color: var(--color-primary); 
+}
+
+.nav-active { 
+    color: var(--color-primary) !important; 
+    font-weight: 600; /* Un poco más de grosor en lugar del text-stroke antiguo */
+}
+
+.nav-link:hover { 
+    color: var(--color-primary); 
+}
+
+/* --- Dropdown Menú --- */
+.dropdown {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%; 
+}
+
+.dropbtn {
+    display: flex;
+    align-items: center;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color:white;
+    min-width: 250px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+    z-index: 1;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    top: 100%;
+    left: 0;
+}
+
+.dropdown-content a, .dropdown-link {
+    color: var(--text-main);
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.dropdown-content a:hover {
+    background-color: rgba(14, 84, 246, 0.837);
+    color: white !important;
+    border-radius: var(--radius-md);
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-link.active-drop { 
+    color: var(--color-primary); 
+    font-weight: bold; 
+}
+
+.drop-icon { 
+    font-size: 12px; 
+    margin-left: 5px; 
+}

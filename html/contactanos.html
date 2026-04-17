@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contáctanos - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
+    <link rel="stylesheet" href="../css/contactanos.css"> <link rel="stylesheet" href="../css/animation.css"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-main">
+
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
+        <div class="public-logo">
+            <h1 class="text-primary">Instituto<span class="text-accent">Tech</span></h1>
+        </div>
+        <div class="public-links">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <div class="dropdown-content bg-card border-card">
+                    <a href="gestion.html" class="dropdown-link">Gestión Administrativa</a>
+                    <a href="farmacia.html" class="dropdown-link">Farmacia Técnica</a>
+                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
+                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link">Cursos Cortos</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>  
+    </nav>
+
+        <header class="hero-section hero-nosotros" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.95) 0%, rgba(0, 51, 153, 0.6) 45%, rgba(0, 51, 153, 0) 100%), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80') center/cover;">
+        <div class="hero-text-left">
+            <span class="bg-card1 text-white shadow-card" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px;">Atención al Estudiante</span>
+            <h2 class="titulo-impacto">
+                <span class="text-yellow">Contactanos</span>
+            </h2>
+            <p class="text-white" style="font-size: 18px; opacity: 0.9; max-width: 80rem;">Estamos aquí para resolver todas tus dudas sobre matrículas, programas y cursos.</p>
+        </div>
+    </header>
+
+    <section class="contenedor-seccion fade-in-up delay-1" style="background-color: var(--bg-section);">
+        <div class="contacto-layout shadow-card border-card">
+            
+            <div class="contacto-decoracion">
+                <i class="fa-solid fa-headset" style="font-size: 60px; color: white; margin-bottom: 30px;"></i>
+                <h2 style="color: white;">¿Tienes alguna consulta o sugerencia?<br>Estamos gustosos de atenderte.</h2>
+                
+                <div style="margin-top: 40px; color: white;">
+                    <p style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-location-dot" style="margin-right: 10px; font-size: 20px;"></i> Ca. Lima 434, Ica 11001, Perú</p>
+                    <p style="margin-bottom: 15px; font-size: 16px;"><i class="fa-solid fa-phone" style="margin-right: 10px; font-size: 20px;"></i> 956 636 678 / 056 639368</p>
+                    <p style="font-size: 16px;"><i class="fa-solid fa-envelope" style="margin-right: 10px; font-size: 20px;"></i> info@instituto.edu.pe</p>
+                </div>
+            </div>
+
+            <div class="formulario-caja bg-card">
+                <form action="#">
+                    <div class="form-group">
+                        <label>Nombres y Apellidos (Necesario)</label>
+                        <input type="text" class="form-input" placeholder="Ej. Juan Pérez" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electrónico (Necesario)</label>
+                        <input type="email" class="form-input" placeholder="ejemplo@correo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Celular (Necesario)</label>
+                        <input type="tel" class="form-input" placeholder="999 888 777" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Programa de Interés</label>
+                        <select class="form-input" style="background-color: var(--bg-card); cursor: pointer;">
+                            <option value="gestion">Gestión Administrativa</option>
+                            <option value="farmacia">Farmacia Técnica</option>
+                            <option value="enfermeria">Enfermería Técnica</option>
+                            <option value="fisioterapia">Fisioterapia y Rehabilitación</option>
+                            <option value="cursos">Cursos Cortos</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mensaje</label>
+                        <textarea class="form-input" rows="4" placeholder="Escribe tu consulta aquí..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn-acceso-intranet pulse-btn" style="width: 100%; border: none; cursor: pointer; padding: 15px; font-size: 16px; margin-top: 10px;"><i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i> Enviar Consulta</button>
+                </form>
+            </div>
+
+        </div>
+    </section>
+
+    <footer class="public-footer bg-main border-top">
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h3 class="text-primary">Noticias</h3>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Convenio con empresas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Feria Vocacional 2026</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Infórmate</h3>
+                <ul>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> ¿Quiénes Somos?</a></li>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Programas</h3>
+                <ul>
+                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-muted">
+            <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+</body>
+</html>

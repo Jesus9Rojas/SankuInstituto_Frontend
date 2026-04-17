@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión Administrativa - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="../css/styles/seccion-programas.css">
+    <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
+    <link rel="stylesheet" href="../css/animation.css"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-main">
+
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
+        <div class="public-logo">
+            <h1 class="text-primary">Instituto<span class="text-accent">Tech</span></h1>
+        </div>
+        <div class="public-links">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link nav-active">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <div class="dropdown-content bg-card border-card">
+                    <a href="gestion.html" class="dropdown-link active-drop">Gestión Administrativa</a>
+                    <a href="farmacia.html" class="dropdown-link">Farmacia Técnica</a>
+                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
+                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link">Cursos Cortos</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>  
+    </nav>
+
+    <header class="hero-section fade-in-up" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.9), rgba(0, 168, 255, 0.4)), url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80') center/cover; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 10%;">
+        <span class="bg-card1 text-white shadow-card" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px;">Negocios</span>
+                <div class="hero-text-left">
+            <h2 class="titulo-impacto">
+                <span class="text-yellow">Gestión</span>
+                <span class="text-white-innovacion">Administrativa</span>
+            </h2>
+        </div>
+        <p class="text-white" style="font-size: 18px; opacity: 0.9;">Título a Nombre de la Nación • Duración: 3 Años (6 Ciclos)</p>
+    </header>
+
+    <section class="contenedor-seccion bg-main fade-in-up delay-1">
+        <div class="programa-layout">
+            
+            <aside class="programa-sidebar shadow-card border-card" style="background: linear-gradient(to bottom, #1181f9, #0bbceb); border: none;">
+                <h3 class="text-white" style="font-size: 22px; line-height: 1.5; margin-bottom: 20px;">Somos un instituto que te forma con un plan curricular actualizado constantemente, excelente staff de profesores altamente capacitados y full prácticas.</h3>
+                <i class="fa-solid fa-chart-column text-white" style="font-size: 120px; display: block; text-align: center; margin-top: 50px; margin-bottom: 40px;"></i>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn-acceso" style="width: 100%; padding: 15px; margin-bottom: 15px; font-size: 16px; background-color: #25D366; color: white !important;"><i class="fa-brands fa-whatsapp"></i> Matricularme Ahora</button>
+                    <button class="btn-acceso" style="width: 100%; padding: 15px; border: none;"><i class="fa-solid fa-download"></i> Descargar Brochure</button>
+                </div>
+            </aside>
+
+            <div class="programa-contenido bg-card shadow-card border-card">
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="openTab(event, 'perfil')">Perfil Académico</button>
+                    <button class="tab-btn" onclick="openTab(event, 'malla')">Malla curricular</button>
+                    <button class="tab-btn" onclick="openTab(event, 'mercado')">Mercado Laboral</button>
+                    <button class="tab-btn" onclick="openTab(event, 'beneficios')">Beneficios</button>
+                    <button class="tab-btn" onclick="openTab(event, 'requisitos')">Requisitos y Horarios</button>
+                </div>
+
+                <div id="perfil" class="tab-pane active">
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 16px;">El profesional en <strong>Gestión Administrativa</strong> que concluya sus estudios en nuestro instituto, será capaz de crear y desarrollar su propia empresa comercial o servicios, con visión global y emprendedora, aprovechando al máximo las herramientas tecnológicas para optimizar el rendimiento empresarial, protegiendo el medio ambiente.</p>
+                    
+                    <h4 class="text-primary">Competencias a desarrollar:</h4>
+                    <ul class="text-muted">
+                        <li>Capacidad de Liderazgo y dirección de equipos multidisciplinarios.</li>
+                        <li>La resolución de conflictos organizacionales bajo presión.</li>
+                        <li>La comunicación eficaz a nivel interno y externo.</li>
+                        <li>La habilidad en el trabajo en equipo y gestión de talento humano.</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="margin-top: 30px;">En el instituto aprenderás:</h4>
+                    <ul class="text-muted">
+                        <li>Fundamentos de Administración Empresarial</li>
+                        <li>Implementación de Procedimientos Administrativos y ERP</li>
+                        <li>Diseño de Estructuras y Procesos Organizacionales</li>
+                        <li>Comunicación empresarial y atención al cliente</li>
+                        <li>Trámite documentario y digitación comercial</li>
+                        <li>Archivo y Control de la Documentación Empresarial</li>
+                        <li>Procedimientos Técnicos y Operativos de Logística</li>
+                        <li>Documentación Contable y Análisis Financiero</li>
+                        <li>Legislación Aplicada a los Negocios y Tributación</li>
+                    </ul>
+                </div>
+                
+                <div id="malla" class="tab-pane">
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 16px;">La exigencia de la malla curricular propuesta para la carrera técnica de Gestión Administrativa se traduce en el desarrollo de proyectos comerciales desde el primer año hasta el último ciclo académico de la carrera. El estudiante de Gestión Administrativa trabajará en modernos laboratorios de cómputo y llevará talleres que despertarán la creatividad necesaria para encontrar nuevos caminos y formas de solucionar problemas de las empresas en la vida cotidiana.</p>
+                    <p class="text-muted" style="margin-bottom: 30px; font-size: 16px;">A través de los cursos transversales propuestos dentro de la malla curricular de técnico en Gestión Administrativa, se busca formar profesionales con los conocimientos adecuados del mercado laboral, con los cuales será capaz de desenvolverse en el desarrollo profesional.</p>
+
+                    <h4 class="text-primary" style="font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Módulo N° 01: Elaboración de Procedimientos Administrativos</h4>
+                    <ul class="text-muted" style="margin-bottom: 30px;">
+                        <li>Fundamentos de Administración Empresarial</li>
+                        <li>Implementación de Procedimientos Administrativos</li>
+                        <li>Diseño de Estructuras y Procesos</li>
+                        <li>Comunicación empresarial y atención al cliente</li>
+                        <li>Tramite documentario</li>
+                        <li>Diseño Organizacional</li>
+                        <li>Archivo y Control de la Documentación Empresarial</li>
+                        <li>Procedimientos Técnicos y Operativos</li>
+                        <li>Documentación Contable y Financiera</li>
+                        <li>Legislación Aplicada a los Negocios</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Módulo N° 02: Definición Presupuestaria y Disposición de Servicios Especializados</h4>
+                    <ul class="text-muted" style="margin-bottom: 30px;">
+                        <li>Costos y Presupuestos</li>
+                        <li>Administración Financiera</li>
+                        <li>Planificación Estratégica</li>
+                        <li>Contabilidad aplicada</li>
+                        <li>Logística Integral</li>
+                        <li>Planeación y organización administrativa</li>
+                        <li>Legislación Laboral</li>
+                        <li>Seguridad y salud ocupacional</li>
+                        <li>Calidad y Mejora continua</li>
+                        <li>Responsabilidad social empresarial y medio ambiente</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Módulo N° 03: Administración de Recursos y Supervisión de la planificación Operativa</h4>
+                    <ul class="text-muted" style="margin-bottom: 20px;">
+                        <li>Tesorería y capital de trabajo</li>
+                        <li>Administración de Talento humano</li>
+                        <li>Analisis de la Informacion financiera</li>
+                        <li>Dirección y Control empresarial</li>
+                        <li>Supply change management</li>
+                        <li>Análisis e interpretación de EE.FF.</li>
+                        <li>Supervisión Financiera</li>
+                        <li>Toma de Decisiones</li>
+                        <li>Evaluación de Proyectos de Inversión</li>
+                        <li>Procesos de Auditoria Empresarial</li>
+                    </ul>
+                </div>
+
+                <div id="mercado" class="tab-pane">
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 16px;">Instituto Tech te brinda los conocimientos necesarios para desempeñarse eficientemente en empresas del sector minero, agropecuario, comercio exterior, industrial, financiero y de servicios incorporándose a las diferentes áreas de:</p>
+                    <ul class="text-muted">
+                        <li>Recursos Humanos.</li>
+                        <li>Logística (compras – transportes – almacenes).</li>
+                        <li>Relaciones Industriales.</li>
+                        <li>Comercial.</li>
+                        <li>Gerencia de medianas y pequeñas empresas.</li>
+                        <li>Cargos ejecutivos.</li>
+                        <li>Ejecutivo de negocios en empresas privadas o publicas.</li>
+                        <li>Así como también gestionando tu propia empresa.</li>
+                    </ul>
+                </div>
+
+                <div id="beneficios" class="tab-pane">
+                    <ul class="text-muted">
+                        <li>Título Profesional a nombre de la Nación.</li>
+                        <li>Innovador plan de estudios acorde con las exigencias del mercado laboral.</li>
+                        <li>Moderno equipamiento tecnológico.</li>
+                        <li>Docentes profesionales con amplia experiencia en sus especialidades.</li>
+                        <li>Alta calidad académica.</li>
+                        <li>Certificación Modular.</li>
+                        <li>Uso del proyector multimedia y las TICs en el dictado de clases.</li>
+                        <li>Becas a los mejores estudiantes.</li>
+                        <li>Biblioteca actualizada de libre uso.</li>
+                        <li>Moderno y amplio local ubicado a 3 cuadras de la Plaza de Armas.</li>
+                    </ul>
+                </div>
+
+                <div id="requisitos" class="tab-pane">
+                    <h4 class="text-primary">Requisitos</h4>
+                    <ul class="text-muted">
+                        <li>Partida de Nacimiento Actualizada (Copia Certificada).</li>
+                        <li>Certificado de Estudios secundaria en original (Visado por la UGEL).</li>
+                        <li>Copia Simple de DNI.</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="margin-top: 30px;">Horarios de Clases</h4>
+                    <ul class="text-muted">
+                        <li><strong>Turno Diurno:</strong> 08:00 am - 01:00 pm</li>
+                        <li><strong>Turno Nocturno:</strong> 03:30 pm - 09:30 pm</li>
+                    </ul>
+                </div>
+                
+                <div class="banner-cta-container shadow-card" style="margin-top: 50px;">
+                    <div class="banner-cta-text">
+                        <h2 class="text-white" style="font-size: 28px;"><i class="fa-solid fa-graduation-cap text-accent"></i> Actualiza tus conocimientos</h2>
+                        <p style="color: #e1f5fe; font-size: 16px;">Inicia tu proceso de matrícula hoy mismo y transforma tu futuro profesional.</p>
+                    </div>
+                    <a href="contactanos.html" class="btn-acceso">Infórmate</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="public-footer bg-section border-top">
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h3 class="text-primary">Noticias</h3>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Convenio con empresas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Feria Vocacional 2026</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Infórmate</h3>
+                <ul>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> ¿Quiénes Somos?</a></li>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Programas</h3>
+                <ul>
+                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-muted">
+            <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-pane");
+            for (i = 0; i < tabcontent.length; i++) { 
+                tabcontent[i].style.display = "none"; 
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) { 
+                tablinks[i].className = tablinks[i].className.replace(" active", ""); 
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => {
+                document.getElementById(tabName).classList.add("active");
+            }, 10);
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>

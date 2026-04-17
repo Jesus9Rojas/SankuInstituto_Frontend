@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos Cortos - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
+    <link rel="stylesheet" href="../css/styles/seccion-cursos.css"> 
+    <link rel="stylesheet" href="../css/styles/animation.css"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-main">
+
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
+        <div class="public-logo">
+            <h1 class="text-primary">Instituto<span class="text-accent">Tech</span></h1>
+        </div>
+        <div class="public-links">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <div class="dropdown-content bg-card border-card">
+                    <a href="gestion.html" class="dropdown-link">Gestión Administrativa</a>
+                    <a href="farmacia.html" class="dropdown-link">Farmacia Técnica</a>
+                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
+                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link nav-active">Cursos Cortos</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>  
+    </nav>
+
+        <header class="hero-section fade-in-up" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.9), rgba(0, 168, 255, 0.4)), url('https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&q=80') center/cover; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 10%;">
+                <div class="hero-text-left">
+            <h2 class="titulo-impacto">
+                <span class="text-yellow">Cursos Cortos de</span>
+                <span class="text-white-innovacion">Especialización</span>
+            </h2>
+        </div>
+        <p class="text-white" style="font-size: 18px; opacity: 0.9;">Mejora tu perfil laboral y adquiere habilidades prácticas de alta demanda en corto tiempo.</p>
+    </header>
+
+    <section class="contenedor-seccion bg-main fade-in-up delay-1">
+        
+        <div class="curso-horizontal-card shadow-card border-card bg-card">
+            <div class="curso-sidebar-info" style="background: linear-gradient(135deg, #00c6ff, #0072ff);">
+                <h3>Somos un instituto que te forma con un plan curricular actualizado constantemente, excelente staff de profesores altamente capacitados y full prácticas.</h3>
+                <i class="fa-solid fa-syringe big-icon"></i>
+            </div>
+            <div class="curso-contenido-box">
+                <h3 class="text-primary curso-titulo"><i class="fa-solid fa-syringe text-accent"></i> Inyectoterapia y Primeros Auxilios</h3>
+                
+                <div class="tab-menu curso-tabs">
+                    <button class="tab-btn active" onclick="openCursoTab(event, 'cont-1', 'curso1')">Contenido</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'inst-1', 'curso1')">Contamos con</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'ben-1', 'curso1')">Beneficios</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'req-1', 'curso1')">Requisitos y Horarios</button>
+                </div>
+
+                <div class="tab-content-wrapper">
+                    <div id="cont-1" class="tab-pane curso1 active">
+                        <p class="text-muted">El presente curso teórico – práctico tiene como propósito capacitar al estudiante para administrar en forma correcta tratamiento médico empleando las cuatro vías parenterales más frecuentes como son: Intradérmica, Subcutánea, Intramuscular, Endovenosa y por venoclisis cumpliendo los principios universales de bioseguridad.</p>
+                        <h4 class="text-primary mt-15">Desarrollo Temático:</h4>
+                        <ul class="text-muted">
+                            <li>Inyectables vía intradérmica</li>
+                            <li>Inyectables vía subcutánea</li>
+                            <li>Inyectables vía intramuscular</li>
+                            <li>Inyectables vía endovenosa y endovenoso continuo</li>
+                        </ul>
+                    </div>
+                    
+                    <div id="inst-1" class="tab-pane curso1">
+                        <h4 class="text-primary">Contamos con:</h4>
+                        <ul class="text-muted">
+                            <li>Laboratorio de primeros auxilios altamente equipado.</li>
+                            <li>Laboratorio de ciencias básicas y atención primaria.</li>
+                            <li>Maquetas anatómicas de simulación real.</li>
+                            <li>Moderno equipamiento tecnológico audiovisual.</li>
+                            <li>Laboratorio multifuncional para prácticas guiadas.</li>
+                        </ul>
+                    </div>
+
+                    <div id="ben-1" class="tab-pane curso1">
+                        <h4 class="text-primary">Beneficios:</h4>
+                        <ul class="text-muted">
+                            <li>Certificado a nombre del Ministerio de Educación (MINEDU).</li>
+                            <li>Docentes profesionales de la salud con amplia experiencia clínica.</li>
+                            <li>Alta calidad académica y materiales incluidos.</li>
+                            <li>Uso de proyector multimedia y TIC´S en el dictado de las clases.</li>
+                            <li>Moderno y amplio local céntrico.</li>
+                        </ul>
+                    </div>
+
+                    <div id="req-1" class="tab-pane curso1">
+                        <h4 class="text-primary">Requisitos y Horarios:</h4>
+                        <ul class="text-muted">
+                            <li><strong>Requisitos:</strong> Copia Simple de DNI y vocación de servicio.</li>
+                            <li><strong>Duración:</strong> 8 Semanas efectivas de clases.</li>
+                            <li><strong>Inicio de Clases:</strong> Matrícula abierta (Consultar fechas).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="curso-horizontal-card shadow-card border-card bg-card">
+            <div class="curso-sidebar-info" style="background: linear-gradient(135deg, #ff416c, #ff4b2b);">
+                <h3>Aprende a salvar vidas con nuestro enfoque 100% práctico, instructores especializados y equipamiento de primera respuesta.</h3>
+                <i class="fa-solid fa-kit-medical big-icon"></i>
+            </div>
+            <div class="curso-contenido-box">
+                <h3 class="text-primary curso-titulo"><i class="fa-solid fa-briefcase-medical text-accent"></i> Primeros Auxilios</h3>
+                
+                <div class="tab-menu curso-tabs">
+                    <button class="tab-btn active" onclick="openCursoTab(event, 'cont-2', 'curso2')">Contenido</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'inst-2', 'curso2')">Contamos con</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'ben-2', 'curso2')">Beneficios</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'req-2', 'curso2')">Requisitos y Horarios</button>
+                </div>
+
+                <div class="tab-content-wrapper">
+                    <div id="cont-2" class="tab-pane curso2 active">
+                        <p class="text-muted">El propósito es ofrecer al estudiante conocimientos y habilidades en la atención inmediata del paciente en situación de urgencia, con los recursos que tenga en el momento. Desarrollará habilidades en vendaje, curación, y tratamientos de urgencias.</p>
+                        <h4 class="text-primary mt-15">Desarrollo Temático:</h4>
+                        <ul class="text-muted">
+                            <li>Reanimación cardio pulmonar y Shock</li>
+                            <li>Vendajes, Traumatismo y Heridas</li>
+                            <li>Hemorragias, Quemaduras e Intoxicaciones</li>
+                        </ul>
+                    </div>
+                    
+                    <div id="inst-2" class="tab-pane curso2">
+                        <h4 class="text-primary">Contamos con:</h4>
+                        <ul class="text-muted">
+                            <li>Moderno equipamiento tecnológico</li>
+                            <li>Laboratorios de ciencias básicas y primeros auxilios</li>
+                            <li>Laboratorio de atención primaria y multifuncional</li>
+                            <li>Maquetas anatómicas</li>
+                        </ul>
+                    </div>
+
+                    <div id="ben-2" class="tab-pane curso2">
+                        <h4 class="text-primary">Beneficios:</h4>
+                        <ul class="text-muted">
+                            <li>Certificado a nombre del Ministerio de Educación</li>
+                            <li>Docentes profesionales con amplia experiencia</li>
+                            <li>Alta calidad académica.</li>
+                            <li>Uso del proyector multimedia y las TICs.</li>
+                            <li>Moderno y amplio local ubicado a 3 cuadras de la Plaza de Armas.</li>
+                        </ul>
+                    </div>
+
+                    <div id="req-2" class="tab-pane curso2">
+                        <h4 class="text-primary">Requisitos y Horarios:</h4>
+                        <ul class="text-muted">
+                            <li><strong>Requisitos:</strong> Copia Simple de DNI.</li>
+                            <li><strong>Duración:</strong> 8 Semanas.</li>
+                            <li><strong>Inicio de Clases:</strong> 24 de Junio.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="curso-horizontal-card shadow-card border-card bg-card">
+            <div class="curso-sidebar-info" style="background: linear-gradient(135deg, #11998e, #38ef7d);">
+                <h3>Domina las herramientas digitales más solicitadas por las empresas en nuestros modernos laboratorios de cómputo.</h3>
+                <i class="fa-brands fa-microsoft big-icon"></i>
+            </div>
+            <div class="curso-contenido-box">
+                <h3 class="text-primary curso-titulo"><i class="fa-brands fa-windows text-accent"></i> Ofimática para Oficina</h3>
+                
+                <div class="tab-menu curso-tabs">
+                    <button class="tab-btn active" onclick="openCursoTab(event, 'cont-3', 'curso3')">Contenido</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'inst-3', 'curso3')">Contamos con</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'ben-3', 'curso3')">Beneficios</button>
+                    <button class="tab-btn" onclick="openCursoTab(event, 'req-3', 'curso3')">Requisitos y Horarios</button>
+                </div>
+
+                <div class="tab-content-wrapper">
+                    <div id="cont-3" class="tab-pane curso3 active">
+                        <p class="text-muted">Conviértete en corto tiempo en un experto en el manejo del computador y de las principales herramientas de Microsoft Office. Aprenderás el manejo de Word, Power Point y Publisher.</p>
+                        <h4 class="text-primary mt-15">Desarrollo Temático:</h4>
+                        <ul class="text-muted">
+                            <li>Creación, edición e impresión de documentos y formatos.</li>
+                            <li>Sangrías, imágenes, encabezados y número de página.</li>
+                            <li>Elaboración de folletos y herramientas Smart Art.</li>
+                            <li>Combinar correspondencia.</li>
+                            <li>Interfaz de Power Point, efectos y transición de diapositivas. Conversión a video.</li>
+                        </ul>
+                    </div>
+                    
+                    <div id="inst-3" class="tab-pane curso3">
+                        <h4 class="text-primary">Contamos con:</h4>
+                        <ul class="text-muted">
+                            <li>Laboratorio de Servicios Virtualizados y Redes.</li>
+                            <li>Laboratorio de Plataformas y servicios de TI.</li>
+                            <li>Laboratorio de Análisis de Protocolos y Seguridad.</li>
+                            <li>Moderno Laboratorio de Ofimática.</li>
+                        </ul>
+                    </div>
+
+                    <div id="ben-3" class="tab-pane curso3">
+                        <h4 class="text-primary">Beneficios:</h4>
+                        <ul class="text-muted">
+                            <li>Certificado a nombre del Ministerio de Educación</li>
+                            <li>Docentes profesionales con amplia experiencia</li>
+                            <li>Alta calidad académica</li>
+                            <li>Uso de proyector multimedia y TIC´S en clases.</li>
+                            <li>Moderno y amplio local céntrico.</li>
+                        </ul>
+                    </div>
+
+                    <div id="req-3" class="tab-pane curso3">
+                        <h4 class="text-primary">Requisitos y Horarios:</h4>
+                        <ul class="text-muted">
+                            <li><strong>Requisitos:</strong> Copia Simple de DNI.</li>
+                            <li><strong>Duración:</strong> 8 Semanas.</li>
+                            <li><strong>Inicio de Clases:</strong> Matrícula Abierta.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="banner-cta-container fade-in-up delay-2 shadow-card" style="margin-top: 60px;">
+            <div class="banner-cta-text">
+                <h2 class="text-white"><i class="fa-solid fa-graduation-cap text-accent"></i> Da el Siguiente <span class="text-yellow">Paso</span></h2>
+                <p style="color: #e1f5fe;">Mejora tu CV y especialízate rápidamente. ¡Consulta nuestras fechas de inicio!</p>
+            </div>
+            <a href="contactanos.html" class="btn-acceso btn-white pulse-btn">Solicitar Información</a>
+        </div>
+
+    </section>
+
+    <footer class="public-footer bg-section border-top">
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h3 class="text-primary">Noticias</h3>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Convenio con empresas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Feria Vocacional 2026</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Infórmate</h3>
+                <ul>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> ¿Quiénes Somos?</a></li>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Programas</h3>
+                <ul>
+                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-muted">
+            <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <script>
+        function openCursoTab(evt, tabName, cursoClase) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName(cursoClase);
+            for (i = 0; i < tabcontent.length; i++) {
+                if (tabcontent[i].classList.contains('tab-pane')) {
+                    tabcontent[i].style.display = "none";
+                    tabcontent[i].classList.remove("active");
+                }
+            }
+            tablinks = evt.currentTarget.parentElement.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => {
+                document.getElementById(tabName).classList.add("active");
+            }, 10);
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>

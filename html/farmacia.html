@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmacia Técnica - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="../css/styles/seccion-programas.css">
+    <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
+    <link rel="stylesheet" href="../css/animation.css"> 
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-main">
+
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
+        <div class="public-logo">
+            <h1 class="text-primary">Instituto<span class="text-accent">Tech</span></h1>
+        </div>
+        <div class="public-links">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link nav-active">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <div class="dropdown-content bg-card border-card">
+                    <a href="gestion.html" class="dropdown-link">Gestión Administrativa</a>
+                    <a href="farmacia.html" class="dropdown-link active-drop">Farmacia Técnica</a>
+                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
+                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link">Cursos Cortos</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>  
+    </nav>
+
+    <header class="hero-section fade-in-up" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.9), rgba(0, 168, 255, 0.4)), url('https://images.unsplash.com/photo-1587854692152-cbe660dbde88?auto=format&fit=crop&q=80') center/cover; min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 10%;">
+        <span class="bg-card3 text-white shadow-card" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px;">Ciencias de la Salud</span>
+        <div class="hero-text-left">
+            <h2 class="titulo-impacto">
+                <span class="text-yellow">Farmacia</span>
+                <span class="text-white-innovacion">Técnica</span>
+            </h2>
+        </div>
+        <p class="text-white" style="font-size: 18px; opacity: 0.9;">Título a Nombre de la Nación • Duración: 3 Años (6 Ciclos)</p>
+    </header>
+
+    <section class="contenedor-seccion bg-main fade-in-up delay-1">
+        <div class="programa-layout">
+            
+            <aside class="programa-sidebar shadow-card border-card" style="background: linear-gradient(to bottom, #1181f9, #0bbceb); border: none;">
+                <h3 class="text-white" style="font-size: 22px; line-height: 1.5; margin-bottom: 20px;">Formación especializada, laboratorios equipados, docentes expertos y full prácticas.</h3>
+                <i class="fa-solid fa-pills text-white" style="font-size: 120px; display: block; text-align: center; margin-top: 50px; margin-bottom: 40px;"></i>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn-acceso" style="width: 100%; padding: 15px; margin-bottom: 15px; font-size: 16px; background-color: #25D366; color: white !important;"><i class="fa-brands fa-whatsapp"></i> Matricularme Ahora</button>
+                    <button class="btn-acceso" style="width: 100%; padding: 15px; border: none;"><i class="fa-solid fa-download"></i> Descargar Brochure</button>
+                </div>
+            </aside>
+
+            <div class="programa-contenido bg-card shadow-card border-card">
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="openTab(event, 'perfil')">Perfil Académico</button>
+                    <button class="tab-btn" onclick="openTab(event, 'malla')">Malla Curricular</button>
+                    <button class="tab-btn" onclick="openTab(event, 'mercado')">Mercado Laboral</button>
+                    <button class="tab-btn" onclick="openTab(event, 'beneficios')">Beneficios</button>
+                    <button class="tab-btn" onclick="openTab(event, 'requisitos')">Requisitos y Horarios</button>
+                </div>
+
+                <div id="perfil" class="tab-pane active">
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 16px;">El profesional técnico en Farmacia egresado de <strong>Instituto Tech</strong>, estará capacitado para trabajar conjuntamente con el farmacéutico en el área de dispensación de productos farmacéuticos en las Farmacias, Boticas, Farmacia hospitalaria, almacenes de distribución de medicamentos, industria farmacéutica, industria cosmética, droguerías; así como la realización de análisis clínicos elementales, junto al mantenimiento y limpieza del material empleado en las operaciones farmacéuticas.</p>
+                    
+                    <h4 class="text-primary">Competencias a desarrollar:</h4>
+                    <ul class="text-muted">
+                        <li>Análisis de procesos biológicos y químicos en el ser humano.</li>
+                        <li>Técnicas de administración de medicamentos.</li>
+                        <li>Documentos contables en una oficina farmacéutica.</li>
+                        <li>Venta y dispensación de medicamentos y productos afines.</li>
+                        <li>Promoción y prevención de Salud en Farmacias.</li>
+                        <li>Técnicas de control de calidad en la industria farmacéutica.</li>
+                        <li>Participar activamente con el equipo de la salud.</li>
+                        <li>Formar parte de los departamentos administrativos de adquisición de medicamentos en los hospitales, sanatorios y similares.</li>
+                    </ul>
+                </div>
+
+                <div id="malla" class="tab-pane">
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 16px;">La exigencia de la malla curricular propuesta para la carrera técnica de Farmacia se traduce en el desarrollo de proyectos farmacológicos desde el primer año hasta el último ciclo académico de la carrera. El estudiante trabajará en modernos laboratorios y llevará talleres que despertarán la creatividad necesaria para solucionar problemas de la vida cotidiana.</p>
+                    <p class="text-muted" style="margin-bottom: 30px; font-size: 16px;">A través de los cursos transversales propuestos, se busca formar profesionales con los conocimientos adecuados del mercado laboral, con los cuales será capaz de desenvolverse con éxito.</p>
+
+                    <h4 class="text-primary" style="font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Módulo N° 01: Desarrollo de las actividades de promoción y prevención de la salud.</h4>
+                    <ul class="text-muted" style="margin-bottom: 30px;">
+                        <li>Anatomía y fisiología humana</li>
+                        <li>Terminología aplicada a la salud</li>
+                        <li>Administración de medicamentos</li>
+                        <li>Bioseguridad</li>
+                        <li>Medicamentos esenciales</li>
+                        <li>Enfermedades transmisibles</li>
+                        <li>Primeros Auxilios e Inyectables</li>
+                        <li>Salud pública e interculturalidad</li>
+                        <li>Actividades de salud en la familia y comunidad</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Módulo N° 02: Expendio de productos farmacéuticos y Asistencia en procesos administrativos.</h4>
+                    <ul class="text-muted" style="margin-bottom: 30px;">
+                        <li>Bases farmacológicas de los medicamentos I y II</li>
+                        <li>Documentación farmacéutica</li>
+                        <li>Expendio de medicamentos y productos afines</li>
+                        <li>Aspectos legales en la industria farmacéutica</li>
+                        <li>Protocolo farmacológico de las enfermedades I y II</li>
+                        <li>Clasificación de medicamentos y acción farmacológica</li>
+                        <li>Petitorio de medicamentos básicos y esenciales</li>
+                        <li>Bases de administración farmacéutica</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="font-size: 18px; border-bottom: 2px solid var(--border-color); padding-bottom: 10px;">Módulo N° 03: Asistencia en la elaboración de fórmulas magistrales.</h4>
+                    <ul class="text-muted" style="margin-bottom: 20px;">
+                        <li>Fitoterapia y dispensación de productos naturales</li>
+                        <li>Técnicas de transformación de los recursos naturales en la industria farmacéutica</li>
+                        <li>Farmacognosia y fitoquímica</li>
+                        <li>Normas y técnicas de control de calidad en la industria farmacéutica</li>
+                        <li>Elaboración de formas farmacéuticas</li>
+                        <li>Procesamiento de productos magistrales y oficinales</li>
+                    </ul>
+                </div>
+                
+                <div id="mercado" class="tab-pane">
+                    <p class="text-muted" style="margin-bottom: 20px; font-size: 16px;">Como profesional de Farmacia Técnica, podrás desempeñarte eficientemente en:</p>
+                    <ul class="text-muted">
+                        <li>Farmacias y Boticas privadas.</li>
+                        <li>Farmacia Hospitalaria.</li>
+                        <li>Industrias farmacéuticas y de cosméticos.</li>
+                        <li>Droguerías.</li>
+                        <li>Farmacias de Asistencia Estatal.</li>
+                        <li>Laboratorios Clínicos.</li>
+                        <li>Centros de Información Farmacológica y toxicológica.</li>
+                        <li>Laboratorios de Investigación.</li>
+                        <li>Industrias químicas y de alimentos.</li>
+                        <li>Industrias de productos naturales.</li>
+                        <li>Laboratorios toxicológicos.</li>
+                    </ul>
+                </div>
+
+                <div id="beneficios" class="tab-pane">
+                    <ul class="text-muted">
+                        <li>Título Profesional a nombre de la Nación.</li>
+                        <li>Innovador plan de estudios acorde con las exigencias del mercado laboral.</li>
+                        <li>Moderno equipamiento tecnológico.</li>
+                        <li>Docentes profesionales con amplia experiencia en sus especialidades.</li>
+                        <li>Alta calidad académica.</li>
+                        <li>Certificación Modular.</li>
+                        <li>Uso del proyector multimedia y las TICs en el dictado de clases.</li>
+                        <li>Becas a los mejores estudiantes.</li>
+                        <li>Biblioteca actualizada de libre uso.</li>
+                        <li>Moderno y amplio local ubicado a 3 cuadras de la Plaza de Armas.</li>
+                    </ul>
+                </div>
+
+                <div id="requisitos" class="tab-pane">
+                    <h4 class="text-primary">Requisitos</h4>
+                    <ul class="text-muted">
+                        <li>Partida de Nacimiento Actualizada (Copia Certificada).</li>
+                        <li>Certificado de Estudios secundaria en original (Visado por la UGEL).</li>
+                        <li>Copia Simple de DNI.</li>
+                    </ul>
+
+                    <h4 class="text-primary" style="margin-top: 30px;">Horarios de Clases</h4>
+                    <ul class="text-muted">
+                        <li><strong>Turno Diurno:</strong> 08:00 am - 01:00 pm</li>
+                        <li><strong>Turno Nocturno:</strong> 03:30 pm - 09:30 pm</li>
+                    </ul>
+                </div>
+                
+                <div class="banner-cta-container shadow-card" style="margin-top: 50px;">
+                    <div class="banner-cta-text">
+                        <h2 class="text-white" style="font-size: 28px;"><i class="fa-solid fa-graduation-cap text-accent"></i> Inicia tu camino en la salud</h2>
+                        <p style="color: #e1f5fe; font-size: 16px;">Separa tu vacante hoy mismo y asegura tu futuro profesional.</p>
+                    </div>
+                    <a href="contactanos.html" class="btn-acceso">Infórmate</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <footer class="public-footer bg-section border-top">
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h3 class="text-primary">Noticias</h3>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Convenio con empresas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Feria Vocacional 2026</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Infórmate</h3>
+                <ul>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> ¿Quiénes Somos?</a></li>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Programas</h3>
+                <ul>
+                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-muted">
+            <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
+        </div>
+    </footer>
+
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-pane");
+            for (i = 0; i < tabcontent.length; i++) { 
+                tabcontent[i].style.display = "none"; 
+                tabcontent[i].classList.remove("active");
+            }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) { 
+                tablinks[i].className = tablinks[i].className.replace(" active", ""); 
+            }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => {
+                document.getElementById(tabName).classList.add("active");
+            }, 10);
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>
