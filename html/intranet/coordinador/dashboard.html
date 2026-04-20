@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Coordinador - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/styles/variables.css">
+    <link rel="stylesheet" href="/css/styles/base.css">
+    <link rel="stylesheet" href="/css/dashboard_coordinador.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-main">
+
+    <div class="portal-layout" id="portalLayout">
+        
+        <aside class="portal-sidebar bg-card border-right" id="sidebar">
+            <div class="sidebar-logo-container border-bottom">
+                <img src="/public/img/Jhalabet.png" alt="Logo" class="sidebar-logo">
+            </div>
+            
+            <nav class="sidebar-menu">
+                <button class="menu-btn active" data-target="seccion-inicio">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Panel Académico</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-programacion">
+                    <i class="fa-solid fa-calendar-check"></i>
+                    <span>Programación</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-docentes">
+                    <i class="fa-solid fa-chalkboard-user"></i>
+                    <span>Supervisión Docente</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-alumnos">
+                    <i class="fa-solid fa-user-graduate"></i>
+                    <span>Rendimiento</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-matriculas">
+                    <i class="fa-solid fa-user-plus"></i>
+                    <span>Matrículas y Admisión</span>
+                </button>
+            </nav>
+        </aside>
+
+        <main class="portal-main">
+            
+            <header class="portal-header bg-card border-bottom">
+                <div class="header-left">
+                    <button id="btnMenuToggle" class="toggle-sidebar-btn"><i class="fa-solid fa-bars-staggered"></i></button>
+                    <div class="header-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Buscar docente, curso o alumno...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <button class="icon-btn notification-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="user-profile-header dropdown">
+                        <div class="user-text">
+                            <span class="user-greeting">Coord. <strong id="userNameHeader">Roberto</strong></span>
+                            <span class="user-code">Área Académica</span>
+                        </div>
+                        <div class="user-avatar-text bg-teal text-white">
+                            <span id="userInitial">R</span>
+                        </div>
+                        <div class="trigger-dropdown" id="btnDropdownChevron">
+                            <i class="fa-solid fa-angle-down text-muted"></i>
+                        </div>
+                        
+                        <div class="dropdown-content shadow-card border-card" id="menuPerfil">
+                            <a href="#" class="nav-trigger" data-target="seccion-perfil"><i class="fa-regular fa-id-badge"></i> Mi Perfil</a>
+                            <a href="#" id="btnCerrarSesion" style="color: var(--accent-red); border-top: 1px solid #eee;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="portal-content">
+                
+                <section id="seccion-inicio" class="content-section active">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Panel de Coordinación</h2>
+                            <p class="text-muted">Monitorea el avance del ciclo, asistencia y cumplimiento docente.</p>
+                        </div>
+                        <div class="header-actions">
+                            <span class="badge-modalidad" style="background-color: #e0f2f1; color: #00897b;"><i class="fa-solid fa-circle-check"></i> Ciclo 2026-I Activo</span>
+                        </div>
+                    </div>
+
+                    <div class="metrics-grid mt-20">
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon" style="background-color: rgba(32, 201, 151, 0.1); color: #20c997;"><i class="fa-solid fa-book-open"></i></div>
+                            <div class="metric-info">
+                                <p>Cursos Aperturados</p>
+                                <h3>142</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon" style="background-color: rgba(111, 66, 193, 0.1); color: #6f42c1;"><i class="fa-solid fa-user-tie"></i></div>
+                            <div class="metric-info">
+                                <p>Docentes Asignados</p>
+                                <h3>45 / 48</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card bg-card shadow-card border-card" style="border-left: 4px solid var(--accent-red);">
+                            <div class="metric-icon" style="background-color: rgba(220, 53, 69, 0.1); color: #dc3545;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+                            <div class="metric-info">
+                                <p>Registros Atrasados</p>
+                                <h3 class="text-danger">12 Notas</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split-grid mt-40">
+                        <div class="chart-container shadow-card border-card bg-card">
+                            <div class="section-header-row">
+                                <h3>Promedio de Asistencia Global</h3>
+                            </div>
+                            <div style="height: 300px; width: 100%;">
+                                <canvas id="asistenciaChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="tramites-admin shadow-card border-card bg-card">
+                            <div class="section-header-row">
+                                <h3>Alertas de Cumplimiento</h3>
+                            </div>
+                            <div class="admin-list">
+                                <div class="admin-list-item" style="border-left: 3px solid var(--accent-red); padding-left: 15px;">
+                                    <div class="item-content">
+                                        <h4 class="text-danger">Notas de PC1 sin subir</h4>
+                                        <p>Curso: Fundamentos de Gestión</p>
+                                        <p class="text-muted" style="font-size: 11px;">Docente: Carlos Mendoza</p>
+                                    </div>
+                                    <button class="btn-outline-small" style="color:#555; border-color:#ccc;"><i class="fa-regular fa-envelope"></i> Notificar</button>
+                                </div>
+                                <div class="admin-list-item" style="border-left: 3px solid #f39c12; padding-left: 15px;">
+                                    <div class="item-content">
+                                        <h4 style="color: #d68910;">Asistencia no registrada (Hoy)</h4>
+                                        <p>Curso: Farmacología Básica</p>
+                                        <p class="text-muted" style="font-size: 11px;">Docente: Elena Silva</p>
+                                    </div>
+                                    <button class="btn-outline-small" style="color:#555; border-color:#ccc;"><i class="fa-regular fa-envelope"></i> Notificar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-programacion" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Programación de Cursos</h2>
+                            <p class="text-muted">Asigna docentes, define modalidades y horarios para los cursos del ciclo.</p>
+                        </div>
+                        <button class="btn-primary"><i class="fa-solid fa-plus"></i> Abrir Nuevo Curso</button>
+                    </div>
+
+                    <div class="bg-card shadow-card border-card mt-20">
+                        <div class="filter-bar border-bottom">
+                            <div class="search-box">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" placeholder="Buscar curso o código...">
+                            </div>
+                            <div class="filter-actions">
+                                <select class="custom-select">
+                                    <option value="todos">Todos los Programas</option>
+                                    <option>Gestión Administrativa</option>
+                                    <option>Farmacia Técnica</option>
+                                    <option>Enfermería Técnica</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="table-responsive" style="padding: 20px;">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Código</th>
+                                        <th>Nombre del Curso</th>
+                                        <th>Programa</th>
+                                        <th>Docente Asignado</th>
+                                        <th>Modalidad</th>
+                                        <th style="text-align: right;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>GEST-101</strong></td>
+                                        <td>Administración Básica</td>
+                                        <td class="text-muted">Gestión Admin.</td>
+                                        <td><span class="badge" style="background:#e0f2f1; color:#00897b;">Carlos Mendoza</span></td>
+                                        <td>Presencial</td>
+                                        <td style="text-align: right;">
+                                            <button class="btn-action edit" title="Editar Asignación"><i class="fa-solid fa-user-pen"></i></button>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>FARM-202</strong></td>
+                                        <td>Farmacotecnia</td>
+                                        <td class="text-muted">Farmacia Tec.</td>
+                                        <td><span class="badge" style="background:#ffebee; color:#d32f2f;">Sin Asignar</span></td>
+                                        <td>Laboratorio</td>
+                                        <td style="text-align: right;">
+                                            <button class="btn-action" style="background: #e8f5e9; color: #2e7d32;" title="Asignar Docente"><i class="fa-solid fa-user-plus"></i></button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-docentes" class="content-section">
+                    <h2 class="section-title">Supervisión Docente</h2>
+                    <p class="text-muted">Monitorea la carga horaria y el cumplimiento de los profesores.</p>
+
+                    <div class="cursos-cards-grid mt-20">
+                        <div class="curso-modern-card shadow-card bg-card border-card">
+                            <div class="curso-modern-body" style="align-items: center; text-align: center;">
+                                <div class="user-avatar-text bg-teal text-white" style="width: 60px; height: 60px; font-size: 24px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">C</div>
+                                <h4 style="margin-bottom: 5px; font-size: 18px; color: #333;">Carlos Mendoza</h4>
+                                <p class="text-muted" style="font-size: 13px; margin-bottom: 15px;">Especialidad: Negocios</p>
+                                
+                                <div style="width: 100%; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px;">
+                                    <div class="stat text-center"><span>Cursos</span><strong style="color:#00897b;">3</strong></div>
+                                    <div class="stat text-center"><span>Horas</span><strong>12h</strong></div>
+                                    <div class="stat text-center"><span>Cumplimiento</span><strong class="text-success">100%</strong></div>
+                                </div>
+                                <button class="btn-outline-primary full-width mt-15">Ver Detalle Académico</button>
+                            </div>
+                        </div>
+
+                        <div class="curso-modern-card shadow-card bg-card border-card" style="border-top: 4px solid var(--accent-red);">
+                            <div class="curso-modern-body" style="align-items: center; text-align: center;">
+                                <div class="user-avatar-text text-white" style="background-color: #8e44ad; width: 60px; height: 60px; font-size: 24px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">E</div>
+                                <h4 style="margin-bottom: 5px; font-size: 18px; color: #333;">Elena Silva</h4>
+                                <p class="text-muted" style="font-size: 13px; margin-bottom: 15px;">Especialidad: Salud</p>
+                                
+                                <div style="width: 100%; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 15px; margin-top: 10px;">
+                                    <div class="stat text-center"><span>Cursos</span><strong style="color:#00897b;">2</strong></div>
+                                    <div class="stat text-center"><span>Horas</span><strong>8h</strong></div>
+                                    <div class="stat text-center"><span>Cumplimiento</span><strong class="text-danger">75%</strong></div>
+                                </div>
+                                <button class="btn-outline-primary full-width mt-15" style="border-color: #dc3545; color: #dc3545;">Atender Alertas</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-alumnos" class="content-section">
+                    <h2 class="section-title">Seguimiento Académico Estudiantil</h2>
+                    <p class="text-muted">Visualiza el avance de los estudiantes para detectar riesgos de deserción.</p>
+                    
+                    <div class="bg-card shadow-card border-card mt-20" style="padding: 25px;">
+                        <div class="search-box" style="width: 100%; max-width: 600px; margin: 0 auto 30px auto;">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            <input type="text" placeholder="Buscar alumno por DNI o Nombre para ver su historial...">
+                        </div>
+
+                        <div class="alumno-preview border-card" style="padding: 20px; border-radius: 8px; background: #fafafa;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px;">
+                                <div>
+                                    <h3 style="color: #00897b;">Pérez Sánchez, Juan</h3>
+                                    <p class="text-muted">Código: U23227101 | Programa: Gestión Administrativa | Ciclo: III</p>
+                                </div>
+                                <span class="badge" style="background:#e8f5e9; color:#28a745; font-size: 14px;">Rendimiento Óptimo</span>
+                            </div>
+                            
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>Curso Actual</th>
+                                        <th>Docente</th>
+                                        <th style="text-align: center;">Asistencia</th>
+                                        <th style="text-align: center;">Promedio Ponderado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Liderazgo y Gestión</td>
+                                        <td>Carlos Mendoza</td>
+                                        <td style="text-align: center;">100%</td>
+                                        <td style="text-align: center;"><strong>16.5</strong></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-matriculas" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Matrículas y Admisión Interna</h2>
+                            <p class="text-muted">Registra a los nuevos postulantes. El sistema generará su código y credenciales.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-card shadow-card border-card mt-20" style="padding: 30px;">
+
+                        <div class="wizard-container">
+                            
+                            <div class="wizard-steps-indicator mb-40">
+                                <div class="step-indicator active" id="ind-step-1">
+                                    <div class="step-circle">1</div>
+                                    <span>Datos Personales</span>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step-indicator" id="ind-step-2">
+                                    <div class="step-circle">2</div>
+                                    <span>Carrera / Ciclo</span>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step-indicator" id="ind-step-3">
+                                    <div class="step-circle">3</div>
+                                    <span>Generar Deuda</span>
+                                </div>
+                                <div class="step-line"></div>
+                                <div class="step-indicator" id="ind-step-4">
+                                    <div class="step-circle">4</div>
+                                    <span>Confirmación</span>
+                                </div>
+                            </div>
+
+                            <div id="wiz-step-1" class="wiz-step-content active">
+                                <h3 style="margin-bottom: 20px; color: #222;">Información del Alumno</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>DNI</label>
+                                        <input type="text" id="matDni" class="custom-input" maxlength="8" placeholder="Ej. 74859612">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Nombres</label>
+                                        <input type="text" id="matNombres" class="custom-input" placeholder="Ej. Juan Carlos">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Apellidos Paterno y Materno</label>
+                                        <input type="text" id="matApellidos" class="custom-input" placeholder="Ej. Mendoza Ruiz">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Correo de Contacto</label>
+                                        <input type="email" id="matCorreo" class="custom-input" placeholder="correo@ejemplo.com">
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-top: 20px;">
+                                    <button class="btn-primary" onclick="siguientePaso(1)">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <div id="wiz-step-2" class="wiz-step-content" style="display: none;">
+                                <h3 style="margin-bottom: 20px; color: #222;">Selección Académica</h3>
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label>Programa de Estudios</label>
+                                        <select id="matPrograma" class="custom-select" style="width: 100%;">
+                                            <option value="Gestión Administrativa">Gestión Administrativa</option>
+                                            <option value="Farmacia Técnica">Farmacia Técnica</option>
+                                            <option value="Enfermería Técnica">Enfermería Técnica</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Ciclo a Matricular</label>
+                                        <select class="custom-select" style="width: 100%;">
+                                            <option>Ciclo I</option>
+                                            <option>Ciclo II</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Turno</label>
+                                        <select class="custom-select" style="width: 100%;">
+                                            <option>Mañana (08:00 - 13:00)</option>
+                                            <option>Noche (18:30 - 22:30)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                    <button class="btn-outline-primary" onclick="volverPaso(2)"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                                    <button class="btn-primary" onclick="siguientePaso(2)">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <div id="wiz-step-3" class="wiz-step-content" style="display: none;">
+                                <h3 style="margin-bottom: 20px; color: #222;">Generación de Deuda Financiera</h3>
+                                <div style="background: #f8f9fa; border: 1px solid #eaeaea; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding: 10px 0;">Matrícula Regular 2026</td>
+                                            <td style="text-align: right; padding: 10px 0;">S/ 150.00</td>
+                                        </tr>
+                                        <tr style="border-bottom: 1px solid #ddd;">
+                                            <td style="padding: 10px 0;">Primera Cuota - Pensión</td>
+                                            <td style="text-align: right; padding: 10px 0;">S/ 350.00</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 15px 0; font-weight: bold; font-size: 18px;">Deuda a Generar</td>
+                                            <td style="text-align: right; padding: 15px 0; font-weight: bold; font-size: 18px; color: var(--accent-red);">S/ 500.00</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                    <button class="btn-outline-primary" onclick="volverPaso(3)"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                                    <button class="btn-primary" onclick="finalizarMatricula()"><i class="fa-solid fa-check-double"></i> Confirmar Matrícula</button>
+                                </div>
+                            </div>
+
+                            <div id="wiz-step-4" class="wiz-step-content" style="display: none; text-align: center; padding: 30px 0;">
+                                <div style="width: 80px; height: 80px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;">
+                                    <i class="fa-solid fa-check"></i>
+                                </div>
+                                <h2 style="color: #28a745; margin-bottom: 10px;">¡Matrícula Procesada con Éxito!</h2>
+                                <p class="text-muted" style="margin-bottom: 30px;">El alumno ha sido registrado en el sistema. Entrega las siguientes credenciales para su acceso a la intranet.</p>
+                                
+                                <div style="background: #e0f2f1; border: 2px dashed #00897b; border-radius: 8px; padding: 25px; max-width: 400px; margin: 0 auto; text-align: left;">
+                                    <p style="margin-bottom: 10px; font-size: 15px; color: #333;"><strong>Usuario:</strong> <span id="resUsuario" style="font-size: 20px; color: #00897b; font-weight: bold; margin-left: 10px;"></span></p>
+                                    <p style="font-size: 15px; color: #333;"><strong>Clave Temporal:</strong> <span id="resClave" style="font-size: 20px; color: #d32f2f; font-weight: bold; margin-left: 10px; letter-spacing: 1px;"></span></p>
+                                </div>
+
+                                <div style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
+                                    <button class="btn-outline-primary" onclick="copiarCredenciales()"><i class="fa-regular fa-copy"></i> Copiar Datos</button>
+                                    <button class="btn-primary" onclick="reiniciarWizard()">Nueva Matrícula</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-perfil" class="content-section">
+                    <div class="perfil-layout">
+                        <div class="perfil-left">
+                            <div class="user-avatar-text bg-teal text-white" style="width: 150px; height: 150px; font-size: 60px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                <span id="perfilInitial">R</span>
+                            </div>
+                            <button class="btn-outline-primary" style="width: 100%;">Actualizar foto</button>
+                        </div>
+                        <div class="perfil-right">
+                            <h2 class="section-title" id="perfilFullName" style="margin-bottom: 20px;">Coordinador</h2>
+                            <table class="modern-table" style="background-color: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee;">
+                                <tbody>
+                                    <tr>
+                                        <td style="font-weight: 600; width: 35%; border-right: 1px solid #eee;">Rol Institucional</td>
+                                        <td class="text-muted">Coordinador Académico</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Correo Institucional</td>
+                                        <td class="text-muted">coordinacion@instituto.edu.pe</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
+        </main>
+    </div>
+    <script src="/js/auth.js"></script>
+    <script src="/js/intranet/dashboard_coordinador.js"></script>
+</body>
+</html>

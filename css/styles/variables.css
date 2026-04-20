@@ -21,3 +21,11 @@
   --transition: 0.3s ease;
   --shadow-card: 0 5px 20px rgba(0, 86, 179, 0.08);
 }
+
+.login-logo-img {
+    max-width: 220px; /* Limita el ancho máximo para que no sea gigante */
+    width: 100%;      /* Permite que se achique en pantallas pequeñas */
+    height: 60px;     /* Mantiene la proporción original (no se deforma) */
+    margin: 0 auto 0 auto; /* Lo centra horizontalmente y le da espacio abajo */
+    display: block;   /* Necesario para que margin: 0 auto funcione en imágenes */
+}

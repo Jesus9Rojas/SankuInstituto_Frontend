@@ -3,149 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Panel Administrativo - Intranet</title>
-    <link rel="stylesheet" href="/css/variables.css">
-    <link rel="stylesheet" href="/css/intranet.css">
-</head>
-<body>
+    <title>Portal Administrador - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <div class="intranet-layout">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-brand">
-                <h2>Instituto Superior<span> SANKU</span></h2>
+    <link rel="stylesheet" href="/css/styles/variables.css">
+    <link rel="stylesheet" href="/css/styles/base.css">
+    
+    <link rel="stylesheet" href="/css/dashboard_admin.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-main">
+
+    <div class="portal-layout" id="portalLayout">
+        
+        <aside class="portal-sidebar bg-card border-right" id="sidebar">
+            <div class="sidebar-logo-container border-bottom">
+                <img src="/public/img/Jhalabet.png" alt="Logo" class="sidebar-logo">
             </div>
-            <nav class="sidebar-nav">
-                <a href="#" data-target="vista-panel-general" class="nav-item active">Panel General</a>
-                <a href="#" data-target="vista-usuarios" class="nav-item">Gestión de Usuarios</a>
-                <a href="#" data-target="vista-reportes" class="nav-item">Métricas y Reportes</a>
+            
+            <nav class="sidebar-menu">
+                <button class="menu-btn active" data-target="seccion-inicio">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>Panel General</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-usuarios">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>Usuarios</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-finanzas">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span>Finanzas</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-reportes">
+                    <i class="fa-solid fa-file-contract"></i>
+                    <span>Reportes</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-configuracion">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Configuración</span>
+                </button>
+                <button class="menu-btn" onclick="window.location.href='sae_tramites.html'">
+                    <i class="fa-solid fa-inbox"></i>
+                    <span>Buzón SAE</span>
+                </button>
             </nav>
-            <div class="sidebar-footer">
-                <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
-            </div>
         </aside>
 
-        <main class="main-content">
-            <header class="topbar">
-                <div class="topbar-left">
-                    <button id="btnMenuMobile" class="btn-icon">☰</button>
-                    <div>
-                        <h1 id="saludoUsuario">Bienvenido, Director</h1>
-                        <p>Panel de Control Institucional</p>
+        <main class="portal-main">
+            
+            <header class="portal-header bg-card border-bottom">
+                <div class="header-left">
+                    <button id="btnMenuToggle" class="toggle-sidebar-btn"><i class="fa-solid fa-bars-staggered"></i></button>
+                    <div class="header-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Búsqueda global...">
                     </div>
                 </div>
-                <div class="topbar-right">
-                    <div class="user-profile" id="btnPerfil">
-                        <div class="avatar" style="background-color: #f39c12;">A</div> <span id="rolUsuario">Admin</span>
-                        <span class="dropdown-arrow">▼</span>
+                <div class="header-right">
+                    <button class="icon-btn notification-btn">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-dot"></span>
+                    </button>
+                    <div class="user-profile-header dropdown">
+                        <div class="user-text">
+                            <span class="user-greeting">Admin. <strong id="userNameHeader">Director</strong></span>
+                            <span class="user-code">Dirección General</span>
+                        </div>
+                        <div class="user-avatar-text bg-darkblue text-white">
+                            <span id="userInitial">A</span>
+                        </div>
+                        <div class="trigger-dropdown" id="btnDropdownChevron">
+                            <i class="fa-solid fa-angle-down text-muted"></i>
+                        </div>
                         
-                        <div class="profile-dropdown" id="menuPerfil">
-                            <a href="#" id="btnCerrarSesionTopbar" style="color: var(--accent-red);">Cerrar Sesión</a>
+                        <div class="dropdown-content shadow-card border-card" id="menuPerfil">
+                            <a href="#" class="nav-trigger" data-target="seccion-perfil"><i class="fa-regular fa-id-badge"></i> Mi Perfil</a>
+                            <a href="#" id="btnCerrarSesion" style="color: var(--accent-red); border-top: 1px solid #eee;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</a>
                         </div>
                     </div>
                 </div>
             </header>
 
-            <div class="vistas-container">
+            <div class="portal-content">
                 
-                <section id="vista-panel-general" class="vista-seccion activa" style="display: block;">
-                    <div class="dashboard-grid">
-                        <div class="card info-card">
-                            <h3>Total Alumnos</h3>
-                            <div class="card-value">1,245</div>
-                            <p class="status text-green">▲ +12% este semestre</p>
+                <section id="seccion-inicio" class="content-section active">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Dashboard Institucional</h2>
+                            <p class="text-muted">Resumen en tiempo real del estado académico y financiero.</p>
                         </div>
-                        <div class="card info-card">
-                            <h3>Docentes Activos</h3>
-                            <div class="card-value">48</div>
-                            <p class="text-muted">Plantilla completa</p>
-                        </div>
-                        <div class="card info-card accent-card">
-                            <h3>Ingresos Estimados</h3>
-                            <div class="card-value" style="font-size: 28px;">S/ 450,000</div>
-                            <p class="text-muted">Ciclo 2026-I</p>
+                        <div class="header-actions">
+                            <select class="custom-select"><option>Ciclo 2026-I</option><option>Ciclo 2025-II</option></select>
+                            <button class="btn-primary"><i class="fa-solid fa-download"></i> Exportar Data</button>
                         </div>
                     </div>
 
-                    <div class="card" style="margin: 0 40px 40px 40px;">
-                        <h2 style="margin-bottom: 20px;">Evolución de Matrículas</h2>
-                        <div class="chart-container" style="position: relative; height:300px; width:100%">
-                            <canvas id="matriculasChart"></canvas>
+                    <div class="metrics-grid mt-20">
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon" style="background-color: rgba(52, 152, 219, 0.1); color: #3498db;"><i class="fa-solid fa-user-graduate"></i></div>
+                            <div class="metric-info">
+                                <p>Total Alumnos</p>
+                                <h3>1,245 <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> 12%</span></h3>
+                            </div>
+                        </div>
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71;"><i class="fa-solid fa-sack-dollar"></i></div>
+                            <div class="metric-info"><p>Ingresos Estimados</p><h3>S/ 450.5K</h3></div>
+                        </div>
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon" style="background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;"><i class="fa-solid fa-file-invoice"></i></div>
+                            <div class="metric-info"><p>Morosidad Actual</p><h3>15.2%</h3></div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split-grid mt-40">
+                        <div class="chart-container shadow-card border-card bg-card">
+                            <div class="section-header-row">
+                                <h3>Evolución de Matrículas</h3>
+                            </div>
+                            <div style="height: 300px; width: 100%;">
+                                <canvas id="matriculasChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="tramites-admin shadow-card border-card bg-card">
+                            <div class="section-header-row">
+                                <h3>Trámites por Revisar (SAE)</h3>
+                                <button class="btn-text" onclick="window.location.href='sae_tramites.html'">Ver todos</button>
+                            </div>
+                            <div class="admin-list">
+                                <div class="admin-list-item">
+                                    <div class="item-icon bg-primary-light"><i class="fa-solid fa-file-signature text-primary"></i></div>
+                                    <div class="item-content">
+                                        <h4>Cambio de Modalidad</h4>
+                                        <p>Estudiante: Torres Rojas, Jesus</p>
+                                    </div>
+                                    <button class="btn-outline-small" onclick="window.location.href='sae_tramites.html'">Revisar</button>
+                                </div>
+                                <div class="admin-list-item">
+                                    <div class="item-icon bg-primary-light"><i class="fa-solid fa-graduation-cap text-primary"></i></div>
+                                    <div class="item-content">
+                                        <h4>Solicitud de Beca</h4>
+                                        <p>Estudiante: López Ramírez, Ana</p>
+                                    </div>
+                                    <button class="btn-outline-small" onclick="window.location.href='sae_tramites.html'">Revisar</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="vista-usuarios" class="vista-seccion" style="display: none;">
-                    <div class="card" style="margin: 40px;">
-                        <div class="action-header">
-                            <h2>Directorio de Usuarios</h2>
-                            <button class="btn-login" style="width: auto; padding: 10px 20px; margin-top: 0;">+ Nuevo Usuario</button>
+                <section id="seccion-perfil" class="content-section">
+                    <div class="perfil-layout">
+                        <div class="perfil-left">
+                            <div class="user-avatar-text bg-darkblue text-white" style="width: 150px; height: 150px; font-size: 60px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
+                                <span id="perfilInitial">A</span>
+                            </div>
+                            <button class="btn-outline-primary" style="width: 100%;">Actualizar foto</button>
                         </div>
                         
-                        <div class="search-bar" style="margin-bottom: 20px;">
-                            <input type="text" id="buscadorUsuarios" placeholder="Buscar por DNI, Nombre o Rol..." class="nota-input" style="width: 100%; text-align: left; max-width: 400px;">
-                        </div>
-
-                        <div class="table-responsive">
-                            <table class="data-table" id="tablaUsuarios">
-                                <thead>
-                                    <tr>
-                                        <th>DNI</th>
-                                        <th>Nombre Completo</th>
-                                        <th>Rol</th>
-                                        <th>Estado</th>
-                                        <th>Acciones</th>
-                                    </tr>
-                                </thead>
+                        <div class="perfil-right">
+                            <h2 class="section-title" id="perfilFullName" style="margin-bottom: 20px;">Administrador</h2>
+                            
+                            <table class="modern-table" style="background-color: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee;">
                                 <tbody>
                                     <tr>
-                                        <td>74859612</td>
-                                        <td>Juan Pérez</td>
-                                        <td><span class="badge badge-student">Estudiante</span></td>
-                                        <td><span class="badge badge-active">Activo</span></td>
-                                        <td>
-                                            <button class="btn-action edit">✏️</button>
-                                            <button class="btn-action delete">🗑️</button>
-                                        </td>
+                                        <td style="font-weight: 600; width: 35%; border-right: 1px solid #eee;">Rol Institucional</td>
+                                        <td class="text-muted">Administrador Global / Director</td>
                                     </tr>
                                     <tr>
-                                        <td>09876543</td>
-                                        <td>María Gómez</td>
-                                        <td><span class="badge badge-teacher">Docente</span></td>
-                                        <td><span class="badge badge-active">Activo</span></td>
-                                        <td>
-                                            <button class="btn-action edit">✏️</button>
-                                            <button class="btn-action delete">🗑️</button>
-                                        </td>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Sede</td>
+                                        <td class="text-muted">Principal - Ica</td>
                                     </tr>
                                     <tr>
-                                        <td>45612378</td>
-                                        <td>Luis Ramírez</td>
-                                        <td><span class="badge badge-student">Estudiante</span></td>
-                                        <td><span class="badge badge-suspended">Suspendido</span></td>
-                                        <td>
-                                            <button class="btn-action edit">✏️</button>
-                                            <button class="btn-action delete">🗑️</button>
-                                        </td>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">DNI</td>
+                                        <td class="text-muted">12345678</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Correo Institucional</td>
+                                        <td class="text-muted">admin@instituto.edu.pe</td>
                                     </tr>
                                 </tbody>
                             </table>
-                        </div>
-                    </div>
-                </section>
-
-                <section id="vista-reportes" class="vista-seccion" style="display: none;">
-                    <div class="card" style="margin: 40px; border-top: 4px solid var(--accent-red);">
-                        <h2>Exportación de Reportes</h2>
-                        <p class="text-muted" style="margin-bottom: 20px;">Descarga la información institucional en formato Excel o PDF.</p>
-                        
-                        <div class="dashboard-grid" style="padding: 0;">
-                            <div class="card">
-                                <h3>Consolidado de Notas</h3>
-                                <button class="btn-toggle present active" style="margin-top: 10px; width: 100%;">Descargar Excel</button>
-                            </div>
-                            <div class="card">
-                                <h3>Alumnos con Deudas</h3>
-                                <button class="btn-toggle absent active" style="margin-top: 10px; width: 100%;">Descargar PDF</button>
+                            
+                            <div style="background-color: #e2eef8; padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 12px; margin-top: 20px; font-size: 14px; color: #333;">
+                                <i class="fa-solid fa-shield-halved text-primary" style="font-size: 18px;"></i>
+                                <span>Posees privilegios de administrador global. Cualquier cambio afecta a todo el instituto.</span>
                             </div>
                         </div>
                     </div>
@@ -154,11 +202,7 @@
             </div>
         </main>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <script src="/js/auth.js"></script> 
-    <script src="/js/ui_layout.js"></script> 
+    <script src="/js/auth.js"></script>
     <script src="/js/intranet/dashboard_admin.js"></script>
 </body>
 </html>

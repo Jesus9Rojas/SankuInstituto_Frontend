@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago Seguro - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/styles/variables.css">
+    <link rel="stylesheet" href="/css/styles/base.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body { background-color: #f4f7f6; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px;}
+        .checkout-container { background: white; max-width: 900px; width: 100%; border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); overflow: hidden; display: flex;}
+        
+        .order-summary { background: #001f4d; color: white; padding: 40px; width: 40%; display: flex; flex-direction: column; justify-content: space-between;}
+        .order-summary h2 { font-size: 24px; font-weight: 500; margin-bottom: 30px; opacity: 0.9;}
+        .item-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;}
+        .item-row span { font-size: 14px; opacity: 0.8;}
+        .item-row strong { font-size: 16px; }
+        .total-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;}
+        .total-row span { font-size: 16px; opacity: 0.8; }
+        .total-row h1 { font-size: 36px; margin: 0; }
+        .trust-badge { display: flex; align-items: center; gap: 10px; font-size: 12px; opacity: 0.7; margin-top: 50px;}
+
+        .payment-form { padding: 50px 40px; width: 60%; }
+        .payment-form h3 { font-size: 22px; color: #333; margin-bottom: 30px;}
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; color: #555; margin-bottom: 8px; font-weight: 500;}
+        .input-wrapper { position: relative; }
+        .input-wrapper input { width: 100%; padding: 14px 15px; padding-left: 45px; border: 1px solid #ddd; border-radius: 8px; font-family: var(--font-family); font-size: 15px; outline: none; transition: 0.3s;}
+        .input-wrapper input:focus { border-color: var(--color-primary); box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.1); }
+        .input-wrapper i { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); color: #888; font-size: 18px;}
+        
+        .row-2 { display: flex; gap: 20px; }
+        .row-2 .form-group { flex: 1; }
+
+        .btn-pay { width: 100%; background: var(--color-primary); color: white; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px;}
+        .btn-pay:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3);}
+        .cancel-link { display: block; text-align: center; margin-top: 20px; color: #888; text-decoration: none; font-size: 14px;}
+        .cancel-link:hover { color: var(--accent-red); }
+
+        @media (max-width: 768px) {
+            .checkout-container { flex-direction: column; }
+            .order-summary, .payment-form { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="checkout-container">
+        <div class="order-summary">
+            <div>
+                <img src="/public/img/Logo SANKUINSTITUTO2.png" alt="Logo" style="max-width: 150px; margin-bottom: 40px; filter: brightness(0) invert(1);">
+                <h2>Resumen de Pago</h2>
+                
+                <div class="item-row">
+                    <span>Concepto</span>
+                    <strong>Pensión Ciclo 2026-I</strong>
+                </div>
+                <div class="item-row">
+                    <span>Detalle</span>
+                    <strong>Cuota 2 (Abril)</strong>
+                </div>
+                <div class="item-row" style="border: none;">
+                    <span>Alumno</span>
+                    <strong id="payStudentName">Estudiante</strong>
+                </div>
+
+                <div class="total-row">
+                    <span>Total a pagar</span>
+                    <h1>S/ 350.00</h1>
+                </div>
+            </div>
+
+            <div class="trust-badge">
+                <i class="fa-solid fa-lock" style="font-size: 20px;"></i>
+                <p>Pago encriptado y seguro con tecnología SSL de 256 bits.</p>
+            </div>
+        </div>
+
+        <div class="payment-form">
+            <h3>Detalles de la Tarjeta</h3>
+            
+            <form action="dashboard.html" onsubmit="alert('Pago procesado con éxito. ¡Gracias!');">
+                <div class="form-group">
+                    <label>Nombre en la tarjeta</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-user"></i>
+                        <input type="text" placeholder="EJ. JUAN PÉREZ" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Número de Tarjeta</label>
+                    <div class="input-wrapper">
+                        <i class="fa-regular fa-credit-card"></i>
+                        <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                    </div>
+                </div>
+
+                <div class="row-2">
+                    <div class="form-group">
+                        <label>Fecha de Expiración</label>
+                        <div class="input-wrapper">
+                            <i class="fa-regular fa-calendar"></i>
+                            <input type="text" placeholder="MM/AA" maxlength="5" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Código CVV</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" placeholder="123" maxlength="4" required>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-pay">Procesar Pago de S/ 350.00</button>
+                <a href="dashboard.html" class="cancel-link">Cancelar y volver al portal</a>
+            </form>
+            
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 30px; opacity: 0.5;">
+                <i class="fa-brands fa-cc-visa" style="font-size: 30px;"></i>
+                <i class="fa-brands fa-cc-mastercard" style="font-size: 30px;"></i>
+                <i class="fa-brands fa-cc-amex" style="font-size: 30px;"></i>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Poner el nombre real del estudiante si existe
+        const nombre = localStorage.getItem("usuarioNombre");
+        if(nombre) document.getElementById("payStudentName").textContent = nombre;
+    </script>
+</body>
+</html>

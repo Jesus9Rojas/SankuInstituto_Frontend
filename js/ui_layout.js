@@ -67,3 +67,43 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+    console.log("UI Layout cargado");
+
+    // --- 1. Botón Colapsar Sidebar (Dashboard Grid) ---
+    const toggleBtn = document.getElementById("toggleSidebar");
+    const container = document.querySelector(".dashboard-container");
+
+    if (toggleBtn && container) {
+        toggleBtn.addEventListener("click", function () {
+            container.classList.toggle("sidebar-collapsed");
+        });
+    }
+
+    // --- 2. Menus Desplegables (Dropdowns) en TopNav ---
+    const dropdownToggles = document.querySelectorAll(".dropdown-toggle");
+
+    dropdownToggles.forEach(toggle => {
+        toggle.addEventListener("click", function (e) {
+            e.stopPropagation(); // Evita que el click se propague al documento
+            const parent = this.closest(".dropdown");
+            
+            // Cerrar otros dropdowns abiertos
+            document.querySelectorAll(".dropdown").forEach(d => {
+                if (d !== parent) d.classList.remove("active");
+            });
+
+            // Alternar activo en el actual
+            parent.classList.toggle("active");
+        });
+    });
+
+    // Cerrar dropdowns si se hace click fuera
+    document.addEventListener("click", function () {
+        document.querySelectorAll(".dropdown").forEach(d => {
+            d.classList.remove("active");
+        });
+    });
+
+});

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admisión en Línea - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Estilos específicos para el Wizard de Admisión Pública */
+        .admision-container { max-width: 800px; margin: 60px auto; padding: 40px; background: var(--bg-card); border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid var(--color-primary); }
+        .adm-step { display: none; animation: fadeIn 0.4s ease; }
+        .adm-step.active { display: block; }
+        
+        .adm-stepper { display: flex; justify-content: space-between; margin-bottom: 40px; position: relative; }
+        .adm-stepper::before { content: ''; position: absolute; top: 20px; left: 0; width: 100%; height: 2px; background: #eee; z-index: 1; }
+        .adm-step-indicator { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; gap: 10px; background: var(--bg-card); padding: 0 10px; }
+        .adm-circle { width: 40px; height: 40px; border-radius: 50%; background: #eee; color: #888; display: flex; justify-content: center; align-items: center; font-weight: bold; border: 3px solid white; transition: 0.3s;}
+        .adm-step-indicator span { font-size: 13px; color: #888; font-weight: 500; }
+        
+        .adm-step-indicator.active .adm-circle { background: var(--color-primary); color: white; border-color: #dbeafe; }
+        .adm-step-indicator.active span { color: var(--color-primary); font-weight: 600; }
+        .adm-step-indicator.completed .adm-circle { background: var(--color-primary); color: white; }
+
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text-main); }
+        .form-control { width: 100%; padding: 12px 15px; border: 1px solid #ccc; border-radius: var(--radius-md); font-family: var(--font-family); font-size: 15px; outline: none; }
+        .form-control:focus { border-color: var(--color-primary); }
+        
+        .carrera-card { border: 2px solid #eee; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .carrera-card:hover { border-color: var(--color-primary); background: #f8fbff; }
+        .carrera-card input { display: none; }
+        .carrera-card.selected { border-color: var(--color-primary); background: #f0f7ff; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.1); }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } .adm-stepper span { display: none; } }
+    </style>
+</head>
+<body class="bg-main">
+
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
+        <div class="public-logo">
+            <img src="/public/img/Jhalabet.png" alt="Logo Instituto SANKU" class="login-logo-img">
+        </div>
+        <div class="public-links">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="programas.html" class="nav-link">Programas</a>
+            <a href="admision.html" class="nav-link nav-active" style="color: var(--color-primary); font-weight: 600;"><i class="fa-solid fa-laptop-file"></i> Admisión 2026</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>  
+    </nav>
+
+    <header class="hero-section hero-inicio fade-in-up">
+        <h2 class="text-white" style="font-size: 36px; margin-bottom: 10px;">Postula y Matricúlate Hoy</h2>
+        <p class="text-white" style="font-size: 18px; opacity: 0.9;">Inicia tu futuro profesional en 3 simples pasos sin salir de casa.</p>
+    </header>
+
+    <div class="admision-container">
+        
+        <div class="adm-stepper">
+            <div class="adm-step-indicator active" id="ind-1">
+                <div class="adm-circle">1</div>
+                <span>Tus Datos</span>
+            </div>
+            <div class="adm-step-indicator" id="ind-2">
+                <div class="adm-circle">2</div>
+                <span>Tu Carrera</span>
+            </div>
+            <div class="adm-step-indicator" id="ind-3">
+                <div class="adm-circle">3</div>
+                <span>Pago y Credenciales</span>
+            </div>
+        </div>
+
+        <div id="paso-1" class="adm-step active">
+            <h3 style="margin-bottom: 25px; color: var(--color-primary);"><i class="fa-regular fa-address-card"></i> Información Personal</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Número de DNI</label>
+                    <input type="text" id="regDni" class="form-control" maxlength="8" placeholder="Ej. 74859612" required>
+                </div>
+                <div class="form-group">
+                    <label>Correo Electrónico</label>
+                    <input type="email" id="regCorreo" class="form-control" placeholder="correo@ejemplo.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Nombres</label>
+                    <input type="text" id="regNombres" class="form-control" placeholder="Ej. Juan Carlos" required>
+                </div>
+                <div class="form-group">
+                    <label>Apellidos</label>
+                    <input type="text" id="regApellidos" class="form-control" placeholder="Ej. Mendoza" required>
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn-acceso" onclick="irAPaso(2)">Continuar <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div id="paso-2" class="adm-step">
+            <h3 style="margin-bottom: 25px; color: var(--color-primary);"><i class="fa-solid fa-graduation-cap"></i> Selecciona tu Programa</h3>
+            <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
+                
+                <div class="carrera-card" onclick="seleccionarCarrera(this)">
+                    <i class="fa-solid fa-briefcase text-primary" style="font-size: 40px; margin-bottom: 15px;"></i>
+                    <h4 style="font-size: 15px;">Gestión Administrativa</h4>
+                </div>
+                <div class="carrera-card" onclick="seleccionarCarrera(this)">
+                    <i class="fa-solid fa-pills text-accent" style="font-size: 40px; margin-bottom: 15px;"></i>
+                    <h4 style="font-size: 15px;">Farmacia Técnica</h4>
+                </div>
+                <div class="carrera-card" onclick="seleccionarCarrera(this)">
+                    <i class="fa-solid fa-user-nurse text-primary" style="font-size: 40px; margin-bottom: 15px;"></i>
+                    <h4 style="font-size: 15px;">Enfermería Técnica</h4>
+                </div>
+
+            </div>
+            
+            <div class="form-group" style="margin-top: 30px;">
+                <label>Sede y Turno</label>
+                <select class="form-control">
+                    <option>Sede Ica - Turno Mañana</option>
+                    <option>Sede Ica - Turno Noche</option>
+                </select>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                <button class="btn-acceso" style="background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary);" onclick="irAPaso(1)"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                <button class="btn-acceso" onclick="irAPaso(3)">Continuar a Pagar <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+
+        <div id="paso-3" class="adm-step">
+            <div id="zona-pago">
+                <h3 style="margin-bottom: 25px; color: var(--color-primary);"><i class="fa-solid fa-credit-card"></i> Pagar Derecho de Matrícula</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 25px;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                        <span>Matrícula 2026-I</span>
+                        <strong>S/ 150.00</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                        <span>Total a Pagar:</span>
+                        <span style="color: var(--accent-red);">S/ 150.00</span>
+                    </div>
+                </div>
+                
+                <p class="text-muted" style="font-size: 14px; margin-bottom: 20px;"><i class="fa-solid fa-lock"></i> Pago simulado para fines de demostración.</p>
+                
+                <div style="display: flex; justify-content: space-between;">
+                    <button class="btn-acceso" style="background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary);" onclick="irAPaso(2)"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                    <button class="btn-acceso pulse-btn" id="btnPagar" style="background: #28a745;" onclick="procesarPago()"><i class="fa-solid fa-check"></i> Pagar y Matricularme</button>
+                </div>
+            </div>
+
+            <div id="zona-exito" style="display: none; text-align: center; padding: 20px;">
+                <div style="width: 80px; height: 80px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h2 style="color: #28a745; margin-bottom: 10px;">¡Bienvenido a Instituto Tech!</h2>
+                <p class="text-muted" style="margin-bottom: 25px;">Tu matrícula ha sido procesada. Estas son tus credenciales para ingresar a la Intranet de Estudiantes (También han sido enviadas a tu correo).</p>
+                
+                <div style="background: #f0f7ff; padding: 20px; border-radius: 8px; border: 2px dashed var(--color-primary); display: inline-block; text-align: left; margin-bottom: 30px;">
+                    <p style="margin-bottom: 10px; font-size: 16px;"><strong>Usuario:</strong> <span id="resUsuario" style="font-size: 20px; color: var(--color-primary); font-weight: bold; margin-left: 10px;"></span></p>
+                    <p style="font-size: 16px;"><strong>Contraseña:</strong> <span id="resClave" style="font-size: 20px; color: var(--accent-red); font-weight: bold; margin-left: 10px; letter-spacing: 1px;"></span></p>
+                </div>
+
+                <div>
+                    <a href="login.html" class="btn-acceso"><i class="fa-solid fa-right-to-bracket"></i> Ingresar a la Intranet Ahora</a>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function seleccionarCarrera(elemento) {
+            // Quitar clase selected a todas
+            const cards = document.querySelectorAll('.carrera-card');
+            cards.forEach(c => c.classList.remove('selected'));
+            // Agregar al clickeado
+            elemento.classList.add('selected');
+        }
+
+        function irAPaso(paso) {
+            // Ocultar todos los pasos
+            document.querySelectorAll('.adm-step').forEach(el => el.classList.remove('active'));
+            // Limpiar indicadores
+            document.querySelectorAll('.adm-step-indicator').forEach(el => {
+                el.classList.remove('active');
+                el.classList.remove('completed');
+            });
+
+            // Mostrar el paso actual
+            document.getElementById(`paso-${paso}`).classList.add('active');
+
+            // Actualizar indicadores (los anteriores en 'completed', el actual en 'active')
+            for(let i=1; i<=3; i++) {
+                const ind = document.getElementById(`ind-${i}`);
+                if (i < paso) ind.classList.add('completed');
+                if (i === paso) ind.classList.add('active');
+            }
+        }
+
+        function procesarPago() {
+            const btnPagar = document.getElementById('btnPagar');
+            btnPagar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
+            btnPagar.disabled = true;
+
+            // Obtenemos los datos que el usuario llenó en el paso 1
+            const dni = document.getElementById('regDni').value || "12345678";
+            
+            // Lógica de Generación de Credenciales
+            const usuarioGenerado = "U" + dni;
+            
+            // Generar clave alfanumérica segura (Ej: T3ch-x8z9)
+            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            let claveAleatoria = "T3ch-";
+            for (let i = 0; i < 4; i++) {
+                claveAleatoria += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+
+            // Simulamos tiempo de carga de pasarela de pago (2 segundos)
+            setTimeout(() => {
+                // Ocultar zona de pago y mostrar el mensaje de éxito
+                document.getElementById('zona-pago').style.display = "none";
+                
+                // Imprimir las credenciales en pantalla
+                document.getElementById('resUsuario').textContent = usuarioGenerado;
+                document.getElementById('resClave').textContent = claveAleatoria;
+                
+                document.getElementById('zona-exito').style.display = "block";
+                const nombreIngresado = document.getElementById('regNombres').value || "Nuevo";
+                const nuevoEstudiante = {
+                    usuario: usuarioGenerado,
+                    clave: claveAleatoria,
+                    rol: "estudiante",
+                    nombre: nombreIngresado
+                };
+                
+                // Obtener lista actual o crear nueva, y pushear al nuevo alumno
+                const usuariosRegistrados = JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
+                usuariosRegistrados.push(nuevoEstudiante);
+                localStorage.setItem("usuariosRegistrados", JSON.stringify(usuariosRegistrados));
+                
+                // NOTA: En un sistema real, aquí llamarías a tu base de datos o API 
+                // para registrar permanentemente a este nuevo usuario.
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

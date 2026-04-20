@@ -106,6 +106,14 @@
     margin-top: 30px;
 }
 
+.login-logo-img {
+    max-width: 250px; /* Limita el ancho máximo para que no sea gigante */
+    width: 100%;      /* Permite que se achique en pantallas pequeñas */
+    height: auto;     /* Mantiene la proporción original (no se deforma) */
+    margin: 0 auto 20px auto; /* Lo centra horizontalmente y le da espacio abajo */
+    display: block;   /* Necesario para que margin: 0 auto funcione en imágenes */
+}
+
 /* Responsividad para móviles */
 @media (max-width: 900px) {
     .login-split-container {

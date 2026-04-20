@@ -3,109 +3,402 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Estudiante - Intranet</title>
-    <link rel="stylesheet" href="/css/variables.css">
-    <link rel="stylesheet" href="/css/intranet.css">
+    <title>Portal Estudiante - Instituto Tech</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/styles/variables.css">
+    <link rel="stylesheet" href="/css/styles/base.css">
+    <link rel="stylesheet" href="/css/dashboard_estudiantes.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
-<div class="intranet-layout">
-    <aside class="sidebar" id="sidebar">
-        <div class="sidebar-brand">
-            <h2>Instituto Superior<span> SANKU</span></h2>
-        </div>
-        <nav class="sidebar-nav">
-            <a href="#" data-target="vista-inicio" class="nav-item active">Inicio</a>
-            <a href="#" data-target="vista-cursos" class="nav-item">Mis Cursos</a>
-            <a href="#" data-target="vista-matricula" class="nav-item">Matrícula</a>
-            <a href="#" data-target="vista-notas" class="nav-item">Historial y Notas</a>
-        </nav>
-        <div class="sidebar-footer">
-            <button id="btnCerrarSesion" class="btn-logout">Cerrar Sesión</button>
-        </div>
-    </aside>
+<body class="bg-main">
 
-    <main class="main-content">
-        <header class="topbar">
-            <div class="topbar-left">
-                <button id="btnMenuMobile" class="btn-icon">☰</button>
-                <div>
-                    <h1 id="saludoUsuario">Bienvenido, Estudiante</h1>
-                    <p>Ciclo Académico 2026-I</p>
-                </div>
+    <div class="portal-layout" id="portalLayout">
+        
+        <aside class="portal-sidebar bg-card border-right" id="sidebar">
+            <div class="sidebar-logo-container border-bottom">
+                <img src="/public/img/Jhalabet.png" alt="Logo" class="sidebar-logo">
             </div>
             
-            <div class="topbar-right">
-                <div class="user-profile" id="btnPerfil">
-                    <div class="avatar">E</div>
-                    <span id="rolUsuario">Estudiante</span>
-                    <span class="dropdown-arrow">▼</span>
+            <nav class="sidebar-menu">
+                <button class="menu-btn active" data-target="seccion-inicio">
+                    <i class="fa-solid fa-border-all"></i>
+                    <span>Panel</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-calendario" id="navCalendario">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span>Horario</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-cursos">
+                    <i class="fa-solid fa-laptop-code"></i>
+                    <span>Mis Cursos</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-pagos">
+                    <i class="fa-solid fa-wallet"></i>
+                    <span>Finanzas</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-tramites">
+                    <i class="fa-solid fa-folder-open"></i>
+                    <span>Trámites</span>
+                </button>
+                <button class="menu-btn" data-target="seccion-matricula">
+                    <i class="fa-solid fa-laptop-file"></i>
+                    <span>Matrícula en Línea</span>
+                </button>
+            </nav>
+        </aside>
+
+        <main class="portal-main">
+            
+            <header class="portal-header bg-card border-bottom">
+                <div class="header-left">
+                    <button id="btnMenuToggle" class="toggle-sidebar-btn"><i class="fa-solid fa-bars-staggered"></i></button>
+                    <div class="header-search">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Buscar cursos, trámites...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="user-profile-header dropdown">
+                        <div class="user-text">
+                            <span class="user-greeting"><strong id="userNameHeader">Estudiante</strong></span>
+                            <span class="user-code">Ciclo I - 2026</span>
+                        </div>
+                        <img src="/public/img/avatar_estudiante.png" alt="Avatar" class="user-avatar">
+                        <div class="trigger-dropdown" id="btnDropdownChevron">
+                            <i class="fa-solid fa-angle-down text-muted"></i>
+                        </div>
+                        
+                        <div class="dropdown-content shadow-card border-card" id="menuPerfil">
+                            <a href="#" class="nav-trigger" data-target="seccion-perfil"><i class="fa-regular fa-id-badge"></i> Mi Perfil</a>
+                            <a href="#" id="btnCerrarSesion" style="color: var(--accent-red); border-top: 1px solid #eee;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</a>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div class="portal-content">
+                
+                <section id="seccion-inicio" class="content-section active">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Resumen Académico</h2>
+                            <p class="text-muted">Aquí tienes un vistazo rápido de tu actividad de hoy.</p>
+                        </div>
+                        <span class="badge-modalidad"><i class="fa-solid fa-building-user"></i> Modalidad Presencial</span>
+                    </div>
+
+                    <div class="metrics-grid mt-20">
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon bg-primary-light"><i class="fa-solid fa-chalkboard-user text-primary"></i></div>
+                            <div class="metric-info">
+                                <p>Clases Hoy</p>
+                                <h3>2 Sesiones</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card bg-card shadow-card border-card">
+                            <div class="metric-icon bg-success-light"><i class="fa-solid fa-chart-line text-success"></i></div>
+                            <div class="metric-info">
+                                <p>Promedio Actual</p>
+                                <h3>17.2</h3>
+                            </div>
+                        </div>
+                        <div class="metric-card bg-card shadow-card border-card" style="border-left: 4px solid var(--accent-red);">
+                            <div class="metric-icon bg-danger-light"><i class="fa-solid fa-file-invoice-dollar text-danger"></i></div>
+                            <div class="metric-info">
+                                <p>Próximo Pago</p>
+                                <h3 class="text-danger">30 Abr</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split-grid mt-40">
+                        <div class="split-left">
+                            <div class="section-header-row">
+                                <h3><i class="fa-regular fa-clock"></i> Tu Agenda de Hoy</h3>
+                                <button class="btn-text nav-trigger" data-target="seccion-calendario">Ver calendario completo</button>
+                            </div>
+                            
+                            <div class="agenda-list bg-card shadow-card border-card">
+                                <div class="agenda-item">
+                                    <div class="agenda-time">
+                                        <span class="time-start">18:30</span>
+                                        <span class="time-end">20:00</span>
+                                    </div>
+                                    <div class="agenda-details">
+                                        <h4>Gestión Administrativa</h4>
+                                        <p><i class="fa-solid fa-location-dot"></i> Aula B0602 • Prof. Mendoza</p>
+                                    </div>
+                                    <button class="btn-outline-small">Aula Virtual</button>
+                                </div>
+                                <div class="agenda-item">
+                                    <div class="agenda-time">
+                                        <span class="time-start">20:15</span>
+                                        <span class="time-end">21:45</span>
+                                    </div>
+                                    <div class="agenda-details">
+                                        <h4>Farmacia Técnica</h4>
+                                        <p><i class="fa-solid fa-location-dot"></i> Lab A0212 • Prof. Torres</p>
+                                    </div>
+                                    <button class="btn-outline-small">Aula Virtual</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="split-right">
+                            <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-bolt"></i> Accesos Rápidos</h3>
+                            <div class="quick-access-grid">
+                                <div class="qa-card shadow-card border-card bg-card">
+                                    <i class="fa-solid fa-book-open-reader text-primary"></i>
+                                    <span>Biblioteca Virtual</span>
+                                </div>
+                                <div class="qa-card shadow-card border-card bg-card">
+                                    <i class="fa-solid fa-paperclip text-accent"></i>
+                                    <span>Sílabos</span>
+                                </div>
+                                <div class="qa-card shadow-card border-card bg-card">
+                                    <i class="fa-solid fa-headset text-success"></i>
+                                    <span>Soporte TI</span>
+                                </div>
+                                <div class="qa-card shadow-card border-card bg-card">
+                                    <i class="fa-solid fa-briefcase text-primary"></i>
+                                    <span>Bolsa Laboral</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-cursos" class="content-section">
+                    <h2 class="section-title">Mis Cursos</h2>
+                    <p class="text-muted mb-40">Periodo Académico: 2026 - Ciclo 1</p>
+
+                    <div class="cursos-cards-grid">
+                        <div class="curso-modern-card shadow-card bg-card">
+                            <div class="curso-color-top bg-primary"></div>
+                            <div class="curso-modern-body">
+                                <h4>Gestión Administrativa</h4>
+                                <p class="prof-name">Carlos Mendoza</p>
+                                <div class="curso-stats">
+                                    <div class="stat"><span>Notas</span><strong>16.5</strong></div>
+                                    <div class="stat"><span>Faltas</span><strong>0%</strong></div>
+                                </div>
+                                <button class="btn-primary full-width mt-15">Entrar al Curso</button>
+                            </div>
+                        </div>
+
+                        <div class="curso-modern-card shadow-card bg-card">
+                            <div class="curso-color-top bg-accent"></div>
+                            <div class="curso-modern-body">
+                                <h4>Farmacia Técnica</h4>
+                                <p class="prof-name">Ana Torres</p>
+                                <div class="curso-stats">
+                                    <div class="stat"><span>Notas</span><strong>18.0</strong></div>
+                                    <div class="stat"><span>Faltas</span><strong class="text-danger">15%</strong></div>
+                                </div>
+                                <button class="btn-primary full-width mt-15">Entrar al Curso</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section id="seccion-pagos" class="content-section">
+                    <h2 class="section-title">Gestión Financiera</h2>
+                    <p class="text-muted mb-40">Revisa tu estado de cuenta y realiza tus pagos de forma segura.</p>
                     
-                    <div class="profile-dropdown" id="menuPerfil">
-                        <a href="#">Mi Perfil</a>
-                        <a href="#">Configuración</a>
-                        <hr>
-                        <a href="#" id="btnCerrarSesionTopbar" style="color: var(--accent-red);">Cerrar Sesión</a>
+                    <div class="pagos-layout">
+                        <div class="deuda-alerta-card shadow-card">
+                            <div class="alerta-header">
+                                <i class="fa-solid fa-circle-exclamation"></i>
+                                <h3>Pago Pendiente</h3>
+                            </div>
+                            <div class="alerta-body">
+                                <p class="concepto">Pensión Ciclo 2026-I (Cuota 2)</p>
+                                <p class="vencimiento">Vence el: <strong>30 de Abril, 2026</strong></p>
+                                <h1 class="monto">S/ 350.00</h1>
+                            </div>
+                            <a href="pasarela.html" class="btn-pagar-ahora pulse-btn"><i class="fa-solid fa-lock"></i> Pagar en Línea Ahora</a>
+                        </div>
+
+                        <div class="historial-pagos-card bg-card shadow-card border-card">
+                            <h3 class="border-bottom" style="padding: 20px; font-size: 18px;">Historial de Pagos</h3>
+                            <div class="lista-pagos">
+                                <div class="pago-row">
+                                    <div class="pago-info">
+                                        <h4>Pensión Ciclo 2026-I (Cuota 1)</h4>
+                                        <span>Pagado el 25 Mar 2026</span>
+                                    </div>
+                                    <div class="pago-monto">
+                                        <strong>S/ 350.00</strong>
+                                        <span class="status-pagado">Pagado</span>
+                                    </div>
+                                </div>
+                                <div class="pago-row">
+                                    <div class="pago-info">
+                                        <h4>Matrícula 2026-I</h4>
+                                        <span>Pagado el 15 Feb 2026</span>
+                                    </div>
+                                    <div class="pago-monto">
+                                        <strong>S/ 150.00</strong>
+                                        <span class="status-pagado">Pagado</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </section>
+
+                <section id="seccion-calendario" class="content-section">
+                    <h2 class="section-title">Mi Calendario</h2>
+                    <p class="text-muted">Eventos y clases de la semana.</p>
+                    <div class="bg-card shadow-card border-card mt-20" style="padding: 40px; text-align: center; color: #888;">
+                        <i class="fa-regular fa-calendar-xmark" style="font-size: 48px; margin-bottom: 15px; color: #ccc;"></i>
+                        <p>El calendario completo se sincronizará pronto con tus cursos.</p>
+                    </div>
+                </section>
+
+                <section id="seccion-tramites" class="content-section">
+                    <h2 class="section-title">Mesa de Partes</h2>
+                    <p class="text-muted">Solicita documentos oficiales y gestiona tus trámites académicos.</p>
+                    <div class="bg-card shadow-card border-card mt-20" style="padding: 40px; text-align: center; color: #888;">
+                        <i class="fa-solid fa-folder-tree" style="font-size: 48px; margin-bottom: 15px; color: #ccc;"></i>
+                        <p>No tienes trámites en curso actualmente.</p>
+                        <button class="btn-primary mt-20">Nuevo Trámite</button>
+                    </div>
+                </section>
+                
+                <section id="seccion-matricula" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Matrícula en Línea 2026-II</h2>
+                            <p class="text-muted">Realiza tu matrícula para el siguiente ciclo académico en 2 simples pasos.</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-card shadow-card border-card mt-20" style="padding: 40px;">
+                        
+                        <div id="mat-step-1">
+                            <div style="display: flex; align-items: center; gap: 20px; background: #f0fdf4; border: 1px solid #c3e6cb; padding: 25px; border-radius: 8px;">
+                                <i class="fa-solid fa-circle-check text-success" style="font-size: 40px;"></i>
+                                <div>
+                                    <h3 style="color: #28a745; margin-bottom: 5px;">Habilitado para matrícula</h3>
+                                    <p style="color: #555;">No registras deudas pendientes ni bloqueos académicos. Puedes proceder a seleccionar tus cursos.</p>
+                                </div>
+                            </div>
+                            <div style="margin-top: 30px; text-align: right;">
+                                <button class="btn-primary" id="btnMatPaso2" style="font-size: 16px; padding: 12px 30px;">Siguiente Paso <i class="fa-solid fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+
+                        <div id="mat-step-2" style="display: none;">
+                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Selección de Cursos - Ciclo II</h3>
+                            
+                            <div class="cursos-matricula-list" style="display: flex; flex-direction: column; gap: 15px;">
+                                <label style="display: flex; gap: 15px; padding: 20px; background: #f8f9fa; border: 1px solid #eaeaea; border-radius: 8px;">
+                                    <input type="checkbox" checked disabled style="width: 20px; height: 20px; accent-color: var(--color-primary);">
+                                    <div>
+                                        <h4 style="margin:0 0 5px 0;">Administración Financiera (Obligatorio)</h4>
+                                        <p class="text-muted" style="margin:0; font-size:13px;">Créditos: 4 | Horas: 6</p>
+                                    </div>
+                                </label>
+                                <label style="display: flex; gap: 15px; padding: 20px; background: #f8f9fa; border: 1px solid #eaeaea; border-radius: 8px; cursor:pointer;">
+                                    <input type="checkbox" style="width: 20px; height: 20px; accent-color: var(--color-primary);">
+                                    <div>
+                                        <h4 style="margin:0 0 5px 0;">Taller de Liderazgo II (Electivo)</h4>
+                                        <p class="text-muted" style="margin:0; font-size:13px;">Créditos: 2 | Horas: 2</p>
+                                    </div>
+                                </label>
+                            </div>
+
+                            <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 20px;">
+                                <button class="btn-outline-primary" id="btnMatVolver1"><i class="fa-solid fa-arrow-left"></i> Volver</button>
+                                <div>
+                                    <span style="margin-right: 20px; font-weight: 600;">Total Créditos: <span class="text-primary">7</span></span>
+                                    <button class="btn-primary" id="btnConfirmarMatricula" style="font-size: 16px; padding: 12px 30px;"><i class="fa-solid fa-check-double"></i> Confirmar Matrícula</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="mat-step-3" style="display: none; text-align: center; padding: 40px 20px;">
+                            <div style="width: 80px; height: 80px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;">
+                                <i class="fa-solid fa-check"></i>
+                            </div>
+                            <h2 style="color: #28a745; margin-bottom: 10px;">¡Matrícula Confirmada!</h2>
+                            <p class="text-muted" style="margin-bottom: 30px;">Tus cursos han sido registrados exitosamente para el Ciclo 2026-II.</p>
+                            <button class="btn-outline-primary nav-trigger" data-target="seccion-calendario">Ver mi horario</button>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section id="seccion-perfil" class="content-section">
+                    <div class="perfil-layout">
+                        <div class="perfil-left">
+                            <img src="/public/img/avatar_estudiante.png" alt="Mi Foto" class="perfil-img">
+                            <button class="btn-outline-purple">Actualizar foto</button>
+                        </div>
+                        
+                        <div class="perfil-right">
+                            <h2 class="perfil-name" id="perfilFullName">Estudiante</h2>
+                            
+                            <table class="perfil-table">
+                                <tbody>
+                                    <tr>
+                                        <td>Código Alumno</td>
+                                        <td>J23227101</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carrera</td>
+                                        <td>Gestión Administrativa</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Modalidad de carrera</td>
+                                        <td>Presencial</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Campus</td>
+                                        <td>Ica</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Correo Institucional</td>
+                                        <td>J23227101@instituto.edu.pe</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            
+                            <div class="perfil-alert">
+                                <i class="fa-solid fa-circle-info text-muted" style="font-size: 18px;"></i>
+                                <span>Si los datos mostrados contienen errores, registra una <a href="#" class="link-purple">solicitud de SAE</a>.</span>
+                            </div>
+                            
+                            <div class="perfil-link-right">
+                                ¿Quiénes pueden ver la información de mi perfil? <i class="fa-regular fa-circle-question"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="perfil-bottom-card border-card">
+                        <p>Ahora, puedes gestionar tu información personal y más adelante, podrás agregar otros datos para seguir conectados.</p>
+                        <div class="info-personal-card">
+                            <div class="icon-user"><i class="fa-regular fa-user"></i></div>
+                            <div style="flex-grow: 1;">
+                                <h3 class="info-title">
+                                    Información personal <i class="fa-solid fa-chevron-right text-primary"></i>
+                                </h3>
+                                <p class="info-desc">Agrega tus datos personales e indícanos cómo mantenernos en contacto.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
             </div>
-        </header>
-
-        <div class="vistas-container">
-            
-            <section id="vista-inicio" class="vista-seccion activa" style="display: block;">
-                <div class="dashboard-grid">
-                    <div class="card info-card">
-                        <h3>Promedio Ponderado</h3>
-                        <div class="card-value">16.5</div>
-                        <p class="status text-green">Estado: Regular</p>
-                    </div>
-                    <div class="card info-card">
-                        <h3>Próxima Clase Hoy</h3>
-                        <div class="card-value" style="font-size: 20px;">Desarrollo Frontend</div>
-                        <p class="text-muted">Laboratorio 402 • 18:00 - 20:15</p>
-                    </div>
-                    <div class="card info-card accent-card">
-                        <h3>Avisos Importantes</h3>
-                        <ul class="notification-list">
-                            <li>Matrícula extemporánea hasta el viernes.</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <section id="vista-cursos" class="vista-seccion" style="display: none;">
-                <div class="card" style="margin: 40px;">
-                    <h2>Mis Cursos Matriculados</h2>
-                    <p class="text-muted">Selecciona un curso para ver el sílabo y materiales.</p>
-                    <ul class="notification-list" style="margin-top: 20px;">
-                        <li>📘 Desarrollo de Sistemas III - Prof. Mendoza</li>
-                        <li>📗 Base de Datos Avanzada - Prof. Torres</li>
-                        <li>📙 Diseño de Interfaces (UI/UX) - Prof. Salas</li>
-                    </ul>
-                </div>
-            </section>
-
-            <section id="vista-matricula" class="vista-seccion" style="display: none;">
-                <div class="card" style="margin: 40px; border-top: 4px solid var(--accent-red);">
-                    <h2>Proceso de Matrícula</h2>
-                    <p>Tu turno de matrícula inicia el: <strong>15 de Abril, 08:00 AM</strong></p>
-                    <button class="btn-login" style="width: auto; padding: 10px 20px; margin-top: 15px; opacity: 0.5; cursor: not-allowed;">Iniciar Selección de Cursos</button>
-                </div>
-            </section>
-
-            <section id="vista-notas" class="vista-seccion" style="display: none;">
-                <div class="card" style="margin: 40px;">
-                    <h2>Historial Académico</h2>
-                    <p class="text-muted">Registro oficial de calificaciones.</p>
-                    </div>
-            </section>
-
-        </div>
-    </main>
-</div>
-
-    <script src="/js/auth.js"></script> 
+        </main>
+    </div>
+    <script src="/js/auth.js"></script>
     <script src="/js/intranet/dashboard_estudiante.js"></script>
-    <script src="/js/ui_layout.js"></script>
+</body>
 </body>
 </html>
