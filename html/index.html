@@ -33,11 +33,8 @@
             
             <div class="dropdown">
                 <a href="#" class="dropbtn nav-link">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
-                <div class="dropdown-content bg-card border-card">
-                    <a href="gestion.html" class="dropdown-link">Gestión Administrativa</a>
-                    <a href="farmacia.html" class="dropdown-link">Farmacia Técnica</a>
-                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
-                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                <div class="dropdown-content bg-card border-card" id="menu-programas-dinamico">
+                    <p style="padding:10px; color:#888; font-size:12px;">Cargando programas...</p>
                 </div>
             </div>
 
@@ -126,8 +123,9 @@
             <div class="footer-columna">
                 <h3 class="text-primary">Programas</h3>
                 <ul>
-                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
-                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                    <!-- ENLACES DEL FOOTER CORREGIDOS -->
+                    <li><a href="programa.html?id=1"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="programa.html?id=3"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
                 </ul>
             </div>
         </div>
@@ -135,5 +133,6 @@
             <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
         </div>
     </footer>
+    <script src="../js/public_dinamico.js"></script>
 </body>
 </html>

@@ -1,53 +1,71 @@
-const usuariosMock = [
-    { usuario: "alumno01", clave: "1234", rol: "estudiante", nombre: "Juan Pérez" },
-    { usuario: "docente01", clave: "profe2024", rol: "docente", nombre: "María Gómez" },
-    { usuario: "admin", clave: "admin123", rol: "admin", nombre: "Director Carlos" },
-    { usuario: "coord01", clave: "coord123", rol: "coordinador", nombre: "Roberto Sánchez" }
-];
-
-const usuariosGuardados = JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
-usuariosMock = [...usuariosMock, ...usuariosGuardados];
-
 document.addEventListener("DOMContentLoaded", () => {
     const loginForm = document.getElementById("loginForm");
     const errorMsg = document.getElementById("errorMessage");
 
     if (loginForm) {
-        loginForm.addEventListener("submit", function(evento) {
-            evento.preventDefault(); 
-            const userIngresado = document.getElementById("username").value;
+        loginForm.addEventListener("submit", async function(evento) {
+            evento.preventDefault();
+            
+            const emailIngresado = document.getElementById("username").value; 
             const passIngresada = document.getElementById("password").value;
 
-            const usuarioEncontrado = usuariosMock.find(
-                (u) => u.usuario === userIngresado && u.clave === passIngresada
-            );
+            try {
+                // Modificar el botón a estado de carga
+                const btnSubmit = loginForm.querySelector('button[type="submit"]');
+                const textoOriginal = btnSubmit.textContent;
+                btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> CONECTANDO...';
+                btnSubmit.disabled = true;
 
-            if (usuarioEncontrado) {
-                errorMsg.style.display = "none";
-                localStorage.setItem("sesionActiva", "true");
-                localStorage.setItem("usuarioRol", usuarioEncontrado.rol);
-                localStorage.setItem("usuarioNombre", usuarioEncontrado.nombre);
+                const response = await fetch('http://localhost:8080/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        email: emailIngresado, 
+                        password: passIngresada 
+                    })
+                });
 
-                // Redirección según rol
-                if (usuarioEncontrado.rol === "estudiante") {
-                    window.location.href = "intranet/estudiante/dashboard.html";
-                } else if (usuarioEncontrado.rol === "docente") {
-                    window.location.href = "intranet/docente/dashboard.html";
-                } else if (usuarioEncontrado.rol === "admin") {
-                    window.location.href = "intranet/admin/dashboard.html";
-                } else if (usuarioEncontrado.rol === "coordinador") { // NUEVA RUTA
-                    window.location.href = "intranet/coordinador/dashboard.html";
+                if (response.ok) {
+                    const data = await response.json(); // AuthResponseDTO
+                    errorMsg.style.display = "none";
+                    
+                    localStorage.setItem("sesionActiva", "true");
+                    localStorage.setItem("token", data.token);
+                    localStorage.setItem("usuarioRol", data.rol.toLowerCase());
+                    localStorage.setItem("usuarioNombre", data.nombre);
+                    localStorage.setItem("usuarioId", data.usuarioId);
+
+                    // Redirección según rol devuelto por el backend
+                    const rolStr = data.rol.toUpperCase();
+                    if (rolStr === "ALUMNO") {
+                        window.location.href = "intranet/estudiante/dashboard.html";
+                    } else if (rolStr === "DOCENTE") {
+                        window.location.href = "intranet/docente/dashboard.html";
+                    } else if (rolStr === "ADMINISTRADOR") {
+                        window.location.href = "intranet/admin/dashboard.html";
+                    } else if (rolStr === "COORDINADOR") {
+                        window.location.href = "intranet/coordinador/dashboard.html";
+                    }
+                } else {
+                    errorMsg.textContent = "Credenciales incorrectas o usuario inactivo.";
+                    errorMsg.style.display = "block";
+                    btnSubmit.innerHTML = textoOriginal;
+                    btnSubmit.disabled = false;
                 }
-            } else {
+            } catch (error) {
+                console.error("Error en la petición:", error);
+                errorMsg.textContent = "Error de conexión con el servidor.";
                 errorMsg.style.display = "block";
+                btnSubmit.innerHTML = textoOriginal;
+                btnSubmit.disabled = false;
             }
         });
     }
 
-    // LÓGICA PARA EL OJITO DE LA CONTRASEÑA
     const togglePassword = document.getElementById("togglePassword");
     const passwordInput = document.getElementById("password");
-
     if (togglePassword && passwordInput) {
         togglePassword.addEventListener("click", function () {
             const tipoActual = passwordInput.getAttribute("type");

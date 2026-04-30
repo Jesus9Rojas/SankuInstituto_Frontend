@@ -131,6 +131,86 @@
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6); /* Fondo oscuro semitransparente */
+    display: none; /* Oculto por defecto */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000; /* Para que quede por encima de todo el navbar y sidebar */
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+/* Esta clase es la que el JavaScript activa para mostrarlo */
+.modal-overlay.show {
+    display: flex;
+    opacity: 1;
+}
+
+.modal-card {
+    background: #ffffff;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    transform: translateY(-20px); /* Efecto de que cae desde un poquito arriba */
+    transition: transform 0.3s ease;
+}
+
+.modal-overlay.show .modal-card {
+    transform: translateY(0);
+}
+
+.modal-header {
+    padding: 20px 25px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8f9fa;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    color: #222;
+    margin: 0;
+}
+
+.close-modal {
+    background: transparent;
+    border: none;
+    font-size: 20px;
+    color: #888;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--accent-red, #dc3545);
+}
+
+.modal-body {
+    padding: 25px;
+    max-height: 80vh; /* Si el contenido es muy largo, permite hacer scroll interno */
+    overflow-y: auto;
+}
+
+/* Alineación para los botones inferiores del modal */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+
 /* --- RESPONSIVIDAD --- */
 @media (max-width: 1024px) { 
     .dashboard-split-grid { grid-template-columns: 1fr; } 

@@ -16,12 +16,14 @@
     <link rel="stylesheet" href="../css/styles/botones.css">
     <link rel="stylesheet" href="../css/styles/componentes.css">
     <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
-    <link rel="stylesheet" href="../css/contactanos.css"> <link rel="stylesheet" href="../css/animation.css"> 
+    <link rel="stylesheet" href="../css/contactanos.css"> 
+    <link rel="stylesheet" href="../css/animation.css"> 
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-main">
 
+    <!-- NAVBAR ACTUALIZADO (CONTENEDOR DINÁMICO) -->
     <nav class="public-navbar shadow-navbar bg-card blur-nav">
         <div class="public-logo">
             <img src="/public/img/Jhalabet.png" alt="Logo Instituto SANKU" class="login-logo-img">
@@ -32,11 +34,9 @@
             
             <div class="dropdown">
                 <a href="#" class="dropbtn nav-link">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
-                <div class="dropdown-content bg-card border-card">
-                    <a href="gestion.html" class="dropdown-link">Gestión Administrativa</a>
-                    <a href="farmacia.html" class="dropdown-link">Farmacia Técnica</a>
-                    <a href="enfermeria.html" class="dropdown-link">Enfermería Técnica</a>
-                    <a href="fisioterapia.html" class="dropdown-link">Fisioterapia y Rehabilitación</a>
+                <!-- CONTENEDOR DINÁMICO DEL MENÚ -->
+                <div class="dropdown-content bg-card border-card" id="menu-programas-dinamico">
+                    <p style="padding:10px; color:#888; font-size:12px;">Cargando programas...</p>
                 </div>
             </div>
 
@@ -45,7 +45,7 @@
         </div>  
     </nav>
 
-        <header class="hero-section hero-nosotros" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.95) 0%, rgba(0, 51, 153, 0.6) 45%, rgba(0, 51, 153, 0) 100%), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80') center/cover;">
+    <header class="hero-section hero-nosotros" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.95) 0%, rgba(0, 51, 153, 0.6) 45%, rgba(0, 51, 153, 0) 100%), url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&q=80') center/cover;">
         <div class="hero-text-left">
             <span class="bg-card1 text-white shadow-card" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px;">Atención al Estudiante</span>
             <h2 class="titulo-impacto">
@@ -70,7 +70,7 @@
             </div>
 
             <div class="formulario-caja bg-card">
-                <form action="#">
+                <form id="formContacto">
                     <div class="form-group">
                         <label>Nombres y Apellidos (Necesario)</label>
                         <input type="text" class="form-input" placeholder="Ej. Juan Pérez" required>
@@ -85,12 +85,8 @@
                     </div>
                     <div class="form-group">
                         <label>Programa de Interés</label>
-                        <select class="form-input" style="background-color: var(--bg-card); cursor: pointer;">
-                            <option value="gestion">Gestión Administrativa</option>
-                            <option value="farmacia">Farmacia Técnica</option>
-                            <option value="enfermeria">Enfermería Técnica</option>
-                            <option value="fisioterapia">Fisioterapia y Rehabilitación</option>
-                            <option value="cursos">Cursos Cortos</option>
+                        <select id="select-programa-interes" class="form-input" style="background-color: var(--bg-card); cursor: pointer;" required>
+                            <option value="" disabled selected>Cargando programas...</option>
                         </select>
                     </div>
                     <div class="form-group">
@@ -104,7 +100,8 @@
         </div>
     </section>
 
-    <footer class="public-footer bg-main border-top">
+    <!-- FOOTER ACTUALIZADO -->
+    <footer class="public-footer bg-section border-top">
         <div class="footer-grid">
             <div class="footer-columna">
                 <h3 class="text-primary">Noticias</h3>
@@ -123,8 +120,8 @@
             <div class="footer-columna">
                 <h3 class="text-primary">Programas</h3>
                 <ul>
-                    <li><a href="gestion.html"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
-                    <li><a href="enfermeria.html"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                    <li><a href="programa.html?id=1"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="programa.html?id=3"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
                 </ul>
             </div>
         </div>
@@ -133,5 +130,53 @@
         </div>
     </footer>
 
+<script src="../js/public_dinamico.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const formContacto = document.getElementById("formContacto"); 
+        
+        if(formContacto) {
+            formContacto.addEventListener("submit", async (e) => {
+                e.preventDefault();
+                
+                const btnSubmit = formContacto.querySelector('button[type="submit"]');
+                const htmlOriginal = btnSubmit.innerHTML;
+                btnSubmit.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando...';
+                btnSubmit.disabled = true;
+
+                const inputs = formContacto.querySelectorAll('.form-input');
+                
+                const payload = {
+                    nombreCompleto: inputs[0].value,
+                    correo: inputs[1].value,
+                    celular: inputs[2].value,
+                    programaInteres: inputs[3].value,
+                    mensaje: inputs[4].value
+                };
+
+                try {
+                    const response = await fetch('http://localhost:8080/api/v1/mensajes', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (response.ok) {
+                        alert("¡Gracias por comunicarte! Hemos recibido tu mensaje y te contactaremos pronto.");
+                        formContacto.reset();
+                    } else {
+                        alert("Hubo un problema al enviar tu mensaje. Verifica tus datos.");
+                    }
+                } catch (error) {
+                    console.error("Error:", error);
+                    alert("Error de conexión con el servidor.");
+                } finally {
+                    btnSubmit.innerHTML = htmlOriginal;
+                    btnSubmit.disabled = false;
+                }
+            });
+        }
+    });
+</script>
 </body>
 </html>

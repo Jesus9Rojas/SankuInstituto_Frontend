@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Programa - Instituto Tech</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../css/styles/variables.css">
+    <link rel="stylesheet" href="../css/styles/base.css">
+    <link rel="stylesheet" href="../css/styles/navbar.css">
+    <link rel="stylesheet" href="../css/styles/footer.css">
+    <link rel="stylesheet" href="../css/styles/botones.css">
+    <link rel="stylesheet" href="../css/styles/componentes.css">
+    <link rel="stylesheet" href="../css/styles/seccion-programas.css">
+    <link rel="stylesheet" href="../css/styles/seccion-nosotros.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-main">
+
+    <!-- EL NAVBAR SERÁ LLENADO POR JS -->
+    <nav class="public-navbar shadow-navbar bg-card blur-nav">
+        <div class="public-logo"><img src="/public/img/Jhalabet.png" class="login-logo-img"></div>
+        <div class="public-links">
+            <a href="index.html" class="nav-link">Inicio</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link nav-active">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <!-- CONTENEDOR DINÁMICO DEL MENÚ -->
+                <div class="dropdown-content bg-card border-card" id="menu-programas-dinamico">
+                    <p style="padding:10px; color:#888; font-size:12px;">Cargando programas...</p>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link">Cursos Cortos</a>
+            <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
+        </div>
+    </nav>
+
+    <!-- CABECERA DINÁMICA -->
+<header id="header-programa" class="hero-section fade-in-up" style="background: linear-gradient(to right, rgba(0, 51, 153, 0.9), rgba(0, 168, 255, 0.4)); min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 0 10%;">
+        
+        <span id="prog-badge" class="text-white shadow-card" style="display: inline-block; padding: 5px 15px; border-radius: 20px; font-weight: 600; font-size: 14px; margin-bottom: 20px;">
+            Cargando...
+        </span>
+        
+        <div class="hero-text-left">
+            <h2 class="titulo-impacto">
+                <span class="text-yellow" id="prog-titulo-1"></span>
+                <span class="text-white-innovacion" id="prog-titulo-2"></span>
+            </h2>
+        </div>
+        <p class="text-white" style="font-size: 18px; opacity: 0.9;">Título a Nombre de la Nación | Duración: 3 Años (6 Ciclos)</p>
+    </header>
+
+    <section class="contenedor-seccion bg-main fade-in-up delay-1">
+        <div class="programa-layout">
+            <aside class="programa-sidebar shadow-card border-card" style="background: linear-gradient(to bottom, #1181f9, #0bbceb); border: none;">
+                <h3 class="text-white" id="prog-desc" style="font-size: 22px; line-height: 1.5; margin-bottom: 20px;">Cargando información...</h3>
+                <i id="prog-icono" class="fa-solid fa-graduation-cap text-white" style="font-size: 120px; display: block; text-align: center; margin-top: 50px; margin-bottom: 40px;"></i>
+                <div style="margin-top: 20px;">
+                    <button class="btn-acceso" style="width: 100%; padding: 15px; margin-bottom: 15px; font-size: 16px; background-color: #25D366; color: white !important;"><i class="fa-brands fa-whatsapp"></i> Matricularme Ahora</button>
+                    <button class="btn-acceso" style="width: 100%; padding: 15px; border: none;"><i class="fa-solid fa-download"></i> Descargar Brochure</button>
+                </div>
+            </aside>
+            
+            <div class="programa-contenido bg-card shadow-card border-card">
+                <div class="tab-menu">
+                    <button class="tab-btn active" onclick="openTab(event, 'perfil')">Perfil Académico</button>
+                    <button class="tab-btn" onclick="openTab(event, 'mercado')">Mercado Laboral</button>
+                    <button class="tab-btn" onclick="openTab(event, 'beneficios')">Beneficios</button>
+                    <button class="tab-btn" onclick="openTab(event, 'requisitos')">Requisitos y Horarios</button>
+                </div>
+
+                <div id="perfil" class="tab-pane active"></div>
+                <div id="mercado" class="tab-pane"></div>
+                <div id="beneficios" class="tab-pane"></div>
+                <div id="requisitos" class="tab-pane"></div>
+
+                <div class="banner-cta-container shadow-card" style="margin-top: 50px;">
+                    <div class="banner-cta-text">
+                        <h2 class="text-white" style="font-size: 28px;"><i class="fa-solid fa-graduation-cap text-accent"></i> Empieza tu carrera hoy</h2>
+                        <p style="color: #e1f5fe; font-size: 16px;">Inscríbete ahora y transforma tu futuro profesional.</p>
+                    </div>
+                    <a href="contactanos.html" class="btn-acceso">Infórmate</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- (Acá va tu footer normal) -->
+    
+    <script src="../js/public_dinamico.js"></script>
+    <script>
+        function openTab(evt, tabName) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tab-pane");
+            for (i = 0; i < tabcontent.length; i++) { tabcontent[i].style.display = "none"; tabcontent[i].classList.remove("active"); }
+            tablinks = document.getElementsByClassName("tab-btn");
+            for (i = 0; i < tablinks.length; i++) { tablinks[i].className = tablinks[i].className.replace(" active", ""); }
+            document.getElementById(tabName).style.display = "block";
+            setTimeout(() => { document.getElementById(tabName).classList.add("active"); }, 10);
+            evt.currentTarget.className += " active";
+        }
+    </script>
+</body>
+</html>

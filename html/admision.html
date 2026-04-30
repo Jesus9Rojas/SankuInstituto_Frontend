@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Estilos específicos para el Wizard de Admisión Pública */
         .admision-container { max-width: 800px; margin: 60px auto; padding: 40px; background: var(--bg-card); border-radius: var(--radius-md); box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 5px solid var(--color-primary); }
         .adm-step { display: none; animation: fadeIn 0.4s ease; }
         .adm-step.active { display: block; }
@@ -41,7 +40,6 @@
         
         .carrera-card { border: 2px solid #eee; border-radius: 8px; padding: 20px; text-align: center; cursor: pointer; transition: 0.2s; }
         .carrera-card:hover { border-color: var(--color-primary); background: #f8fbff; }
-        .carrera-card input { display: none; }
         .carrera-card.selected { border-color: var(--color-primary); background: #f0f7ff; box-shadow: 0 4px 15px rgba(0, 86, 179, 0.1); }
         
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -56,7 +54,16 @@
         </div>
         <div class="public-links">
             <a href="index.html" class="nav-link">Inicio</a>
-            <a href="programas.html" class="nav-link">Programas</a>
+            <a href="nosotros.html" class="nav-link">Nosotros</a>
+            
+            <div class="dropdown">
+                <a href="#" class="dropbtn nav-link">Programas de Estudio <i class="fa-solid fa-chevron-down drop-icon"></i></a>
+                <div class="dropdown-content bg-card border-card" id="menu-programas-dinamico">
+                    <p style="padding:10px; color:#888; font-size:12px;">Cargando programas...</p>
+                </div>
+            </div>
+
+            <a href="cursos.html" class="nav-link">Cursos Cortos</a>
             <a href="admision.html" class="nav-link nav-active" style="color: var(--color-primary); font-weight: 600;"><i class="fa-solid fa-laptop-file"></i> Admisión 2026</a>
             <a href="login.html" class="btn-acceso-intranet"><i class="fa-solid fa-user-graduate"></i> Intranet</a>
         </div>  
@@ -71,16 +78,13 @@
         
         <div class="adm-stepper">
             <div class="adm-step-indicator active" id="ind-1">
-                <div class="adm-circle">1</div>
-                <span>Tus Datos</span>
+                <div class="adm-circle">1</div><span>Tus Datos</span>
             </div>
             <div class="adm-step-indicator" id="ind-2">
-                <div class="adm-circle">2</div>
-                <span>Tu Carrera</span>
+                <div class="adm-circle">2</div><span>Tu Programa</span>
             </div>
             <div class="adm-step-indicator" id="ind-3">
-                <div class="adm-circle">3</div>
-                <span>Pago y Credenciales</span>
+                <div class="adm-circle">3</div><span>Confirmación</span>
             </div>
         </div>
 
@@ -109,103 +113,177 @@
             </div>
         </div>
 
+        <!-- PASO 2: CARRERA DINÁMICA -->
         <div id="paso-2" class="adm-step">
             <h3 style="margin-bottom: 25px; color: var(--color-primary);"><i class="fa-solid fa-graduation-cap"></i> Selecciona tu Programa</h3>
-            <div class="form-grid" style="grid-template-columns: repeat(3, 1fr);">
-                
-                <div class="carrera-card" onclick="seleccionarCarrera(this)">
-                    <i class="fa-solid fa-briefcase text-primary" style="font-size: 40px; margin-bottom: 15px;"></i>
-                    <h4 style="font-size: 15px;">Gestión Administrativa</h4>
-                </div>
-                <div class="carrera-card" onclick="seleccionarCarrera(this)">
-                    <i class="fa-solid fa-pills text-accent" style="font-size: 40px; margin-bottom: 15px;"></i>
-                    <h4 style="font-size: 15px;">Farmacia Técnica</h4>
-                </div>
-                <div class="carrera-card" onclick="seleccionarCarrera(this)">
-                    <i class="fa-solid fa-user-nurse text-primary" style="font-size: 40px; margin-bottom: 15px;"></i>
-                    <h4 style="font-size: 15px;">Enfermería Técnica</h4>
-                </div>
-
+            
+            <!-- EL JS INYECTARÁ LAS CARRERAS Y CURSOS AQUÍ -->
+            <div class="form-grid" id="grid-carreras-admision" style="grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                <p class="text-muted">Cargando programas disponibles...</p>
             </div>
             
             <div class="form-group" style="margin-top: 30px;">
                 <label>Sede y Turno</label>
-                <select class="form-control">
-                    <option>Sede Ica - Turno Mañana</option>
-                    <option>Sede Ica - Turno Noche</option>
+                <select id="regSedeTurno" class="form-control">
+                    <option value="Ica - Mañana">Sede Ica - Turno Mañana</option>
+                    <option value="Ica - Noche">Sede Ica - Turno Noche</option>
                 </select>
             </div>
 
             <div style="display: flex; justify-content: space-between; margin-top: 30px;">
                 <button class="btn-acceso" style="background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary);" onclick="irAPaso(1)"><i class="fa-solid fa-arrow-left"></i> Volver</button>
-                <button class="btn-acceso" onclick="irAPaso(3)">Continuar a Pagar <i class="fa-solid fa-arrow-right"></i></button>
+                <button class="btn-acceso" onclick="irAPaso(3)">Continuar <i class="fa-solid fa-arrow-right"></i></button>
             </div>
         </div>
 
+<!-- PASO 3: CONFIRMACIÓN Y ENVÍO -->
         <div id="paso-3" class="adm-step">
             <div id="zona-pago">
-                <h3 style="margin-bottom: 25px; color: var(--color-primary);"><i class="fa-solid fa-credit-card"></i> Pagar Derecho de Matrícula</h3>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 25px;">
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                        <span>Matrícula 2026-I</span>
-                        <strong>S/ 150.00</strong>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 20px; font-weight: bold; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
-                        <span>Total a Pagar:</span>
-                        <span style="color: var(--accent-red);">S/ 150.00</span>
-                    </div>
-                </div>
+                <h3 style="margin-bottom: 25px; color: var(--color-primary);"><i class="fa-solid fa-paper-plane"></i> Confirmar y Enviar Postulación</h3>
                 
-                <p class="text-muted" style="font-size: 14px; margin-bottom: 20px;"><i class="fa-solid fa-lock"></i> Pago simulado para fines de demostración.</p>
+                <div style="background: #f8f9fa; padding: 25px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 25px;">
+                    <h4 style="color: #333; margin-bottom: 10px;">Información Importante</h4>
+                    <ul class="text-muted" style="line-height: 1.6; padding-left: 20px;">
+                        <li>Al enviar esta solicitud, tus datos pasarán a evaluación por el Coordinador Académico.</li>
+                        <li><strong>No requieres realizar ningún pago en este momento.</strong></li>
+                        <li>Una vez aprobada tu postulación, recibirás tus credenciales por correo electrónico.</li>
+                        <li>El pago por <strong>Derecho de Matrícula (S/ 150.00)</strong> lo realizarás de forma segura desde tu nueva Intranet de Estudiante.</li>
+                    </ul>
+                </div>
                 
                 <div style="display: flex; justify-content: space-between;">
                     <button class="btn-acceso" style="background: transparent; color: var(--color-primary); border: 1px solid var(--color-primary);" onclick="irAPaso(2)"><i class="fa-solid fa-arrow-left"></i> Volver</button>
-                    <button class="btn-acceso pulse-btn" id="btnPagar" style="background: #28a745;" onclick="procesarPago()"><i class="fa-solid fa-check"></i> Pagar y Matricularme</button>
+                    <button class="btn-acceso pulse-btn" id="btnPagar" style="background: #28a745; color: #f8f9fa !important;" onclick="procesarPago()"><i class="fa-solid fa-check"></i> Enviar Postulación</button>
                 </div>
             </div>
 
+            <!-- ZONA DE ÉXITO ACORDE AL BACKEND -->
             <div id="zona-exito" style="display: none; text-align: center; padding: 20px;">
-                <div style="width: 80px; height: 80px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;">
-                    <i class="fa-solid fa-check"></i>
+                <div style="width: 80px; height: 80px; background: #00897b; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;">
+                    <i class="fa-solid fa-file-signature"></i>
                 </div>
-                <h2 style="color: #28a745; margin-bottom: 10px;">¡Bienvenido a Instituto Tech!</h2>
-                <p class="text-muted" style="margin-bottom: 25px;">Tu matrícula ha sido procesada. Estas son tus credenciales para ingresar a la Intranet de Estudiantes (También han sido enviadas a tu correo).</p>
-                
-                <div style="background: #f0f7ff; padding: 20px; border-radius: 8px; border: 2px dashed var(--color-primary); display: inline-block; text-align: left; margin-bottom: 30px;">
-                    <p style="margin-bottom: 10px; font-size: 16px;"><strong>Usuario:</strong> <span id="resUsuario" style="font-size: 20px; color: var(--color-primary); font-weight: bold; margin-left: 10px;"></span></p>
-                    <p style="font-size: 16px;"><strong>Contraseña:</strong> <span id="resClave" style="font-size: 20px; color: var(--accent-red); font-weight: bold; margin-left: 10px; letter-spacing: 1px;"></span></p>
-                </div>
-
+                <h2 style="color: #00897b; margin-bottom: 10px;">¡Solicitud Recibida!</h2>
+                <p class="text-muted" style="margin-bottom: 25px; line-height: 1.6;">
+                    Tu postulación ha sido registrada exitosamente y se encuentra en estado <strong>EN REVISIÓN</strong>.<br>
+                    Nuestro equipo académico evaluará tus datos y, una vez aprobada, te enviaremos tus credenciales de acceso a la Intranet al correo registrado.
+                </p>
                 <div>
-                    <a href="login.html" class="btn-acceso"><i class="fa-solid fa-right-to-bracket"></i> Ingresar a la Intranet Ahora</a>
+                    <a href="index.html" class="btn-acceso"><i class="fa-solid fa-house"></i> Volver al Inicio</a>
                 </div>
             </div>
         </div>
 
-    </div>
+    <!-- FOOTER ACTUALIZADO -->
+    <footer class="public-footer bg-section border-top">
+        <div class="footer-grid">
+            <div class="footer-columna">
+                <h3 class="text-primary">Noticias</h3>
+                <ul>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Convenio con empresas</a></li>
+                    <li><a href="#"><i class="fa-solid fa-angle-right text-accent"></i> Feria Vocacional 2026</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Infórmate</h3>
+                <ul>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> ¿Quiénes Somos?</a></li>
+                    <li><a href="nosotros.html"><i class="fa-solid fa-angle-right text-accent"></i> Misión y Visión</a></li>
+                </ul>
+            </div>
+            <div class="footer-columna">
+                <h3 class="text-primary">Programas</h3>
+                <ul>
+                    <li><a href="programa.html?id=1"><i class="fa-solid fa-angle-right text-accent"></i> Gestión Administrativa</a></li>
+                    <li><a href="programa.html?id=3"><i class="fa-solid fa-angle-right text-accent"></i> Enfermería Técnica</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom text-muted">
+            <span>© 2026 Instituto Tech. Todos los derechos reservados.</span>
+        </div>
+    </footer>
 
+    <script src="../js/public_dinamico.js"></script>
     <script>
-        function seleccionarCarrera(elemento) {
-            // Quitar clase selected a todas
+        let carreraIdSeleccionada = null; 
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            const gridCarreras = document.getElementById("grid-carreras-admision");
+            try {
+                const response = await fetch('http://localhost:8080/api/v1/carreras');
+                if (response.ok) {
+                    const data = await response.json();
+                    
+                    const carreras = data.filter(c => c.tipo === 'CARRERA');
+                    const cursosCortos = data.filter(c => c.tipo === 'CURSO_CORTO');
+                    
+                    let htmlContenido = '';
+
+                    if(carreras.length > 0) {
+                        htmlContenido += `<h4 style="grid-column: 1 / -1; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-bottom: 0px;">Programas de Estudio</h4>`;
+                        carreras.forEach(c => {
+                            htmlContenido += `
+                            <div class="carrera-card" onclick="seleccionarCarrera(this, ${c.idCarrera})">
+                                <i class="fa-solid fa-graduation-cap text-primary" style="font-size: 40px; margin-bottom: 15px;"></i>
+                                <h4 style="font-size: 15px;">${c.nombre}</h4>
+                            </div>`;
+                        });
+                    }
+
+                    if(cursosCortos.length > 0) {
+                        htmlContenido += `<h4 style="grid-column: 1 / -1; color: #555; border-bottom: 1px solid #eee; padding-bottom: 5px; margin-top: 10px; margin-bottom: 0px;">Cursos Cortos</h4>`;
+                        cursosCortos.forEach(c => {
+                            htmlContenido += `
+                            <div class="carrera-card" onclick="seleccionarCarrera(this, ${c.idCarrera})">
+                                <i class="fa-solid fa-certificate text-accent" style="font-size: 40px; margin-bottom: 15px;"></i>
+                                <h4 style="font-size: 15px;">${c.nombre}</h4>
+                            </div>`;
+                        });
+                    }
+
+                    gridCarreras.innerHTML = htmlContenido;
+                }
+            } catch (error) {
+                console.error("Error cargando carreras en admisión:", error);
+                gridCarreras.innerHTML = "<p class='text-danger'>Error al conectar con el servidor.</p>";
+            }
+        });
+
+        function seleccionarCarrera(elemento, idCarrera) {
             const cards = document.querySelectorAll('.carrera-card');
             cards.forEach(c => c.classList.remove('selected'));
-            // Agregar al clickeado
             elemento.classList.add('selected');
+            carreraIdSeleccionada = idCarrera;
         }
 
         function irAPaso(paso) {
-            // Ocultar todos los pasos
+            
+            if (paso === 2) {
+                const dni = document.getElementById('regDni').value.trim();
+                const correo = document.getElementById('regCorreo').value.trim();
+                const nombres = document.getElementById('regNombres').value.trim();
+                const apellidos = document.getElementById('regApellidos').value.trim();
+
+                if(!dni || !correo || !nombres || !apellidos) {
+                    alert("Por favor, completa todos tus datos personales obligatorios antes de continuar.");
+                    return; // Detiene la función, no avanza de paso
+                }
+            }
+
+            if (paso === 3 && !carreraIdSeleccionada) {
+                alert("Por favor, selecciona un programa de estudios o curso corto antes de continuar.");
+                return; // Detiene la función, no avanza de paso
+            }
+            
+            // Si las validaciones pasan, avanzamos visualmente en el Wizard
             document.querySelectorAll('.adm-step').forEach(el => el.classList.remove('active'));
-            // Limpiar indicadores
             document.querySelectorAll('.adm-step-indicator').forEach(el => {
                 el.classList.remove('active');
                 el.classList.remove('completed');
             });
 
-            // Mostrar el paso actual
             document.getElementById(`paso-${paso}`).classList.add('active');
 
-            // Actualizar indicadores (los anteriores en 'completed', el actual en 'active')
             for(let i=1; i<=3; i++) {
                 const ind = document.getElementById(`ind-${i}`);
                 if (i < paso) ind.classList.add('completed');
@@ -213,50 +291,57 @@
             }
         }
 
-        function procesarPago() {
-            const btnPagar = document.getElementById('btnPagar');
-            btnPagar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
-            btnPagar.disabled = true;
+        async function procesarPago() {
+            // Ya validamos en irAPaso(), pero nunca está de más re-validar antes de mandar a BD
+            const dni = document.getElementById('regDni').value.trim();
+            const correo = document.getElementById('regCorreo').value.trim();
+            const nombres = document.getElementById('regNombres').value.trim();
+            const apellidos = document.getElementById('regApellidos').value.trim();
 
-            // Obtenemos los datos que el usuario llenó en el paso 1
-            const dni = document.getElementById('regDni').value || "12345678";
-            
-            // Lógica de Generación de Credenciales
-            const usuarioGenerado = "U" + dni;
-            
-            // Generar clave alfanumérica segura (Ej: T3ch-x8z9)
-            const chars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            let claveAleatoria = "T3ch-";
-            for (let i = 0; i < 4; i++) {
-                claveAleatoria += chars.charAt(Math.floor(Math.random() * chars.length));
+            if(!dni || !correo || !nombres || !apellidos || !carreraIdSeleccionada) {
+                alert("Faltan datos requeridos. Por favor revisa los pasos anteriores.");
+                return;
             }
 
-            // Simulamos tiempo de carga de pasarela de pago (2 segundos)
-            setTimeout(() => {
-                // Ocultar zona de pago y mostrar el mensaje de éxito
-                document.getElementById('zona-pago').style.display = "none";
-                
-                // Imprimir las credenciales en pantalla
-                document.getElementById('resUsuario').textContent = usuarioGenerado;
-                document.getElementById('resClave').textContent = claveAleatoria;
-                
-                document.getElementById('zona-exito').style.display = "block";
-                const nombreIngresado = document.getElementById('regNombres').value || "Nuevo";
-                const nuevoEstudiante = {
-                    usuario: usuarioGenerado,
-                    clave: claveAleatoria,
-                    rol: "estudiante",
-                    nombre: nombreIngresado
-                };
-                
-                // Obtener lista actual o crear nueva, y pushear al nuevo alumno
-                const usuariosRegistrados = JSON.parse(localStorage.getItem("usuariosRegistrados")) || [];
-                usuariosRegistrados.push(nuevoEstudiante);
-                localStorage.setItem("usuariosRegistrados", JSON.stringify(usuariosRegistrados));
-                
-                // NOTA: En un sistema real, aquí llamarías a tu base de datos o API 
-                // para registrar permanentemente a este nuevo usuario.
-            }, 2000);
+            const btnPagar = document.getElementById('btnPagar');
+            btnPagar.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando postulación...';
+            btnPagar.disabled = true;
+
+            const selectSedeTurno = document.getElementById('regSedeTurno').value;
+            const partesSede = selectSedeTurno.split(' - '); 
+            
+            const payload = {
+                dni: dni,
+                nombres: nombres,
+                apellidos: apellidos,
+                correo: correo,
+                carreraId: carreraIdSeleccionada, 
+                sede: partesSede[0] || "Ica",
+                turno: partesSede[1] || "Mañana"
+            };
+
+            try {
+                const response = await fetch('http://localhost:8080/api/v1/postulantes', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    document.getElementById('zona-pago').style.display = "none";
+                    document.getElementById('zona-exito').style.display = "block";
+                } else {
+                    const errorData = await response.json();
+                    alert("Error en la postulación: " + (errorData.error || "Datos inválidos o el DNI ya está registrado."));
+                    btnPagar.innerHTML = '<i class="fa-solid fa-check"></i> Intentar de nuevo';
+                    btnPagar.disabled = false;
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Error de conexión con el servidor. Verifica que el backend esté encendido.");
+                btnPagar.innerHTML = '<i class="fa-solid fa-check"></i> Intentar de nuevo';
+                btnPagar.disabled = false;
+            }
         }
     </script>
 </body>
