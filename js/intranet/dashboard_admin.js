@@ -4,8 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     
     // 1. Verificar Sesión (Auth Guard - Solo Administradores)
     const rolUsuario = localStorage.getItem("usuarioRol");
-    if (!localStorage.getItem("sesionActiva") || rolUsuario !== "admin") {
-        window.location.href = "../../../login.html";
+    if (!localStorage.getItem("sesionActiva") || rolUsuario !== "administrador") {
+        window.location.href = "/html/login.html";
         return;
     }
 

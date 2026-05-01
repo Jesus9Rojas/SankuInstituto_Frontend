@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // 1. Verificar Sesión (Auth Guard)
     const rolUsuario = localStorage.getItem("usuarioRol");
     if (!localStorage.getItem("sesionActiva") || rolUsuario !== "docente") {
-        window.location.href = "../../../login.html";
+        window.location.href = "/html/login.html";
         return;
     }
 

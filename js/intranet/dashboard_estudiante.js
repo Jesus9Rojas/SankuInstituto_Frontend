@@ -1,9 +1,10 @@
 document.addEventListener("DOMContentLoaded", () => {
     
-    // 1. Verificar Sesión
-    const sesionActiva = localStorage.getItem("sesionActiva");
-    if (!sesionActiva) {
-        window.location.href = "../../../login.html";
+const sesionActiva = localStorage.getItem("sesionActiva");
+    const rolUsuario = localStorage.getItem("usuarioRol"); // Aseguramos pedir el rol
+    
+    if (!sesionActiva || rolUsuario !== "alumno") {
+        window.location.href = "/html/login.html"; // CORRECCIÓN: Ruta absoluta
         return;
     }
 
