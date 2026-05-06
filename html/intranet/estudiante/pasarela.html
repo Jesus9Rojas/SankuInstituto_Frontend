@@ -8,7 +8,6 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="/css/styles/variables.css">
     <link rel="stylesheet" href="/css/styles/base.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -21,12 +20,11 @@
         .order-summary h2 { font-size: 24px; font-weight: 500; margin-bottom: 30px; opacity: 0.9;}
         .item-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;}
         .item-row span { font-size: 14px; opacity: 0.8;}
-        .item-row strong { font-size: 16px; }
+        .item-row strong { font-size: 16px; text-align: right;}
         .total-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 40px;}
         .total-row span { font-size: 16px; opacity: 0.8; }
         .total-row h1 { font-size: 36px; margin: 0; }
         .trust-badge { display: flex; align-items: center; gap: 10px; font-size: 12px; opacity: 0.7; margin-top: 50px;}
-
         .payment-form { padding: 50px 40px; width: 60%; }
         .payment-form h3 { font-size: 22px; color: #333; margin-bottom: 30px;}
         .form-group { margin-bottom: 20px; }
@@ -38,12 +36,11 @@
         
         .row-2 { display: flex; gap: 20px; }
         .row-2 .form-group { flex: 1; }
-
         .btn-pay { width: 100%; background: var(--color-primary); color: white; border: none; padding: 16px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: 0.3s; margin-top: 20px;}
         .btn-pay:hover { background: #004494; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,86,179,0.3);}
+        .btn-pay:disabled { background: #999; cursor: not-allowed; transform: none; box-shadow: none; }
         .cancel-link { display: block; text-align: center; margin-top: 20px; color: #888; text-decoration: none; font-size: 14px;}
         .cancel-link:hover { color: var(--accent-red); }
-
         @media (max-width: 768px) {
             .checkout-container { flex-direction: column; }
             .order-summary, .payment-form { width: 100%; }
@@ -51,42 +48,39 @@
     </style>
 </head>
 <body>
-
     <div class="checkout-container">
         <div class="order-summary">
             <div>
-                <img src="/public/img/Logo SANKUINSTITUTO2.png" alt="Logo" style="max-width: 150px; margin-bottom: 40px; filter: brightness(0) invert(1);">
+                <img src="/public/img/Jhalabet.png" alt="Logo" style="max-width: 150px; margin-bottom: 40px; filter: brightness(0) invert(1);">
                 <h2>Resumen de Pago</h2>
                 
                 <div class="item-row">
                     <span>Concepto</span>
-                    <strong>Pensión Ciclo 2026-I</strong>
+                    <strong id="payConcepto">Cargando...</strong>
                 </div>
                 <div class="item-row">
                     <span>Detalle</span>
-                    <strong>Cuota 2 (Abril)</strong>
+                    <strong id="payDetalle">Cargando...</strong>
                 </div>
                 <div class="item-row" style="border: none;">
                     <span>Alumno</span>
                     <strong id="payStudentName">Estudiante</strong>
                 </div>
-
                 <div class="total-row">
                     <span>Total a pagar</span>
-                    <h1>S/ 350.00</h1>
+                    <h1 id="payMontoTotal">S/ 0.00</h1>
                 </div>
             </div>
-
             <div class="trust-badge">
                 <i class="fa-solid fa-lock" style="font-size: 20px;"></i>
-                <p>Pago encriptado y seguro con tecnología SSL de 256 bits.</p>
+                <p>Pago encriptado y seguro con tecnología SSL de 256 bits conectada con la pasarela bancaria.</p>
             </div>
         </div>
 
         <div class="payment-form">
             <h3>Detalles de la Tarjeta</h3>
             
-            <form action="dashboard.html" onsubmit="alert('Pago procesado con éxito. ¡Gracias!');">
+            <form id="form-pago">
                 <div class="form-group">
                     <label>Nombre en la tarjeta</label>
                     <div class="input-wrapper">
@@ -94,21 +88,21 @@
                         <input type="text" placeholder="EJ. JUAN PÉREZ" required>
                     </div>
                 </div>
-
                 <div class="form-group">
                     <label>Número de Tarjeta</label>
                     <div class="input-wrapper">
                         <i class="fa-regular fa-credit-card"></i>
-                        <input type="text" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                        <!-- Agregamos id="cc-number" y cambiamos el placeholder -->
+                        <input type="text" id="cc-number" placeholder="0000-0000-0000-0000" maxlength="19" required>
                     </div>
                 </div>
-
                 <div class="row-2">
                     <div class="form-group">
                         <label>Fecha de Expiración</label>
                         <div class="input-wrapper">
                             <i class="fa-regular fa-calendar"></i>
-                            <input type="text" placeholder="MM/AA" maxlength="5" required>
+                            <!-- Agregamos id="cc-exp" -->
+                            <input type="text" id="cc-exp" placeholder="MM/AA" maxlength="5" required>
                         </div>
                     </div>
                     <div class="form-group">
@@ -119,8 +113,7 @@
                         </div>
                     </div>
                 </div>
-
-                <button type="submit" class="btn-pay">Procesar Pago de S/ 350.00</button>
+                <button type="submit" id="btnProcesarPago" class="btn-pay">Procesar Pago</button>
                 <a href="dashboard.html" class="cancel-link">Cancelar y volver al portal</a>
             </form>
             
@@ -132,10 +125,102 @@
         </div>
     </div>
 
-    <script>
-        // Poner el nombre real del estudiante si existe
-        const nombre = localStorage.getItem("usuarioNombre");
-        if(nombre) document.getElementById("payStudentName").textContent = nombre;
+<script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            const cuotasJSON = localStorage.getItem("pasarela_cuotas_array");
+            let total = localStorage.getItem("pasarela_total_suma");
+            
+            // Seguridad
+            if (!token || !cuotasJSON || cuotasJSON === "[]") {
+                alert("Acceso inválido. Selecciona al menos una cuota para pagar.");
+                window.location.href = "dashboard.html";
+                return;
+            }
+
+            const cuotasElegidas = JSON.parse(cuotasJSON);
+
+            // 1. Inyectamos los datos en la pantalla
+            const nombre = localStorage.getItem("usuarioNombre");
+            if (nombre) document.getElementById("payStudentName").textContent = nombre;
+            
+            // Generar la lista de conceptos concatenada y detallada
+            let textoConceptos = cuotasElegidas.map(c => c.concepto).join(', ');
+            let textoDetalle = cuotasElegidas.map(c => "ID #" + c.id).join(', ');
+
+            document.getElementById("payConcepto").textContent = textoConceptos;
+            document.getElementById("payDetalle").textContent = textoDetalle;
+            document.getElementById("payMontoTotal").textContent = "S/ " + parseFloat(total).toFixed(2);
+            document.getElementById("btnProcesarPago").textContent = "Procesar Pago Total de S/ " + parseFloat(total).toFixed(2);
+
+            // AUTO-FORMATO DE TARJETA (El mismo de antes)
+            const ccNumber = document.getElementById("cc-number");
+            const ccExp = document.getElementById("cc-exp");
+
+            ccNumber.addEventListener("input", function(e) {
+                let value = e.target.value.replace(/\D/g, ""); 
+                let formattedValue = "";
+                for (let i = 0; i < value.length; i++) {
+                    if (i > 0 && i % 4 === 0) formattedValue += "-";
+                    formattedValue += value[i];
+                }
+                e.target.value = formattedValue;
+            });
+
+            ccExp.addEventListener("input", function(e) {
+                let value = e.target.value.replace(/\D/g, ""); 
+                if (value.length > 2) value = value.substring(0, 2) + "/" + value.substring(2, 4);
+                e.target.value = value;
+            });
+
+            // 2. PROCESAMIENTO MÚLTIPLE
+            document.getElementById("form-pago").addEventListener("submit", async (e) => {
+                e.preventDefault(); 
+                
+                const btn = document.getElementById("btnProcesarPago");
+                const originalText = btn.textContent;
+                
+                // VALIDACIONES FECHA Y TARJETA
+                if (ccNumber.value.length < 19) { alert("El número de tarjeta está incompleto."); return; }
+                if (ccExp.value.length === 5) {
+                    const [month, year] = ccExp.value.split("/");
+                    const currentYear = new Date().getFullYear() % 100;
+                    const currentMonth = new Date().getMonth() + 1;
+                    if (parseInt(month) < 1 || parseInt(month) > 12) { alert("Error: El mes es inválido."); return; }
+                    if (parseInt(year) < currentYear || (parseInt(year) === currentYear && parseInt(month) < currentMonth)) {
+                        alert("Error: La tarjeta ingresada se encuentra expirada."); return;
+                    }
+                } else { alert("Error: Formato de expiración incorrecto (MM/AA)."); return; }
+
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando cuotas...';
+                btn.disabled = true;
+
+                try {
+                    // Magia Negra: Enviamos un POST al backend POR CADA CUOTA seleccionada
+                    for (let cuota of cuotasElegidas) {
+                        const urlPago = `http://localhost:8080/api/v1/pagos/pagar?idCuota=${cuota.id}&monto=${cuota.monto}&metodoPago=TARJETA_CREDITO`;
+                        const res = await fetch(urlPago, {
+                            method: 'POST',
+                            headers: { 'Authorization': `Bearer ${token}` }
+                        });
+                        if (!res.ok) throw new Error("Fallo en la transacción de la cuota: " + cuota.concepto);
+                    }
+
+                    // Si termina el bucle for sin errores, limpiamos y ganamos:
+                    localStorage.removeItem("pasarela_cuotas_array");
+                    localStorage.removeItem("pasarela_total_suma");
+                    
+                    alert("¡Felicidades! Todas las cuotas seleccionadas fueron pagadas con éxito.");
+                    window.location.href = "dashboard.html";
+
+                } catch (error) {
+                    console.error("Fallo al procesar múltiples pagos:", error);
+                    alert("Hubo un error con tu banco y la transacción fue detenida. Verifica los fondos.");
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            });
+        });
     </script>
 </body>
 </html>

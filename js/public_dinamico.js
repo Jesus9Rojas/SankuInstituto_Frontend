@@ -1,3 +1,4 @@
+// /js/public_dinamico.js
 document.addEventListener("DOMContentLoaded", async () => {
     
     // DICCIONARIO DE DISEÑO
@@ -47,11 +48,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (response.ok) {
             carrerasData = await response.json();
             
-            // 1. CARGAR EL MENÚ DESPLEGABLE DINÁMICAMENTE
+            // 1. CARGAR EL MENÚ DESPLEGABLE DINÁMICAMENTE (Solo activos)
             const menuDropdown = document.getElementById("menu-programas-dinamico");
             if (menuDropdown) {
                 menuDropdown.innerHTML = ""; 
-                const programas = carrerasData.filter(c => c.tipo === 'CARRERA');
+                const programas = carrerasData.filter(c => c.tipo === 'CARRERA' && c.estado === true);
                 
                 programas.forEach(prog => {
                     const paramsMenu = new URLSearchParams(window.location.search);
@@ -71,7 +72,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (idPrograma && document.getElementById("prog-titulo-1")) {
         const carreraActual = carrerasData.find(c => c.idCarrera == idPrograma);
 
-        if (carreraActual) {
+        // Ocultamos si no existe o si fue deshabilitada por el coordinador
+        if (carreraActual && carreraActual.estado === true) {
             const palabras = carreraActual.nombre.trim().split(" ");
             const primeraPalabra = palabras.shift();
             const restoDelTitulo = palabras.join(" "); 
@@ -100,6 +102,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 iconElement.className = `fa-solid ${diseno.icono} text-white`;
             }
 
+            // Usamos innerHTML porque los datos traen etiquetas HTML generadas por Quill.js
             document.getElementById("prog-desc").innerHTML = carreraActual.descripcion || "";
             document.getElementById("perfil").innerHTML = carreraActual.perfilAcademico || "<p class='text-muted'>Información en actualización.</p>";
             document.getElementById("mercado").innerHTML = carreraActual.mercadoLaboral || "<p class='text-muted'>Información en actualización.</p>";
@@ -109,8 +112,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             document.title = `${carreraActual.nombre} - Instituto Tech`;
         } else {
             document.getElementById("prog-titulo-1").textContent = "Programa";
-            document.getElementById("prog-titulo-2").textContent = "No Encontrado";
-            document.getElementById("prog-desc").textContent = "La carrera que buscas no existe o ha sido deshabilitada.";
+            document.getElementById("prog-titulo-2").textContent = "No Disponible";
+            document.getElementById("prog-desc").innerHTML = "La carrera que buscas no existe o ha sido deshabilitada temporalmente.";
         }
     }
 
@@ -118,11 +121,12 @@ document.addEventListener("DOMContentLoaded", async () => {
     const contenedorCursos = document.getElementById("contenedor-cursos-dinamico");
     
     if (contenedorCursos) {
-        const cursosCortos = carrerasData.filter(c => c.tipo === 'CURSO_CORTO');
+        // Solo mostramos cursos activos
+        const cursosCortos = carrerasData.filter(c => c.tipo === 'CURSO_CORTO' && c.estado === true);
         contenedorCursos.innerHTML = ""; 
 
         if(cursosCortos.length === 0) {
-            contenedorCursos.innerHTML = "<h3 class='text-center text-muted'>Nuevos cursos se publicarán pronto.</h3>";
+            contenedorCursos.innerHTML = "<h3 class='text-center text-muted' style='margin: 40px 0;'>Nuevos cursos se publicarán pronto.</h3>";
         }
 
         cursosCortos.forEach((curso, index) => {
@@ -134,6 +138,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             const colorActual = bgColors[index % bgColors.length];
             const diseno = disenoCarreras[curso.nombre] || disenoCarreras["DEFAULT"];
 
+            // Inyectamos el HTML de Quill directamente en las tabs
             const cursoHTML = `
             <div class="curso-horizontal-card shadow-card border-card bg-card">
                 <div class="curso-sidebar-info" style="background: ${colorActual};">
@@ -152,15 +157,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                     <div class="tab-content-wrapper">
                         <div id="cont-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera} active">
                             <p class="text-muted">${curso.descripcion || ''}</p>
-                            <div class="mt-15">${curso.perfilAcademico || ''}</div>
+                            <div class="mt-15 ql-editor-custom">${curso.perfilAcademico || ''}</div>
                         </div>
-                        <div id="merc-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera}">
+                        <div id="merc-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera} ql-editor-custom">
                             ${curso.mercadoLaboral || '<p class="text-muted">Amplio campo laboral.</p>'}
                         </div>
-                        <div id="ben-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera}">
+                        <div id="ben-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera} ql-editor-custom">
                             ${curso.beneficios || '<p class="text-muted">Múltiples beneficios institucionales.</p>'}
                         </div>
-                        <div id="req-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera}">
+                        <div id="req-${curso.idCarrera}" class="tab-pane curso${curso.idCarrera} ql-editor-custom">
                             ${curso.requisitos || '<p class="text-muted">Consulta los requisitos con admisión.</p>'}
                         </div>
                     </div>
@@ -177,22 +182,23 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (selectPrograma && carrerasData.length > 0) {
         selectPrograma.innerHTML = '<option value="" disabled selected>Selecciona una opción...</option>';
         
-        const carreras = carrerasData.filter(c => c.tipo === 'CARRERA');
-        const cursos = carrerasData.filter(c => c.tipo === 'CURSO_CORTO');
+        // Filtramos solo los programas activos
+        const carrerasParaContacto = carrerasData.filter(c => c.tipo === 'CARRERA' && c.estado === true);
+        const cursosParaContacto = carrerasData.filter(c => c.tipo === 'CURSO_CORTO' && c.estado === true);
 
-        if (carreras.length > 0) {
+        if (carrerasParaContacto.length > 0) {
             const grupoCarreras = document.createElement('optgroup');
             grupoCarreras.label = "Programas de Estudio";
-            carreras.forEach(c => {
+            carrerasParaContacto.forEach(c => {
                 grupoCarreras.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
             });
             selectPrograma.appendChild(grupoCarreras);
         }
 
-        if (cursos.length > 0) {
+        if (cursosParaContacto.length > 0) {
             const grupoCursos = document.createElement('optgroup');
             grupoCursos.label = "Cursos Cortos";
-            cursos.forEach(c => {
+            cursosParaContacto.forEach(c => {
                 grupoCursos.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
             });
             selectPrograma.appendChild(grupoCursos);

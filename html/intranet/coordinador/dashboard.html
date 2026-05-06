@@ -10,7 +10,9 @@
     <link rel="stylesheet" href="/css/styles/variables.css">
     <link rel="stylesheet" href="/css/styles/base.css">
     <link rel="stylesheet" href="/css/dashboard_coordinador.css">
+ <!-- Para heredar los badges de colores -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body class="bg-main">
@@ -22,15 +24,12 @@
             </div>
             <nav class="sidebar-menu">
                 <button class="menu-btn active" data-target="seccion-inicio"><i class="fa-solid fa-chart-line"></i><span>Panel Académico</span></button>
-                
-                <!-- NUEVO BOTÓN AÑADIDO -->
-                <button class="menu-btn" data-target="seccion-registros"><i class="fa-solid fa-folder-plus"></i><span>Registros Base</span></button>
-                
+                <button class="menu-btn" data-target="seccion-registros"><i class="fa-solid fa-folder-plus"></i><span>Registros Base</span></button>      
                 <button class="menu-btn" data-target="seccion-programacion"><i class="fa-solid fa-calendar-check"></i><span>Programación</span></button>
                 <button class="menu-btn" data-target="seccion-docentes"><i class="fa-solid fa-chalkboard-user"></i><span>Supervisión Docente</span></button>
-                <button class="menu-btn" data-target="seccion-alumnos"><i class="fa-solid fa-user-graduate"></i><span>Rendimiento</span></button>
+                <button class="menu-btn" data-target="seccion-rendimiento"><i class="fa-solid fa-user-graduate"></i><span>Rendimiento Estudiantil</span></button>
                 <button class="menu-btn" data-target="seccion-matriculas"><i class="fa-solid fa-user-plus"></i><span>Matrículas y Admisión</span></button>
-            </nav>
+                <button class="menu-btn" data-target="seccion-programas"><i class="fa-solid fa-graduation-cap"></i><span>Programas de Estudio</span></button>
         </aside>
 
         <main class="portal-main">
@@ -45,7 +44,7 @@
                             <span class="user-greeting">Coord. <strong id="userNameHeader">Cargando...</strong></span>
                             <span class="user-code">Área Académica</span>
                         </div>
-                        <div class="user-avatar-text bg-teal text-white"><span id="userInitial">C</span></div>
+                        <div class="user-avatar-text bg-teal text-white" style="width: 40px; height: 40px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-weight: 600; font-size: 18px;"><span id="userInitial">C</span></div>
                         <div class="trigger-dropdown" id="btnDropdownChevron"><i class="fa-solid fa-angle-down text-muted"></i></div>
                         <div class="dropdown-content shadow-card border-card" id="menuPerfil">
                             <a href="#" class="nav-trigger" data-target="seccion-perfil"><i class="fa-regular fa-id-badge"></i> Mi Perfil</a>
@@ -99,7 +98,7 @@
                     </div>
                 </section>
 
-                <!-- NUEVA SECCIÓN: REGISTROS BASE -->
+                <!-- REGISTROS BASE -->
                 <section id="seccion-registros" class="content-section">
                     <div class="welcome-header">
                         <div>
@@ -113,56 +112,55 @@
                         <div class="bg-card shadow-card border-card" style="padding: 25px;">
                             <h3 style="margin-bottom: 20px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 10px;"><i class="fa-solid fa-user-tie"></i> Registrar Nuevo Docente</h3>
                             <form id="formRegistrarDocente">
-    <div class="form-grid">
-        <div class="form-group"><label>DNI</label><input type="text" id="regDocDni" class="custom-input" required maxlength="8"></div>
-        <div class="form-group"><label>Nombres</label><input type="text" id="regDocNombres" class="custom-input" required></div>
-        <div class="form-group"><label>Apellidos</label><input type="text" id="regDocApellidos" class="custom-input" required></div>
-        <div class="form-group"><label>Correo Institucional</label><input type="email" id="regDocCorreo" class="custom-input" required></div>
-        <div class="form-group"><label>Especialidad</label><input type="text" id="regDocEspecialidad" class="custom-input" placeholder="Ej. Ingeniero de Software" required></div>
-        
-        <!-- NUEVO CAMPO DE CONTRASEÑA -->
-<div class="form-group">
-    <label>Contraseña de Acceso</label>
-    <input type="text" class="custom-input" value="Se usará el DNI como clave" disabled style="background: #eee; border-color: #ccc;">
-    <small class="text-muted">Por defecto, el sistema asigna el DNI como contraseña inicial.</small>
-</div>
-    </div>
-    <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;"><i class="fa-solid fa-floppy-disk"></i> Guardar Docente</button>
-</form>
+                                <div class="form-grid">
+                                    <div class="form-group"><label>DNI</label><input type="text" id="regDocDni" class="custom-input" required maxlength="8"></div>
+                                    <div class="form-group"><label>Nombres</label><input type="text" id="regDocNombres" class="custom-input" required></div>
+                                    <div class="form-group"><label>Apellidos</label><input type="text" id="regDocApellidos" class="custom-input" required></div>
+                                    <div class="form-group"><label>Correo Institucional</label><input type="email" id="regDocCorreo" class="custom-input" required></div>
+                                    <div class="form-group"><label>Especialidad</label><input type="text" id="regDocEspecialidad" class="custom-input" placeholder="Ej. Ingeniero de Software" required></div>
+                                    
+                                    <div class="form-group">
+                                        <label>Contraseña de Acceso</label>
+                                        <input type="text" class="custom-input" value="Se usará el DNI como clave" disabled style="background: #eee; border-color: #ccc;">
+                                        <small class="text-muted">Por defecto, el sistema asigna el DNI como contraseña inicial.</small>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 15px;"><i class="fa-solid fa-floppy-disk"></i> Guardar Docente</button>
+                            </form>
                         </div>
-<div class="bg-card shadow-card border-card" style="padding: 25px;">
-    <h3 style="margin-bottom: 20px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 10px;">
-        <i class="fa-solid fa-book"></i> Crear Nuevo Curso
-    </h3>
-    <form id="formCrearCurso">
-        <div class="form-group">
-            <label>Nombre del Curso</label>
-            <input type="text" id="regCurNombre" class="custom-input" placeholder="Ej. Base de Datos II" required>
-        </div>
-        
-        <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-            <div class="form-group">
-                <label>Programa / Carrera</label>
-                <select id="regCurCarrera" class="custom-select" required>
-                    <option value="">Seleccione carrera...</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>Créditos</label>
-                <input type="number" id="regCurCreditos" class="custom-input" value="3" min="1" max="10" required>
-            </div>
-        </div>
+                        <div class="bg-card shadow-card border-card" style="padding: 25px;">
+                            <h3 style="margin-bottom: 20px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                <i class="fa-solid fa-book"></i> Crear Nuevo Curso
+                            </h3>
+                            <form id="formCrearCurso">
+                                <div class="form-group">
+                                    <label>Nombre del Curso</label>
+                                    <input type="text" id="regCurNombre" class="custom-input" placeholder="Ej. Base de Datos II" required>
+                                </div>
+                                
+                                <div class="form-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                    <div class="form-group">
+                                        <label>Programa / Carrera</label>
+                                        <select id="regCurCarrera" class="custom-select" required>
+                                            <option value="">Seleccione carrera...</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Créditos</label>
+                                        <input type="number" id="regCurCreditos" class="custom-input" value="3" min="1" max="10" required>
+                                    </div>
+                                </div>
 
-        <div class="form-group">
-            <label>Descripción Informativa</label>
-            <textarea id="regCurDescripcion" class="custom-input" rows="3" placeholder="Detalles del curso..." style="resize: vertical;"></textarea>
-        </div>
+                                <div class="form-group">
+                                    <label>Descripción Informativa</label>
+                                    <textarea id="regCurDescripcion" class="custom-input" rows="3" placeholder="Detalles del curso..." style="resize: vertical;"></textarea>
+                                </div>
 
-        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">
-            <i class="fa-solid fa-floppy-disk"></i> Guardar Curso
-        </button>
-    </form>
-</div>
+                                <button type="submit" class="btn-primary" style="width: 100%; margin-top: 10px;">
+                                    <i class="fa-solid fa-floppy-disk"></i> Guardar Curso
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </section>
 
@@ -212,16 +210,35 @@
                 </section>
 
                 <!-- RENDIMIENTO (ALUMNOS) -->
-                <section id="seccion-alumnos" class="content-section">
-                    <h2 class="section-title">Seguimiento Académico Estudiantil</h2>
-                    <p class="text-muted">Visualiza el avance de los estudiantes.</p>
+                <section id="seccion-rendimiento" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Seguimiento Académico Estudiantil</h2>
+                            <p class="text-muted">Visualiza el avance de los estudiantes, sus promedios y asistencia global.</p>
+                        </div>
+                    </div>
                     <div class="bg-card shadow-card border-card mt-20" style="padding: 25px;">
                         <div class="search-box" style="width: 100%; max-width: 600px; margin: 0 auto 30px auto;">
                             <i class="fa-solid fa-magnifying-glass"></i>
-                            <input type="text" id="buscadorAlumnoDni" placeholder="Buscar alumno por DNI para ver expediente...">
+                            <input type="text" id="buscadorRendimiento" placeholder="Buscar alumno por DNI o Apellidos/Nombres...">
                         </div>
-                        <div class="alumno-preview border-card" style="padding: 20px; border-radius: 8px; background: #fafafa; text-align:center;">
-                            <p class="text-muted">Utiliza el buscador de arriba para cargar el expediente de un alumno.</p>
+                        
+                        <div class="table-responsive">
+                            <table class="modern-table" style="width: 100%; border-collapse: collapse;">
+                                <thead>
+                                    <tr>
+                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">DNI</th>
+                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Estudiante</th>
+                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Carrera</th>
+                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Promedio Histórico</th>
+                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Asistencia Global</th>
+                                        <th style="text-align: center; padding-bottom: 10px; border-bottom: 2px solid #eee;">Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-rendimiento">
+                                    <tr><td colspan="6" class="text-center text-muted" style="padding: 20px;">Cargando rendimiento...</td></tr>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </section>
@@ -293,8 +310,43 @@
                     </div>
                 </section>
 
+                <!-- PROGRAMAS DE ESTUDIO -->
+                <section id="seccion-programas" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Programas y Cursos Cortos</h2>
+                            <p class="text-muted">Gestiona la oferta académica del instituto.</p>
+                        </div>
+                        <button class="btn-primary" onclick="abrirModalPrograma()"><i class="fa-solid fa-plus"></i> Nuevo Programa</button>
+                    </div>
+
+                    <div class="bg-card shadow-card border-card mt-20">
+                        <div class="table-responsive" style="padding: 20px;">
+                            <table class="modern-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Tipo</th>
+                                        <th>Nombre</th>
+                                        <th>Estado</th>
+                                        <th style="text-align: right;">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-programas-coordinador">
+                                    <tr><td colspan="5" class="text-center text-muted">Cargando programas...</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </section>
+
+
+
                 <!-- PERFIL -->
                 <section id="seccion-perfil" class="content-section">
+                    <h2 class="section-title">Mi Perfil Profesional</h2>
+                    <p class="text-muted mb-40">Información de contacto y especialidad académica.</p>
+
                     <div class="perfil-layout">
                         <div class="perfil-left">
                             <div class="user-avatar-text bg-teal text-white" style="width: 150px; height: 150px; font-size: 60px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center;">
@@ -303,15 +355,35 @@
                         </div>
                         <div class="perfil-right">
                             <h2 class="section-title" id="perfilFullName" style="margin-bottom: 20px;">Coordinador</h2>
+                            
                             <table class="modern-table" style="background-color: white; border-radius: 8px; border: 1px solid #eee;">
                                 <tbody>
-                                    <tr><td style="font-weight: 600; width: 35%;">Rol Institucional</td><td class="text-muted">Coordinador Académico</td></tr>
+                                    <tr>
+                                        <td style="font-weight: 600; width: 35%;">DNI</td>
+                                        <td class="text-muted" id="coordDni">Cargando...</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; width: 35%;">Nombres</td>
+                                        <td class="text-muted" id="coordNombres">Cargando...</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; width: 35%;">Apellidos</td>
+                                        <td class="text-muted" id="coordApellidos">Cargando...</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; width: 35%;">Correo Institucional</td>
+                                        <td class="text-muted" id="coordEmail">Cargando...</td>
+                                    </tr>
+                                    <tr>
+                                        <td style="font-weight: 600; width: 35%;">Rol Institucional</td>
+                                        <td class="text-muted" id="coordRol">Cargando...</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                 </section>
-                
+
             </div>
         </main>
     </div>
@@ -339,18 +411,18 @@
                             </select>
                         </div>
                         <div class="form-group">
-    <label>Día de la Semana</label>
-    <select id="secDia" class="custom-select" required>
-        <option value="" disabled selected>Seleccione un día...</option>
-        <option value="1">Lunes</option>
-        <option value="2">Martes</option>
-        <option value="3">Miércoles</option>
-        <option value="4">Jueves</option>
-        <option value="5">Viernes</option>
-        <option value="6">Sábado</option>
-        <option value="7">Domingo</option>
-    </select>
-</div>
+                            <label>Día de la Semana</label>
+                            <select id="secDia" class="custom-select" required>
+                                <option value="" disabled selected>Seleccione un día...</option>
+                                <option value="1">Lunes</option>
+                                <option value="2">Martes</option>
+                                <option value="3">Miércoles</option>
+                                <option value="4">Jueves</option>
+                                <option value="5">Viernes</option>
+                                <option value="6">Sábado</option>
+                                <option value="7">Domingo</option>
+                            </select>
+                        </div>
                         <div class="form-group">
                             <label>Horario (Inicio - Fin)</label>
                             <div style="display:flex; gap:10px;">
@@ -361,6 +433,59 @@
                     </div>
                     <div class="form-actions mt-20" style="text-align:right;">
                         <button type="submit" class="btn-primary" style="width:100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Sección</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div id="modalPrograma" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3 id="modalProgramaTitulo">Crear Nuevo Programa</h3>
+                <button class="close-modal" onclick="cerrarModal('modalPrograma')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="formPrograma">
+                    <input type="hidden" id="progId">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Tipo de Programa</label>
+                            <select id="progTipo" class="custom-select" required>
+                                <option value="CARRERA">Carrera Profesional</option>
+                                <option value="CURSO_CORTO">Curso Corto</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Estado</label>
+                            <select id="progEstado" class="custom-select" required>
+                                <option value="true">Activo (Visible en web)</option>
+                                <option value="false">Inactivo (Oculto)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre del Programa</label>
+                        <input type="text" id="progNombre" class="custom-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Descripción Corta (Resumen)</label>
+                        <textarea id="progDesc" class="custom-input" rows="2"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Perfil Académico</label>
+                        <div id="editor-perfil" style="height: 120px; background: white;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Mercado Laboral</label>
+                        <div id="editor-mercado" style="height: 120px; background: white;"></div>
+                    </div>
+                    <div class="form-group">
+                        <label>Requisitos y Horarios</label>
+                        <div id="editor-requisitos" style="height: 120px; background: white;"></div>
+                    </div>
+                    <div class="form-actions mt-20" style="text-align:right;">
+                        <button type="submit" class="btn-primary" style="width:100%;"><i class="fa-solid fa-floppy-disk"></i> Guardar Programa</button>
                     </div>
                 </form>
             </div>
@@ -385,6 +510,45 @@
         </div>
     </div>
 
+    <!-- MODAL PARA RESPONDER TRÁMITES -->
+    <div id="modalResponderTramite" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>Responder Solicitud #<span id="respTramiteId"></span></h3>
+                <button class="close-modal" onclick="cerrarModal('modalResponderTramite')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px dashed #ccc;">
+                    <p style="margin-bottom: 5px;"><strong>Estudiante:</strong> <span id="respTramiteAlumno"></span></p>
+                    <p style="margin-bottom: 5px;"><strong>Curso Relacionado:</strong> <span id="respTramiteCurso"></span></p>
+                    <p style="margin-bottom: 0;"><strong>Motivo:</strong> <span id="respTramiteDesc" style="color: #555;"></span></p>
+                </div>
+                
+                <form id="formResponderTramite">
+                    <input type="hidden" id="inputIdTramite">
+                    <div class="form-group">
+                        <label>Decisión Administrativa</label>
+                        <select id="respTramiteEstado" class="custom-select" required>
+                            <option value="" disabled selected>Elige una opción...</option>
+                            <option value="APROBADO">Aprobar Solicitud</option>
+                            <option value="RECHAZADO">Rechazar Solicitud</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-top: 15px;">
+                        <label>Observación / Respuesta al Estudiante</label>
+                        <textarea id="respTramiteObs" class="custom-input" rows="4" placeholder="Escribe la respuesta detallada que el estudiante leerá en su panel..." required></textarea>
+                    </div>
+                    
+                    <div class="form-actions mt-20" style="display: flex; justify-content: space-between; align-items: center;">
+                        <button type="button" class="btn-outline-small" style="color:#888; border-color:#ccc;" onclick="cerrarModal('modalResponderTramite')">Cancelar</button>
+                        <button type="submit" class="btn-primary" id="btnEnviarRespuesta"><i class="fa-solid fa-paper-plane"></i> Enviar Respuesta</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
     <script src="/js/auth.js"></script>
     <script src="/js/intranet/dashboard_coordinador.js"></script>
 </body>

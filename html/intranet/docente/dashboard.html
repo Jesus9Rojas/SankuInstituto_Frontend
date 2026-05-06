@@ -4,276 +4,189 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portal Docente - Instituto Tech</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
     <link rel="stylesheet" href="/css/styles/variables.css">
     <link rel="stylesheet" href="/css/styles/base.css">
-    
     <link rel="stylesheet" href="/css/dashboard_docente.css">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="bg-main">
-
     <div class="portal-layout" id="portalLayout">
         
+        <!-- SIDEBAR -->
         <aside class="portal-sidebar bg-card border-right" id="sidebar">
             <div class="sidebar-logo-container border-bottom">
                 <img src="/public/img/Jhalabet.png" alt="Logo" class="sidebar-logo">
             </div>
-            
             <nav class="sidebar-menu">
-                <button class="menu-btn active" data-target="seccion-inicio">
-                    <i class="fa-solid fa-border-all"></i>
-                    <span>Panel</span>
-                </button>
-                <button class="menu-btn" data-target="seccion-cursos">
-                    <i class="fa-solid fa-chalkboard-user"></i>
-                    <span>Mis Cursos</span>
-                </button>
-                <button class="menu-btn" data-target="seccion-asistencia">
-                    <i class="fa-solid fa-clipboard-user"></i>
-                    <span>Asistencia</span>
-                </button>
-                <button class="menu-btn" data-target="seccion-notas">
-                    <i class="fa-solid fa-file-signature"></i>
-                    <span>Registro Notas</span>
-                </button>
+                <button class="menu-btn active" data-target="seccion-inicio"><i class="fa-solid fa-border-all"></i><span>Panel Principal</span></button>
+                <button class="menu-btn" data-target="seccion-cursos"><i class="fa-solid fa-chalkboard-user"></i><span>Mis Clases</span></button>
+                <button class="menu-btn" data-target="seccion-calendario"><i class="fa-regular fa-calendar-days"></i><span>Mi Horario</span></button>
+                <button class="menu-btn" data-target="seccion-asistencia"><i class="fa-solid fa-clipboard-user"></i><span>Tomar Asistencia</span></button>
+                <button class="menu-btn" data-target="seccion-notas"><i class="fa-solid fa-file-signature"></i><span>Calificar Evaluaciones</span></button>
             </nav>
         </aside>
 
+        <!-- MAIN -->
         <main class="portal-main">
-            
             <header class="portal-header bg-card border-bottom">
                 <div class="header-left">
                     <button id="btnMenuToggle" class="toggle-sidebar-btn"><i class="fa-solid fa-bars-staggered"></i></button>
-                    <div class="header-search">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        <input type="text" placeholder="Buscar alumnos, cursos...">
-                    </div>
                 </div>
                 <div class="header-right">
-                    <button class="icon-btn notification-btn">
-                        <i class="fa-regular fa-bell"></i>
-                        <span class="notification-dot"></span>
-                    </button>
-                    <div class="user-profile-header dropdown">
-                        <div class="user-text">
-                            <span class="user-greeting">Prof. <strong id="userNameHeader">Docente</strong></span>
-                            <span class="user-code">Dpto. Académico</span>
-                        </div>
-                        <div class="user-avatar-text bg-primary text-white">
-                            <span id="userInitial">D</span>
-                        </div>
-                        <div class="trigger-dropdown" id="btnDropdownChevron">
-                            <i class="fa-solid fa-angle-down text-muted"></i>
-                        </div>
+                    <div class="header-actions" style="display: flex; align-items: center; gap: 25px;">
                         
-                        <div class="dropdown-content shadow-card border-card" id="menuPerfil">
-    <a href="#" class="nav-trigger" data-target="seccion-perfil"><i class="fa-regular fa-id-badge"></i> Mi Perfil</a>
-    <a href="#" id="btnCerrarSesion" style="color: var(--accent-red); border-top: 1px solid #eee;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</a>
-</div>
+                        <!-- CAMPANITA DE NOTIFICACIONES -->
+                        <div style="position: relative;">
+                            <button id="btnNotificaciones" style="background: none; border: none; font-size: 22px; cursor: pointer; color: #555; padding: 5px;">
+                                <i class="fa-regular fa-bell"></i>
+                            </button>
+                            <span id="badge-notif" class="burbuja-alerta" style="display: none;">0</span>
+                            <!-- CAJA FLOTANTE DE NOTIFICACIONES -->
+                            <div class="notification-dropdown shadow-card border-card" id="notif-dropdown" style="display: none; position: absolute; top: 40px; right: -10px; background: white; width: 300px; padding: 15px; border-radius: 8px; z-index: 2000;">
+                                <h4 style="margin: 0 0 10px 0; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Notificaciones</h4>
+                                <div id="lista-notificaciones">
+                                    <p class="text-muted text-center" style="font-size:12px; margin: 10px 0;">No tienes notificaciones nuevas.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PERFIL USUARIO -->
+                        <div class="user-profile-header dropdown">
+                            <div class="user-text">
+                                <span class="user-greeting">Prof. <strong id="userNameHeader">Cargando...</strong></span>
+                                <span class="user-code">Área Académica</span>
+                            </div>
+                            <div class="user-avatar-text bg-primary text-white"><span id="userInitial">D</span></div>
+                            <div class="trigger-dropdown" id="btnDropdownChevron"><i class="fa-solid fa-angle-down text-muted"></i></div>
+                            <div class="dropdown-content shadow-card border-card" id="menuPerfil">
+                                <a href="#" class="nav-trigger" data-target="seccion-perfil"><i class="fa-regular fa-id-badge"></i> Mi Perfil</a>
+                                <a href="#" id="btnCerrarSesion" style="color: var(--accent-red); border-top: 1px solid #eee;"><i class="fa-solid fa-power-off"></i> Cerrar Sesión</a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </header>
 
             <div class="portal-content">
                 
+                <!-- SECCIÓN: INICIO -->
                 <section id="seccion-inicio" class="content-section active">
                     <div class="welcome-header">
                         <div>
-                            <h2 class="section-title">Panel Académico</h2>
-                            <p class="text-muted">Resumen de tu carga lectiva y tareas pendientes.</p>
+                            <h2 class="section-title">Panel Académico Docente</h2>
+                            <p class="text-muted">Resumen de tu carga lectiva y tareas del día.</p>
                         </div>
-                        <span class="badge-modalidad"><i class="fa-solid fa-calendar-check"></i> Ciclo 2026 - I</span>
+                        <span class="badge-modalidad" style="background:#e8f4fd; color:#0056b3;"><i class="fa-solid fa-calendar-check"></i> Ciclo 2026-I</span>
                     </div>
-
                     <div class="metrics-grid mt-20">
                         <div class="metric-card bg-card shadow-card border-card">
-                            <div class="metric-icon bg-primary-light"><i class="fa-solid fa-users text-primary"></i></div>
-                            <div class="metric-info">
-                                <p>Alumnos a Cargo</p>
-                                <h3>85</h3>
-                            </div>
-                        </div>
-                        <div class="metric-card bg-card shadow-card border-card">
-                            <div class="metric-icon bg-success-light"><i class="fa-solid fa-clock text-success"></i></div>
-                            <div class="metric-info">
-                                <p>Clases Hoy</p>
-                                <h3>2 Sesiones</h3>
-                            </div>
-                        </div>
-                        <div class="metric-card bg-card shadow-card border-card" style="border-left: 4px solid var(--accent-red);">
-                            <div class="metric-icon bg-danger-light"><i class="fa-solid fa-triangle-exclamation text-danger"></i></div>
-                            <div class="metric-info">
-                                <p>Notas Pendientes</p>
-                                <h3 class="text-danger">1 Sección</h3>
-                            </div>
+                            <div class="metric-icon bg-primary-light"><i class="fa-solid fa-layer-group text-primary"></i></div>
+                            <div class="metric-info"><p>Secciones a Cargo</p><h3 id="metric-secciones">...</h3></div>
                         </div>
                     </div>
-
                     <div class="dashboard-split-grid mt-40">
                         <div class="split-left">
-                            <div class="section-header-row">
-                                <h3><i class="fa-regular fa-clock"></i> Tus Clases de Hoy</h3>
-                            </div>
-                            
-                            <div class="agenda-list bg-card shadow-card border-card">
-                                <div class="agenda-item">
-                                    <div class="agenda-time">
-                                        <span class="time-start">18:30</span>
-                                        <span class="time-end">20:00</span>
-                                    </div>
-                                    <div class="agenda-details">
-                                        <h4>Gestión Administrativa</h4>
-                                        <p><i class="fa-solid fa-users"></i> Sección: GEST-301 • <i class="fa-solid fa-location-dot"></i> Aula B0602</p>
-                                    </div>
-                                    <button class="btn-outline-small nav-trigger" data-target="seccion-asistencia">Tomar Asistencia</button>
-                                </div>
-                                <div class="agenda-item">
-                                    <div class="agenda-time">
-                                        <span class="time-start">20:15</span>
-                                        <span class="time-end">21:45</span>
-                                    </div>
-                                    <div class="agenda-details">
-                                        <h4>Farmacia Técnica</h4>
-                                        <p><i class="fa-solid fa-users"></i> Sección: GEST-302 • <i class="fa-solid fa-location-dot"></i> Lab A0212</p>
-                                    </div>
-                                    <button class="btn-outline-small nav-trigger" data-target="seccion-asistencia">Tomar Asistencia</button>
-                                </div>
+                            <div class="section-header-row"><h3><i class="fa-regular fa-clock"></i> Tus Clases Asignadas</h3></div>
+                            <div class="agenda-list bg-card shadow-card border-card" id="lista-clases-docente">
+                                <p class="text-center text-muted" style="padding: 20px;">Cargando tus clases...</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
+                <!-- SECCIÓN: MIS CLASES (AULA VIRTUAL) -->
                 <section id="seccion-cursos" class="content-section">
-                    <h2 class="section-title">Cursos Asignados</h2>
-                    <p class="text-muted mb-40">Administra los sílabos y materiales de tus secciones.</p>
-
-                    <div class="cursos-cards-grid">
-                        <div class="curso-modern-card shadow-card bg-card">
-                            <div class="curso-color-top bg-primary"></div>
-                            <div class="curso-modern-body">
-                                <h4>Gestión Administrativa</h4>
-                                <p class="prof-name">Sección: GEST-301 (35 Alumnos)</p>
-                                <div class="curso-stats">
-                                    <div class="stat"><span>Horas</span><strong>4 hrs/sem</strong></div>
-                                    <div class="stat"><span>Modalidad</span><strong>Presencial</strong></div>
-                                </div>
-                                <div style="display: flex; gap: 10px; margin-top: auto;">
-                                    <button class="btn-outline-primary" style="flex:1;">Ver Sílabo</button>
-                                    <button class="btn-primary" style="flex:1;">Materiales</button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="curso-modern-card shadow-card bg-card">
-                            <div class="curso-color-top bg-accent"></div>
-                            <div class="curso-modern-body">
-                                <h4>Farmacia Técnica</h4>
-                                <p class="prof-name">Sección: GEST-302 (50 Alumnos)</p>
-                                <div class="curso-stats">
-                                    <div class="stat"><span>Horas</span><strong>4 hrs/sem</strong></div>
-                                    <div class="stat"><span>Modalidad</span><strong>Virtual</strong></div>
-                                </div>
-                                <div style="display: flex; gap: 10px; margin-top: auto;">
-                                    <button class="btn-outline-primary" style="flex:1;">Ver Sílabo</button>
-                                    <button class="btn-primary" style="flex:1;">Materiales</button>
-                                </div>
-                            </div>
-                        </div>
+                    <h2 class="section-title">Mis Clases (Aula Virtual)</h2>
+                    <p class="text-muted mb-40">Ingresa a tus cursos para gestionar los temas y materiales de estudio.</p>
+                    <div class="cursos-cards-grid" id="grid-mis-cursos-docente">
+                        <p class="text-muted text-center" style="grid-column: 1/-1;">Cargando cursos...</p>
                     </div>
                 </section>
 
+                <!-- SECCIÓN: ASISTENCIA -->
                 <section id="seccion-asistencia" class="content-section">
-                    <div class="welcome-header mb-40">
+                    <div class="welcome-header mb-20">
                         <div>
                             <h2 class="section-title">Registro de Asistencia</h2>
-                            <p class="text-muted">Selecciona el curso y marca la asistencia del día.</p>
+                            <p class="text-muted">Selecciona una clase usando el panel de abajo.</p>
                         </div>
-                        <select class="custom-select" style="min-width: 250px;">
-                            <option>Gestión Administrativa - GEST-301</option>
-                            <option>Farmacia Técnica - GEST-302</option>
-                        </select>
+                    </div>
+                    
+                    <!-- SELECTOR MODERNO DE SECCIONES -->
+                    <div class="pill-selector-container mb-40" id="pills-secciones-asistencia">
+                        <span class="text-muted">Cargando secciones...</span>
                     </div>
 
-                    <div class="bg-card shadow-card border-card">
+                    <div class="bg-card shadow-card border-card" id="contenedor-asistencia" style="display: none;">
                         <div class="table-header border-bottom" style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                            <h3 style="font-size: 16px;">Fecha: <strong>17 Abril 2026</strong></h3>
-                            <span class="badge-modalidad" style="background-color: #e8f5e9; color: #28a745;">Asistencia Abierta</span>
+                            <h3 style="font-size: 16px;">Fecha: <strong id="fecha-hoy-asistencia"></strong></h3>
+                            <span class="badge" style="background-color: #e8f5e9; color: #28a745;">Asistencia Abierta</span>
                         </div>
                         <div class="table-responsive" style="padding: 20px;">
                             <table class="modern-table">
                                 <thead>
                                     <tr>
-                                        <th style="width: 50px;">N°</th>
-                                        <th>Apellidos y Nombres</th>
-                                        <th>DNI</th>
-                                        <th style="text-align: right;">Estado</th>
+                                        <th style="width: 50px;">Nº</th>
+                                        <th>Alumno</th>
+                                        <th style="text-align: right;">Estado de Asistencia</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>1</td>
-                                        <td><strong>García Mendoza, Carlos</strong></td>
-                                        <td class="text-muted">74859612</td>
-                                        <td style="text-align: right;">
-                                            <div class="toggle-group">
-                                                <button class="btn-toggle present active">Presente</button>
-                                                <button class="btn-toggle absent">Falta</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>2</td>
-                                        <td><strong>López Ramírez, Ana María</strong></td>
-                                        <td class="text-muted">09876543</td>
-                                        <td style="text-align: right;">
-                                            <div class="toggle-group">
-                                                <button class="btn-toggle present active">Presente</button>
-                                                <button class="btn-toggle absent">Falta</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>3</td>
-                                        <td><strong>Torres Rojas, Jesus Oswaldo</strong></td>
-                                        <td class="text-muted">75395148</td>
-                                        <td style="text-align: right;">
-                                            <div class="toggle-group">
-                                                <button class="btn-toggle present">Presente</button>
-                                                <button class="btn-toggle absent active">Falta</button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="tabla-asistencia-alumnos"></tbody>
                             </table>
                         </div>
                         <div style="padding: 20px; text-align: right; border-top: 1px solid #eee;">
-                            <button class="btn-primary" onclick="alert('Asistencia Guardada Exitosamente')"><i class="fa-solid fa-floppy-disk"></i> Guardar Registro</button>
+                            <button class="btn-primary" id="btnGuardarAsistencia"><i class="fa-solid fa-floppy-disk"></i> Guardar Asistencia</button>
                         </div>
                     </div>
                 </section>
 
-                <section id="seccion-notas" class="content-section">
-                    <div class="welcome-header mb-40">
-                        <div>
-                            <h2 class="section-title">Registro de Calificaciones</h2>
-                            <p class="text-muted">Las notas se guardan automáticamente al cambiar de celda.</p>
+                <section id="seccion-calendario" class="content-section">
+                    <h2 class="section-title">Mi Horario de Clases</h2>
+                    <p class="text-muted">Cursos asignados ordenados por día y hora.</p>
+                    
+                    <div class="bg-card shadow-card border-card mt-20" style="padding: 20px; overflow-x: auto;">
+                        <div class="calendario-grid-container" id="calendario-container">
+                            <!-- Fila 1: Cabeceras fijadas -->
+                            <div class="cal-hora-header" style="grid-column: 1; grid-row: 1;">Horas</div>
+                            <div class="cal-dia-header" style="grid-column: 2; grid-row: 1;">Lunes</div>
+                            <div class="cal-dia-header" style="grid-column: 3; grid-row: 1;">Martes</div>
+                            <div class="cal-dia-header" style="grid-column: 4; grid-row: 1;">Miércoles</div>
+                            <div class="cal-dia-header" style="grid-column: 5; grid-row: 1;">Jueves</div>
+                            <div class="cal-dia-header" style="grid-column: 6; grid-row: 1;">Viernes</div>
+                            <div class="cal-dia-header" style="grid-column: 7; grid-row: 1;">Sábado</div>
+                            <div class="cal-dia-header" style="grid-column: 8; grid-row: 1;">Domingo</div>
+                            
+                            <!-- El JS inyectará el fondo y los cursos aquí -->
+                            <div id="calendario-body" style="display: contents;"></div>
                         </div>
-                        <select class="custom-select" style="min-width: 250px;">
-                            <option>Gestión Administrativa - GEST-301</option>
-                            <option>Farmacia Técnica - GEST-302</option>
-                        </select>
+                    </div>
+                </section>
+
+                <!-- SECCIÓN: NOTAS -->
+                <section id="seccion-notas" class="content-section">
+                    <div class="welcome-header mb-20">
+                        <div>
+                            <h2 class="section-title">Calificador de Evaluaciones</h2>
+                            <p class="text-muted">Las notas (0-20) se guardan automáticamente al escribir.</p>
+                        </div>
+                    </div>
+                    
+                    <!-- SELECTORES MODERNOS -->
+                    <p style="font-weight: 600; margin-bottom: 10px; color: #444;">1. Selecciona tu curso:</p>
+                    <div class="pill-selector-container mb-20" id="pills-secciones-notas"></div>
+                    
+                    <p style="font-weight: 600; margin-bottom: 10px; color: #444;">2. Selecciona la evaluación:</p>
+                    <div class="pill-selector-container mb-40" id="pills-evaluaciones-notas">
+                        <span class="text-muted" style="font-size: 13px;">Elige un curso primero...</span>
                     </div>
 
-                    <div class="bg-card shadow-card border-card">
+                    <div class="bg-card shadow-card border-card" id="contenedor-notas" style="display: none;">
                         <div class="table-header border-bottom" style="padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-                            <h3 style="font-size: 16px;">Evaluación Actual: <strong>Práctica Calificada 2 (PC2)</strong></h3>
-                            <span id="saveIndicator" class="save-indicator"><i class="fa-solid fa-check-circle"></i> Guardado</span>
+                            <h3 style="font-size: 16px;">Ingresando notas para: <strong id="lbl-evaluacion-actual" class="text-primary">---</strong></h3>
+                            <span id="saveIndicator" class="save-indicator"><i class="fa-solid fa-check-circle"></i> Sincronizado</span>
                         </div>
                         
                         <div class="table-responsive" style="padding: 20px;">
@@ -281,91 +194,85 @@
                                 <thead>
                                     <tr>
                                         <th>Alumno</th>
-                                        <th style="text-align: center;">PC1 (20%)</th>
-                                        <th style="text-align: center; background-color: #f8f9fa;">PC2 (20%)</th>
-                                        <th style="text-align: center;">Parcial (30%)</th>
-                                        <th style="text-align: center;">Final (30%)</th>
-                                        <th style="text-align: center;">Promedio</th>
+                                        <th style="text-align: center;">Nota (0 a 20)</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td><strong>García Mendoza, Carlos</strong></td>
-                                        <td style="text-align: center;"><span class="nota-cerrada">14</span></td>
-                                        <td style="text-align: center; background-color: #f8f9fa;"><input type="number" min="0" max="20" class="nota-input" value="15"></td>
-                                        <td style="text-align: center;"><input type="number" class="nota-input" disabled></td>
-                                        <td style="text-align: center;"><input type="number" class="nota-input" disabled></td>
-                                        <td style="text-align: center;"><span class="promedio-celda text-muted">14.5</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>López Ramírez, Ana María</strong></td>
-                                        <td style="text-align: center;"><span class="nota-cerrada">18</span></td>
-                                        <td style="text-align: center; background-color: #f8f9fa;"><input type="number" min="0" max="20" class="nota-input" value="19"></td>
-                                        <td style="text-align: center;"><input type="number" class="nota-input" disabled></td>
-                                        <td style="text-align: center;"><input type="number" class="nota-input" disabled></td>
-                                        <td style="text-align: center;"><span class="promedio-celda text-muted">18.5</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><strong>Torres Rojas, Jesus Oswaldo</strong></td>
-                                        <td style="text-align: center;"><span class="nota-cerrada" style="color:var(--accent-red)">10</span></td>
-                                        <td style="text-align: center; background-color: #f8f9fa;"><input type="number" min="0" max="20" class="nota-input" value="" placeholder="-"></td>
-                                        <td style="text-align: center;"><input type="number" class="nota-input" disabled></td>
-                                        <td style="text-align: center;"><input type="number" class="nota-input" disabled></td>
-                                        <td style="text-align: center;"><span class="promedio-celda text-muted">--</span></td>
-                                    </tr>
-                                </tbody>
+                                <tbody id="tabla-notas-alumnos"></tbody>
                             </table>
                         </div>
                     </div>
+                    <div style="padding: 20px; text-align: right; border-top: 1px solid #eee;">
+                            <button class="btn-primary" id="btnGuardarNotas">
+                                <i class="fa-solid fa-floppy-disk"></i> Guardar Calificaciones
+                            </button>
+                        </div>
                 </section>
-
                 <section id="seccion-perfil" class="content-section">
-                    <div class="perfil-layout">
-                        <div class="perfil-left">
-                            <div class="user-avatar-text bg-primary text-white" style="width: 150px; height: 150px; font-size: 60px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                                <span id="perfilInitial">D</span>
+                    <h2 class="section-title">Mi Perfil Profesional</h2>
+                    <p class="text-muted mb-40">Información de contacto y especialidad académica.</p>
+                    
+                    <!-- Tarjeta contenedora con Flexbox para alinear uno al lado del otro -->
+                    <div class="bg-card shadow-card border-card" style="padding: 30px; display: flex; flex-direction: row; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+                        
+                        <!-- Columna Izquierda: Círculo del Avatar -->
+                        <div style="text-align: center; flex: 0 0 180px;">
+                            <div class="user-avatar-text bg-primary text-white" style="width: 150px; height: 150px; font-size: 60px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1); margin-left: auto; margin-right: auto;">
+                                <span id="perfilInitialLarge">D</span>
                             </div>
-                            <button class="btn-outline-primary" style="width: 100%;">Actualizar foto</button>
                         </div>
                         
-                        <div class="perfil-right">
+                        <!-- Columna Derecha: Tabla de Información -->
+                        <div style="flex: 1; min-width: 300px;">
                             <h2 class="section-title" id="perfilFullName" style="margin-bottom: 20px;">Docente</h2>
                             
-                            <table class="modern-table" style="background-color: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee;">
+                            <table class="modern-table" style="background-color: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee; width: 100%;">
                                 <tbody>
                                     <tr>
-                                        <td style="font-weight: 600; width: 35%; border-right: 1px solid #eee;">Código Docente</td>
-                                        <td class="text-muted">J859641</td>
+                                        <td style="font-weight: 600; width: 35%; border-right: 1px solid #eee;">DNI</td>
+                                        <td class="text-muted" id="perfilDni">---</td>
                                     </tr>
                                     <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Facultad</td>
-                                        <td class="text-muted">Gestión Administrativa y Farmacia Técnica</td>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Especialidad</td>
+                                        <td class="text-muted" id="perfilEspecialidad">---</td>
                                     </tr>
                                     <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Categoría</td>
-                                        <td class="text-muted">Tiempo Completo</td>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Estado Institucional</td>
+                                        <td class="text-muted"><span class="badge badge-active" id="perfilEstado">ACTIVO</span></td>
                                     </tr>
                                     <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Campus Base</td>
-                                        <td class="text-muted">Ica</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Correo Institucional</td>
-                                        <td class="text-muted">docente@instituto.edu.pe</td>
+                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Correo de Contacto</td>
+                                        <td class="text-muted" id="perfilEmail">---</td>
                                     </tr>
                                 </tbody>
                             </table>
-                            
-                            <div style="background-color: #e2eef8; padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 12px; margin-top: 20px; font-size: 14px; color: #333;">
-                                <i class="fa-solid fa-circle-info text-muted" style="font-size: 18px;"></i>
-                                <span>Si los datos mostrados contienen errores, comunícate con <a href="#" style="color: var(--color-primary); font-weight: 500;">Recursos Humanos</a>.</span>
-                            </div>
                         </div>
+                        
                     </div>
                 </section>
-            </div>
 
+            </div>
         </main>
+    </div>
+
+    <!-- MODAL: AULA VIRTUAL (TEMAS) -->
+    <div id="modalAulaVirtual" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-laptop-file text-primary"></i> <span id="lblAulaCurso">Curso</span></h3>
+                <button class="close-modal" onclick="cerrarModal('modalAulaVirtual')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="background-color: #f8f9fa;">
+                <p class="text-muted" style="margin-bottom: 20px;">Listado de temas y materiales compartidos con los alumnos.</p>
+                
+                <div id="lista-temas-curso" style="display: flex; flex-direction: column; gap: 15px;">
+                    <p class="text-center text-muted">Cargando temas...</p>
+                </div>
+
+                <div class="form-actions mt-20">
+                    <button type="button" class="btn-primary" onclick="alert('Módulo de subida de archivos en construcción.')"><i class="fa-solid fa-upload"></i> Subir Nuevo Material</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="/js/auth.js"></script>

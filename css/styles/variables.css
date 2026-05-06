@@ -8,11 +8,14 @@
   --bg-card4: #9829e2;            /* Fondo tarjetas */
   --bg-input: #eef2f5;          
   
-  --color-primary: #0056b3;     /* Azul Institucional */
+  --color-primary: #0056b3; 
+  --color-secondary: #00897b;
+  --color-tercero: #25bedc;
+  --color-cuarto:#1c4b55;    
   --color-primary-hover: #004494; 
-  --color-accent: #00a8ff;      /* Celeste brillante */
+  --color-accent: #00a8ff;      
   
-  --text-main: #2c3e50;         /* Texto oscuro principal */
+  --text-main: #2c3e50;         
   --text-muted: #6c7a89;        /* Texto secundario */
   --border-color: #e1e8ed;      
 

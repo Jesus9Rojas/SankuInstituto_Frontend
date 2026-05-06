@@ -214,8 +214,8 @@
                 if (response.ok) {
                     const data = await response.json();
                     
-                    const carreras = data.filter(c => c.tipo === 'CARRERA');
-                    const cursosCortos = data.filter(c => c.tipo === 'CURSO_CORTO');
+                   const carreras = data.filter(c => c.tipo === 'CARRERA' && c.estado === true);
+                    const cursosCortos = data.filter(c => c.tipo === 'CURSO_CORTO' && c.estado === true);
                     
                     let htmlContenido = '';
 

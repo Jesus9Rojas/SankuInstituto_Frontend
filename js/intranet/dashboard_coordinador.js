@@ -307,15 +307,15 @@ document.addEventListener("DOMContentLoaded", () => {
     const formCrearCurso = document.getElementById("formCrearCurso");
     const regCurCarrera = document.getElementById("regCurCarrera");
 
-    if(regCurCarrera) {
+if(regCurCarrera) {
         fetch('http://localhost:8080/api/v1/carreras', { headers: { 'Authorization': `Bearer ${token}` } })
             .then(r => r.json())
             .then(data => {
-                regCurCarrera.innerHTML = data.filter(c => c.tipo === 'CARRERA')
+                // AGREGAMOS && c.estado === true
+                regCurCarrera.innerHTML = data.filter(c => c.tipo === 'CARRERA' && c.estado === true)
                     .map(c => `<option value="${c.idCarrera}">${c.nombre}</option>`).join('');
             });
     }
-
    if (formRegistrarDocente) {
     formRegistrarDocente.addEventListener("submit", async (e) => {
         e.preventDefault();
@@ -548,12 +548,13 @@ document.addEventListener("DOMContentLoaded", () => {
     // ==========================================
     // 7. REGISTRO MANUAL (WIZARD)
     // ==========================================
-    const selProgramaManual = document.getElementById("manCarrera");
+const selProgramaManual = document.getElementById("manCarrera");
     if(selProgramaManual) {
         fetch('http://localhost:8080/api/v1/carreras', { headers: { 'Authorization': `Bearer ${token}` } })
             .then(r => r.json())
             .then(data => {
-                selProgramaManual.innerHTML = data.filter(c => c.tipo === 'CARRERA')
+                // AGREGAMOS && c.estado === true
+                selProgramaManual.innerHTML = data.filter(c => c.tipo === 'CARRERA' && c.estado === true)
                     .map(c => `<option value="${c.idCarrera}">${c.nombre}</option>`).join('');
             });
     }
@@ -640,7 +641,258 @@ window.registrarAlumnoManual = async function() {
             });
         }
     }
+const tablaProgramas = document.getElementById("tabla-programas-coordinador");
+    const formPrograma = document.getElementById("formPrograma");
+
+    // A. Inicializar Editores de Texto (Quill.js)
+    let quillPerfil, quillMercado, quillRequisitos;
+    
+    // Opciones del menú (Negrita, Cursiva, Listas)
+    const toolbarOptions = [
+        ['bold', 'italic'],
+        [{ 'list': 'bullet' }, { 'list': 'ordered' }],
+        ['clean'] // Botón para quitar formato
+    ];
+
+    // Solo inicializamos si los contenedores existen en el HTML
+    if (document.getElementById('editor-perfil')) {
+        quillPerfil = new Quill('#editor-perfil', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+        quillMercado = new Quill('#editor-mercado', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+        quillRequisitos = new Quill('#editor-requisitos', { theme: 'snow', modules: { toolbar: toolbarOptions }});
+    }
+
+    async function cargarProgramas() {
+        if (!tablaProgramas) return;
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/carreras', { headers: { 'Authorization': `Bearer ${token}` } });
+            if (res.ok) {
+                const programas = await res.json();
+                tablaProgramas.innerHTML = "";
+                programas.forEach(p => {
+                    const badgeColor = p.tipo === 'CARRERA' ? '#0056b3' : '#f39c12';
+                    const estadoFila = p.estado ? '<span class="badge badge-active">Activo</span>' : '<span class="badge badge-suspended">Inactivo</span>';
+                    
+                    tablaProgramas.innerHTML += `
+                        <tr>
+                            <td><strong>PRG-${p.idCarrera}</strong></td>
+                            <td><span class="badge" style="background: rgba(0,0,0,0.05); color: ${badgeColor};">${p.tipo.replace('_', ' ')}</span></td>
+                            <td>${p.nombre}</td>
+                            <td>${estadoFila}</td>
+                            <td style="text-align: right;">
+                                <button class="btn-action edit" onclick='prepararEdicionPrograma(${JSON.stringify(p)})' title="Editar Programa">
+                                    <i class="fa-solid fa-pen"></i>
+                                </button>
+                            </td>
+                        </tr>`;
+                });
+            }
+        } catch (e) { console.error("Error cargando programas:", e); }
+    }
+
+    // Funciones del Modal de Programas
+    window.abrirModalPrograma = function() {
+        if(formPrograma) formPrograma.reset();
+        document.getElementById("progId").value = "";
+        document.getElementById("progEstado").value = "true";
+        
+        // Limpiar los editores de texto
+        if(quillPerfil) quillPerfil.root.innerHTML = "";
+        if(quillMercado) quillMercado.root.innerHTML = "";
+        if(quillRequisitos) quillRequisitos.root.innerHTML = "";
+
+        document.getElementById("modalProgramaTitulo").textContent = "Crear Nuevo Programa";
+        document.getElementById("modalPrograma").classList.add("show");
+    };
+
+    window.prepararEdicionPrograma = function(p) {
+        document.getElementById("modalProgramaTitulo").textContent = "Editar Programa: " + p.nombre;
+        document.getElementById("progId").value = p.idCarrera;
+        document.getElementById("progTipo").value = p.tipo;
+        document.getElementById("progEstado").value = p.estado ? "true" : "false"; 
+        document.getElementById("progNombre").value = p.nombre;
+        document.getElementById("progDesc").value = p.descripcion || "";
+        
+        // Cargar los datos HTML en los editores
+        if(quillPerfil) quillPerfil.root.innerHTML = p.perfilAcademico || "";
+        if(quillMercado) quillMercado.root.innerHTML = p.mercadoLaboral || "";
+        if(quillRequisitos) quillRequisitos.root.innerHTML = p.requisitos || "";
+
+        document.getElementById("modalPrograma").classList.add("show");
+    };
+
+    if (formPrograma) {
+        formPrograma.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("progId").value;
+            
+            // Recoger datos, incluyendo el HTML generado por Quill
+            const payload = {
+                tipo: document.getElementById("progTipo").value,
+                nombre: document.getElementById("progNombre").value.trim(),
+                descripcion: document.getElementById("progDesc").value.trim(),
+                // Extraemos el HTML interno de los editores
+                perfilAcademico: quillPerfil ? quillPerfil.root.innerHTML : "",
+                mercadoLaboral: quillMercado ? quillMercado.root.innerHTML : "",
+                requisitos: quillRequisitos ? quillRequisitos.root.innerHTML : "",
+                estado: document.getElementById("progEstado").value === "true" 
+            };
+
+            const url = id ? `http://localhost:8080/api/v1/carreras/${id}` : `http://localhost:8080/api/v1/carreras`;
+            const method = id ? 'PUT' : 'POST';
+
+            try {
+                const res = await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                    body: JSON.stringify(payload)
+                });
+
+                if (res.ok) {
+                    alert(id ? "Programa actualizado con éxito." : "Nuevo programa creado.");
+                    cerrarModal('modalPrograma');
+                    cargarProgramas(); 
+                } else {
+                    const data = await res.json();
+                    alert("Error al guardar: " + (data.message || "Verifique que el nombre no esté duplicado"));
+                }
+            } catch (err) {
+                console.error("Fallo de red:", err);
+                alert("Error de conexión con el servidor.");
+            }
+        });
+    }
+
+    // Ejecutamos la carga inicial
+    cargarProgramas();
 });
+
+async function cargarPerfilCoordinador() {
+        // Obtenemos el ID guardado durante el login
+        const idUsuarioLogeado = localStorage.getItem("usuarioId");
+        
+        if (!idUsuarioLogeado) {
+            document.getElementById("coordDni").textContent = "ID no encontrado en sesión";
+            return;
+        }
+
+        try {
+            const currentToken = localStorage.getItem("token");
+            // Llamamos a la API de usuarios
+            const res = await fetch('http://localhost:8080/api/v1/usuarios', { 
+                headers: { 'Authorization': `Bearer ${currentToken}` } 
+            });
+
+            if (res.ok) {
+                const usuarios = await res.json();
+                
+                // CORRECCIÓN CRÍTICA: Buscamos el usuario en el array. 
+                // Spring Boot serializa idUsuario, así que comparamos contra eso.
+                const miPerfil = usuarios.find(u => Number(u.idUsuario) === Number(idUsuarioLogeado));
+
+                if (miPerfil) {
+                    document.getElementById("coordDni").textContent = miPerfil.dni || "No registrado";
+                    document.getElementById("coordNombres").textContent = miPerfil.nombres || "No registrado";
+                    document.getElementById("coordApellidos").textContent = miPerfil.apellidos || "No registrado";
+                    document.getElementById("coordEmail").textContent = miPerfil.email || "No registrado";
+                    
+                    // Formatear el rol para que se vea más bonito (Ej: ADMINISTRADOR -> Administrador)
+                    const rolFormateado = miPerfil.rol.charAt(0) + miPerfil.rol.slice(1).toLowerCase();
+                    document.getElementById("coordRol").textContent = rolFormateado;
+                } else {
+                    document.getElementById("coordDni").textContent = "Perfil no encontrado en BD";
+                    document.getElementById("coordNombres").textContent = "---";
+                    document.getElementById("coordApellidos").textContent = "---";
+                    document.getElementById("coordEmail").textContent = "---";
+                    document.getElementById("coordRol").textContent = "---";
+                }
+            } else {
+                console.error("Fallo del servidor:", await res.text());
+                document.getElementById("coordDni").textContent = "Error al conectar con la BD";
+            }
+        } catch (e) { 
+            console.error("Error de red cargando perfil:", e); 
+            document.getElementById("coordDni").textContent = "Error de conexión";
+        }
+    }
+
+    async function cargarRendimientoAlumnos() {
+        // Asegúrate de que este ID coincida con el <tbody> de tu tabla de rendimiento en el HTML
+        const tbody = document.getElementById("tabla-rendimiento"); 
+        if (!tbody) return;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+            });
+            
+            if (res.ok) {
+                const alumnos = await res.json();
+                
+                if (alumnos.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted" style="padding: 20px;">No hay alumnos registrados en el sistema.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = alumnos.map(a => {
+                    // Cálculo de porcentaje de asistencia
+                    let asisPorcentaje = 0;
+                    if (a.dias_totales > 0) {
+                        asisPorcentaje = Math.round((a.dias_asistidos / a.dias_totales) * 100);
+                    }
+                    
+                    // Colores de alerta
+                    const colorNota = a.promedio_historico >= 13 ? 'text-success' : 'text-danger';
+                    const colorAsis = asisPorcentaje >= 70 ? 'text-success' : 'text-danger';
+
+                    return `
+                    <tr>
+                        <td><strong>${a.dni}</strong></td>
+                        <td>${a.alumno}</td>
+                        <td>${a.carrera}</td>
+                        <td><strong class="${colorNota}">${parseFloat(a.promedio_historico).toFixed(2)}</strong></td>
+                        <td>
+                            <strong class="${colorAsis}">${asisPorcentaje}%</strong> 
+                            <span style="font-size:11px; color:#888; display:block;">(${a.dias_asistidos} de ${a.dias_totales} clases)</span>
+                        </td>
+                        <td style="text-align:center;">
+                            <button class="btn-outline-small" onclick="alert('Historial detallado en desarrollo...')">Ver Kárdex</button>
+                        </td>
+                    </tr>`;
+                }).join('');
+            }
+        } catch (e) {
+            console.error("Error cargando rendimiento:", e);
+        }
+    }
+
+    // Ejecutamos la carga inicial del perfil
+    cargarPerfilCoordinador();
+    cargarRendimientoAlumnos();
+
+    const inputBuscador = document.getElementById("buscadorRendimiento");
+    
+    if (inputBuscador) {
+        inputBuscador.addEventListener("input", function(e) {
+            const textoFiltro = e.target.value.toLowerCase();
+            // Obtenemos todas las filas de la tabla de rendimiento
+            const filas = document.querySelectorAll("#tabla-rendimiento tr");
+
+            filas.forEach(fila => {
+
+                if (fila.querySelector("td").colSpan > 1) return;
+                
+                const dniAlumno = fila.querySelector("td:nth-child(1)").textContent.toLowerCase();
+                const nombreAlumno = fila.querySelector("td:nth-child(2)").textContent.toLowerCase();
+
+                if (dniAlumno.includes(textoFiltro) || nombreAlumno.includes(textoFiltro)) {
+                    fila.style.display = "";
+                } else {
+
+                    fila.style.display = "none";
+                }
+            });
+        });
+    }
 
 // Helper de navegación para Wizard
 function actualizarIndicador(pasoActual) {
