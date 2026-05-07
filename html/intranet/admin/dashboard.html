@@ -15,6 +15,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body class="bg-main">
 
@@ -248,8 +249,74 @@
                     </table>
                 </div>
                 </section>
-                <section id="seccion-reportes" class="content-section"><h2>Reportes</h2><p class="text-muted">Módulo en construcción...</p></section>
-                <section id="seccion-configuracion" class="content-section"><h2>Configuración</h2><p class="text-muted">Módulo en construcción...</p></section>
+                <section id="seccion-reportes" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Inteligencia de Negocios (BI)</h2>
+                            <p class="text-muted">Análisis financiero y académico del instituto.</p>
+                        </div>
+                        <div style="display:flex; gap:10px;">
+                            <button class="btn-outline-primary" onclick="exportarPDF()">
+                                <i class="fa-solid fa-file-pdf"></i> Descargar PDF
+                            </button>
+                            <button class="btn-outline-primary" style="color: #27ae60; border-color: #27ae60;" onclick="exportarCSV()">
+                                <i class="fa-solid fa-file-csv"></i> Descargar CSV
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split-grid mt-20" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="chart-container shadow-card border-card bg-card" style="padding: 25px; border-radius: 12px; background: white;">
+                            <div class="section-header-row" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                <h3 style="font-size: 18px; color: #1e293b;"><i class="fa-solid fa-chart-line text-primary"></i> Desempeño Financiero Mensual</h3>
+                            </div>
+                            <div style="height: 300px; width: 100%; position: relative;">
+                                <canvas id="ingresosChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-container shadow-card border-card bg-card" style="padding: 25px; border-radius: 12px; background: white;">
+                            <div class="section-header-row" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                <h3 style="font-size: 18px; color: #1e293b;"><i class="fa-solid fa-users-viewfinder" style="color: #3b82f6;"></i> Evolución de Matrículas</h3>
+                            </div>
+                            <div style="height: 300px; width: 100%; position: relative;">
+                                <canvas id="matriculasReportesChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-split-grid mt-20" style="grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div class="chart-container shadow-card border-card bg-card" style="padding: 25px; border-radius: 12px; background: white;">
+                            <div class="section-header-row" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                <h3 style="font-size: 18px; color: #1e293b;"><i class="fa-solid fa-traffic-light" style="color: #f39c12;"></i> Semáforo Docente (Entrega de Notas)</h3>
+                            </div>
+                            <div style="height: 250px; width: 100%; position: relative; display: flex; justify-content: center;">
+                                <canvas id="semaforoChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="chart-container shadow-card border-card bg-card" style="padding: 25px; border-radius: 12px; background: white;">
+                            <div class="section-header-row" style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">
+                                <h3 style="font-size: 18px; color: #1e293b;"><i class="fa-solid fa-triangle-exclamation" style="color:#e74c3c;"></i> Alertas Académicas (Riesgo)</h3>
+                            </div>
+                            <div class="table-responsive" style="max-height: 250px; overflow-y: auto;">
+                                <table class="modern-table" style="width: 100%; font-size: 13px;">
+                                    <thead>
+                                        <tr>
+                                            <th>Alumno</th>
+                                            <th>Motivo</th>
+                                            <th>Nivel</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="cuerpo-tabla-riesgo">
+                                        <tr><td colspan="3" class="text-center text-muted">Cargando alertas...</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            <section id="seccion-configuracion" class="content-section"><h2>Configuración</h2><p class="text-muted">Módulo en construcción...</p></section>
 
 <div id="modalUsuario" class="modal-overlay">
         <div class="modal-card">

@@ -41,13 +41,22 @@ document.addEventListener("DOMContentLoaded", () => {
             const menuPerfil = document.getElementById("menuPerfil");
             if (menuPerfil && menuPerfil.classList.contains("show")) menuPerfil.classList.remove("show");
 
-            // --- LO QUE FALTA ---
-            if(targetId === 'seccion-inicio') renderizarGrafico();
+            // Disparador para el Panel General (Inicio)
+            if(targetId === 'seccion-inicio') {
+                renderizarGraficoMatriculas('matriculasChart'); 
+            }
             
-            // Disparador para cargar las deudas desde PostgreSQL
+            // Disparador para Finanzas
             if(targetId === 'seccion-finanzas') {
-                console.log("Cargando módulo de finanzas...");
                 cargarFinanzas(); 
+            }
+
+            // Disparador para Reportes BI
+            if(targetId === 'seccion-reportes') {
+                renderizarGraficoFinanciero();
+                renderizarGraficoMatriculas('matriculasReportesChart'); 
+                renderizarSemaforoDocente();
+                cargarAlertasAcademicas();
             }
         });
     });
@@ -362,6 +371,338 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) { console.error("Error Gráfico:", error); }
     }
+    let graficoFinancieroInstancia = null;
+
+    async function renderizarGraficoFinanciero() {
+        const ctx = document.getElementById('ingresosChart');
+        if (!ctx) return;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/reportes/financiero', { headers });
+            if (!res.ok) return;
+
+            const data = await res.json();
+            
+            // 🔍 ESTO NOS AYUDARÁ A VER EL JSON EXACTO EN LA CONSOLA (F12)
+            console.log("Datos crudos del Backend:", data); 
+
+            const totalesPorMes = {};
+
+            data.forEach(item => {
+                // Buscamos dinámicamente la llave que contenga 'mes' y la que contenga 'ingreso' o 'total'
+                const keyMes = Object.keys(item).find(k => k.toLowerCase().includes('mes'));
+                const keyTotal = Object.keys(item).find(k => k.toLowerCase().includes('ingreso') || k.toLowerCase().includes('total'));
+
+                const valorMes = item[keyMes];
+                const valorTotal = item[keyTotal];
+
+                // Parseamos la fecha soportando múltiples formatos de Spring Boot
+                let fecha;
+                if (Array.isArray(valorMes)) {
+                    // Si Spring Boot lo manda como [2026, 5, 1]
+                    fecha = new Date(valorMes[0], valorMes[1] - 1, valorMes[2]);
+                } else {
+                    // Si lo manda como String ("2026-05-01T00:00:00") o Timestamp (milisegundos)
+                    fecha = new Date(valorMes);
+                }
+
+                let mesTexto = (fecha && !isNaN(fecha.getTime())) 
+                    ? fecha.toLocaleDateString('es-ES', { month: 'long', year: 'numeric' })
+                    : 'Mes Desconocido';
+                    
+                mesTexto = mesTexto.charAt(0).toUpperCase() + mesTexto.slice(1);
+
+                const monto = parseFloat(valorTotal || 0);
+
+                if (totalesPorMes[mesTexto]) {
+                    totalesPorMes[mesTexto] += monto;
+                } else {
+                    totalesPorMes[mesTexto] = monto;
+                }
+            });
+
+            const etiquetasMeses = Object.keys(totalesPorMes);
+            const montosDinero = Object.values(totalesPorMes);
+
+            if (graficoFinancieroInstancia) graficoFinancieroInstancia.destroy();
+
+            graficoFinancieroInstancia = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: etiquetasMeses,
+                    datasets: [{
+                        label: 'Ingresos Totales',
+                        data: montosDinero,
+                        backgroundColor: 'rgba(46, 204, 113, 0.8)',
+                        borderColor: '#27ae60',
+                        borderWidth: 1,
+                        borderRadius: 6 
+                    }]
+                },
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { callbacks: { label: function(c) { return ' S/ ' + c.parsed.y.toLocaleString('es-PE', { minimumFractionDigits: 2 }); } } }
+                    },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { callback: function(v) { return 'S/ ' + v; } } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+        } catch (error) { 
+            console.error("Error Crítico Gráfico Financiero:", error); 
+        }
+    }
+    // ==========================================
+    // 7. SEMÁFORO DOCENTE Y ALERTAS (BI)
+    // ==========================================
+    let semaforoChartInstancia = null;
+
+    async function renderizarSemaforoDocente() {
+        const ctx = document.getElementById('semaforoChart');
+        if (!ctx) return;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/reportes/semaforo-global', { headers });
+            if (!res.ok) return;
+            const data = await res.json();
+            
+            console.log("Datos Semáforo:", data); // Para depurar
+
+            let aTiempo = 0, porVencer = 0, retrasado = 0;
+
+            // Agrupamos contando los estados (adaptado a los posibles nombres de columnas)
+            data.forEach(item => {
+                const estado = Object.values(item).join(' ').toLowerCase(); // Busca en toda la fila
+                
+                if (estado.includes('retrasado') || estado.includes('vencido')) {
+                    retrasado++;
+                } else if (estado.includes('vencer') || estado.includes('peligro') || estado.includes('alerta')) {
+                    porVencer++;
+                } else {
+                    aTiempo++; // Si no hay problemas, está al día
+                }
+            });
+
+            // Evitamos gráficos vacíos (si no hay data, ponemos 1 al día de relleno visual)
+            if(aTiempo === 0 && porVencer === 0 && retrasado === 0) aTiempo = 1;
+
+            if (semaforoChartInstancia) semaforoChartInstancia.destroy();
+
+            semaforoChartInstancia = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Al Día', 'Por Vencer', 'Retrasados'],
+                    datasets: [{
+                        data: [aTiempo, porVencer, retrasado],
+                        backgroundColor: ['#2ecc71', '#f1c40f', '#e74c3c'],
+                        borderWidth: 0,
+                        hoverOffset: 5
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false, cutout: '75%',
+                    plugins: { legend: { position: 'bottom' } }
+                }
+            });
+
+        } catch (error) { console.error("Error Semáforo:", error); }
+    }
+
+    async function cargarAlertasAcademicas() {
+        const tbody = document.getElementById('cuerpo-tabla-riesgo');
+        if (!tbody) return;
+
+        try {
+            // USAMOS TU ENDPOINT EXACTO: /rendimiento
+            const res = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', { headers });
+            if (!res.ok) return;
+            const data = await res.json();
+            
+            console.log("Datos Alertas:", data); // Para depurar
+
+            if (data.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Todo en orden. No hay alumnos en riesgo.</td></tr>';
+                return;
+            }
+
+            // Inyectamos las filas dinámicamente
+            tbody.innerHTML = data.slice(0, 8).map(item => {
+                // Busca dinámicamente las llaves sin importar si Spring Boot las pone en mayúscula
+                const keyNombre = Object.keys(item).find(k => k.toLowerCase().includes('alumno') || k.toLowerCase().includes('nombre'));
+                const keyPromedio = Object.keys(item).find(k => k.toLowerCase().includes('promedio') || k.toLowerCase().includes('nota'));
+                
+                const nombre = item[keyNombre] || 'Alumno Desconocido';
+                const promedio = parseFloat(item[keyPromedio] || 0);
+                
+                let motivo = "Bajo Rendimiento";
+                let nivel = "ALTO RIESGO";
+                let badgeColor = "badge-rejected"; // Rojo
+
+                // Lógica de semaforización (Promedio aprobatorio en Perú suele ser 13)
+                if (promedio >= 11 && promedio < 13) {
+                    nivel = "RIESGO MEDIO";
+                    badgeColor = "badge-admin"; // Naranja
+                    motivo = "Promedio al límite";
+                } else if (promedio >= 13) {
+                    nivel = "REGULAR";
+                    badgeColor = "badge-student"; // Azul
+                    motivo = "Observación estándar";
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${nombre}</strong></td>
+                        <td>${motivo} (Prom: ${promedio.toFixed(1)})</td>
+                        <td><span class="badge ${badgeColor}" style="font-size: 10px;">${nivel}</span></td>
+                    </tr>
+                `;
+            }).join('');
+
+        } catch (error) { console.error("Error Alertas:", error); }
+    }
+   // ==========================================
+    // 8. EVOLUCIÓN DE MATRÍCULAS (Reutilizable y Blindado)
+    // ==========================================
+    async function renderizarGraficoMatriculas(canvasId) {
+        const ctx = document.getElementById(canvasId);
+        if (!ctx) return;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/reportes/matriculas-chart', { headers });
+            if (!res.ok) return;
+            const data = await res.json();
+
+            const etiquetasMeses = data.map(item => {
+                const keyMes = Object.keys(item).find(k => k.toLowerCase() === 'mes');
+                const mesVal = item[keyMes] || '';
+                
+                const partes = mesVal.split('-'); 
+                if (partes.length === 2) {
+                    const fecha = new Date(partes[0], partes[1] - 1);
+                    let mesTexto = fecha.toLocaleDateString('es-ES', { month: 'short', year: 'numeric' });
+                    return mesTexto.charAt(0).toUpperCase() + mesTexto.slice(1);
+                }
+                return mesVal || 'Desconocido';
+            });
+            
+            const totalesMatriculas = data.map(item => {
+                const keyTotal = Object.keys(item).find(k => k.toLowerCase() === 'total');
+                return parseInt(item[keyTotal] || 0);
+            });
+
+            // LA SOLUCIÓN MÁGICA: Destruir cualquier gráfico existente en este canvas
+            // usando la librería Chart.js en lugar de variables globales.
+            const chartExistente = Chart.getChart(canvasId);
+            if (chartExistente) {
+                chartExistente.destroy();
+            }
+
+            // Dibujamos
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: etiquetasMeses,
+                    datasets: [{
+                        label: 'Nuevas Matrículas',
+                        data: totalesMatriculas,
+                        borderColor: '#3b82f6',
+                        backgroundColor: 'rgba(59, 130, 246, 0.15)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#1d4ed8',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { beginAtZero: true, grid: { color: '#f1f5f9' }, ticks: { stepSize: 1 } },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+
+        } catch (error) { console.error("Error Gráfico Matrículas:", error); }
+    }
+    // ==========================================
+    // 9. EXPORTACIÓN A CSV (Excel)
+    // ==========================================
+    window.exportarCSV = async function() {
+        try {
+            // Descargamos la data de rendimiento para el reporte
+            const res = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', { headers });
+            if (!res.ok) throw new Error("No se pudo obtener la data");
+            const data = await res.json();
+
+            if (data.length === 0) return alert("No hay datos para exportar.");
+
+            // 1. Crear las cabeceras del CSV
+            let csvContent = "DNI,Alumno,Carrera,Promedio Historico,Asistencia (%)\n";
+
+            // 2. Llenar las filas
+            data.forEach(item => {
+                const dni = item.dni || item.DNI || 'N/A';
+                const alumno = item.alumno || item.nombre || 'Desconocido';
+                const carrera = item.carrera || 'No registrada';
+                const promedio = parseFloat(item.promedio_historico || item.promedio || 0).toFixed(2);
+                
+                const diasAsistidos = parseInt(item.dias_asistidos || 0);
+                const diasTotales = parseInt(item.dias_totales || 1); // Evitar división por cero
+                const porcentaje = ((diasAsistidos / diasTotales) * 100).toFixed(0);
+
+                // Añadimos la fila escapando comas en los nombres
+                csvContent += `"${dni}","${alumno}","${carrera}","${promedio}","${porcentaje}%"\n`;
+            });
+
+            // 3. Crear el archivo descargable
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Reporte_Academico_${new Date().toLocaleDateString('es-ES')}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+
+        } catch (error) {
+            console.error(error);
+            alert("Hubo un error al generar el archivo CSV.");
+        }
+    };
+    // ==========================================
+    // 10. EXPORTACIÓN A PDF (Pantalla Completa BI)
+    // ==========================================
+    window.exportarPDF = function() {
+        // Seleccionamos todo el contenedor de los reportes
+        const elemento = document.getElementById('seccion-reportes');
+        
+        // Ocultamos temporalmente los botones de descarga para que no salgan impresos en el PDF
+        const botonesHeader = elemento.querySelector('.welcome-header div:nth-child(2)');
+        if (botonesHeader) botonesHeader.style.display = 'none';
+
+        // Configuración profesional del PDF
+        const opciones = {
+            margin:       10,
+            filename:     `Reporte_BI_Jhalebet_${new Date().toLocaleDateString('es-ES')}.pdf`,
+            image:        { type: 'jpeg', quality: 0.98 },
+            html2canvas:  { scale: 2, useCORS: true }, // scale 2 mejora la nitidez de los gráficos
+            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+        };
+
+        // Generamos el PDF
+        html2pdf().set(opciones).from(elemento).save().then(() => {
+            // Cuando termina la descarga, volvemos a mostrar los botones
+            if (botonesHeader) botonesHeader.style.display = 'flex';
+        });
+    };
+
     // ==========================================
     // LÓGICA DE FINANZAS - ADMIN
     // ==========================================
