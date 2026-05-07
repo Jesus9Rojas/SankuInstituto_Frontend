@@ -41,7 +41,14 @@ document.addEventListener("DOMContentLoaded", () => {
             const menuPerfil = document.getElementById("menuPerfil");
             if (menuPerfil && menuPerfil.classList.contains("show")) menuPerfil.classList.remove("show");
 
+            // --- LO QUE FALTA ---
             if(targetId === 'seccion-inicio') renderizarGrafico();
+            
+            // Disparador para cargar las deudas desde PostgreSQL
+            if(targetId === 'seccion-finanzas') {
+                console.log("Cargando módulo de finanzas...");
+                cargarFinanzas(); 
+            }
         });
     });
 
@@ -355,6 +362,96 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) { console.error("Error Gráfico:", error); }
     }
+    // ==========================================
+    // LÓGICA DE FINANZAS - ADMIN
+    // ==========================================
+
+    async function cargarFinanzas() {
+        const cuerpoTabla = document.getElementById('cuerpo-tabla-finanzas');
+        if (!cuerpoTabla) return;
+
+        try {
+            // Consultamos las cuotas PENDIENTES o VENCIDAS
+            const res = await fetch('http://localhost:8080/api/v1/cuotas/todas', { headers });
+            
+            // ==========================================
+            // 🛡️ ESCUDO ANTI-CRASH (NUEVO)
+            // ==========================================
+            if (!res.ok) {
+                // Si el servidor falla (Error 500), atrapamos el mensaje
+                const errorData = await res.json().catch(() => ({})); 
+                console.error("Detalle del error del Servidor:", errorData);
+                
+                // Mostramos el error en la tabla en lugar de dejarla en blanco
+                cuerpoTabla.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="color: #b71c1c; background-color: #fee2e2; text-align: center; font-weight: bold; padding: 20px; border-radius: 8px;">
+                            ⚠️ No se pudieron cargar las finanzas (Error ${res.status}).<br>
+                            <span style="font-size: 12px; font-weight: normal;">Revisa la consola de VSCode. Es probable que PostgreSQL esté bloqueando la consulta.</span>
+                        </td>
+                    </tr>`;
+                return; // ⛔ ESTO ES VITAL: Detiene la función para que no llegue al .map() y explote
+            }
+
+            // Si la respuesta es exitosa (200 OK), procesamos la lista
+            const cuotas = await res.json();
+
+            if (cuotas.length === 0) {
+                cuerpoTabla.innerHTML = `<tr><td colspan="6" style="text-align:center; padding: 20px;">No hay pagos pendientes.</td></tr>`;
+                return;
+            }
+
+            // Dibujamos los datos en la tabla
+            cuerpoTabla.innerHTML = cuotas.map(c => `
+            <tr>
+                <td><strong>Estudiante ID: ${c.idAlumno}</strong></td>
+                <td>${c.cicloAcademico}</td>
+                <td>${c.mesCorrespondiente}</td>
+                <td class="font-bold" style="color: #2e7d32;">S/ ${c.montoTotal.toFixed(2)}</td>
+                <td><span class="badge ${c.estado.toLowerCase()}">${c.estado}</span></td>
+                <td>
+                    ${c.estado === 'PAGADO' 
+                        ? `<span style="color: #64748b; font-size: 12px; font-weight: 600;"><i class="fa-solid fa-check-double"></i> Cancelado</span>`
+                        : `<button class="btn-primary" style="padding: 4px 12px; font-size: 11px;" 
+                                onclick="ejecutarCobroManual(${c.idCuota}, ${c.montoTotal})">
+                            <i class="fa-solid fa-money-bill-check"></i> Cobrar
+                           </button>`
+                    }
+                </td>
+            </tr>
+        `).join('');
+
+        } catch (error) {
+            console.error("Error crítico de red al cargar finanzas:", error);
+            cuerpoTabla.innerHTML = `<tr><td colspan="6" style="color:red; text-align:center;">Error de conexión con el servidor backend.</td></tr>`;
+        }
+    }
+
+    // Función global para procesar el pago desde el botón
+    window.ejecutarCobroManual = async (idCuota, monto) => {
+        if (!confirm(`¿Confirmar cobro de S/ ${monto} en EFECTIVO para la cuota #${idCuota}?`)) return;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/pagos/pagar', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({
+                    idCuota: idCuota,
+                    monto: monto,
+                    metodoPago: 'EFECTIVO'
+                })
+            });
+
+            if (res.ok) {
+                alert("¡Pago registrado y deuda saldada!");
+                cargarFinanzas(); // Recargamos para que desaparezca de la lista
+            } else {
+                alert("Hubo un problema al registrar el pago.");
+            }
+        } catch (error) {
+            alert("Error de conexión con el servidor.");
+        }
+    };
 
     // Inicializar arranque
     inicializarAdmin();
