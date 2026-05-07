@@ -11,7 +11,6 @@
 
     <link rel="stylesheet" href="/css/styles/variables.css">
     <link rel="stylesheet" href="/css/styles/base.css">
-    
     <link rel="stylesheet" href="/css/dashboard_admin.css">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -43,10 +42,6 @@
                     <i class="fa-solid fa-file-contract"></i>
                     <span>Reportes</span>
                 </button>
-                <button class="menu-btn" data-target="seccion-configuracion">
-                    <i class="fa-solid fa-sliders"></i>
-                    <span>Configuración</span>
-                </button>
                 <button class="menu-btn" onclick="window.location.href='sae_tramites.html'">
                     <i class="fa-solid fa-inbox"></i>
                     <span>Buzón SAE</span>
@@ -71,11 +66,11 @@
                     </button>
                     <div class="user-profile-header dropdown">
                         <div class="user-text">
-                            <span class="user-greeting">Admin. <strong id="userNameHeader">Director</strong></span>
+                            <span class="user-greeting">Admin. <strong id="userNameHeader">Cargando...</strong></span>
                             <span class="user-code">Dirección General</span>
                         </div>
                         <div class="user-avatar-text bg-darkblue text-white">
-                            <span id="userInitial">A</span>
+                            <span id="userInitial">?</span>
                         </div>
                         <div class="trigger-dropdown" id="btnDropdownChevron">
                             <i class="fa-solid fa-angle-down text-muted"></i>
@@ -108,17 +103,30 @@
                             <div class="metric-icon" style="background-color: rgba(52, 152, 219, 0.1); color: #3498db;"><i class="fa-solid fa-user-graduate"></i></div>
                             <div class="metric-info">
                                 <p>Total Alumnos</p>
-                                <h3>1,245 <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> 12%</span></h3>
+                                <h3 id="metric-alumnos">...</h3>
                             </div>
                         </div>
                         <div class="metric-card bg-card shadow-card border-card">
-                            <div class="metric-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71;"><i class="fa-solid fa-sack-dollar"></i></div>
-                            <div class="metric-info"><p>Ingresos Estimados</p><h3>S/ 450.5K</h3></div>
-                        </div>
-                        <div class="metric-card bg-card shadow-card border-card">
-                            <div class="metric-icon" style="background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;"><i class="fa-solid fa-file-invoice"></i></div>
-                            <div class="metric-info"><p>Morosidad Actual</p><h3>15.2%</h3></div>
-                        </div>
+        <div class="metric-icon" style="background-color: rgba(155, 89, 182, 0.1); color: #9b59b6;"><i class="fa-solid fa-chalkboard-user"></i></div>
+        <div class="metric-info">
+            <p>Total Docentes</p>
+            <h3 id="metric-docentes">...</h3>
+        </div>
+    </div>
+    <div class="metric-card bg-card shadow-card border-card">
+        <div class="metric-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71;"><i class="fa-solid fa-sack-dollar"></i></div>
+        <div class="metric-info">
+            <p>Ingresos del Mes</p>
+            <h3 id="metric-ingresos">S/ ...</h3>
+        </div>
+    </div>
+    <div class="metric-card bg-card shadow-card border-card">
+        <div class="metric-icon" style="background-color: rgba(231, 76, 60, 0.1); color: #e74c3c;"><i class="fa-solid fa-file-invoice"></i></div>
+        <div class="metric-info">
+            <p>Trámites SAE Pendientes</p>
+            <h3 id="metric-tramites">...</h3>
+        </div>
+    </div>
                     </div>
 
                     <div class="dashboard-split-grid mt-40">
@@ -136,73 +144,140 @@
                                 <h3>Trámites por Revisar (SAE)</h3>
                                 <button class="btn-text" onclick="window.location.href='sae_tramites.html'">Ver todos</button>
                             </div>
-                            <div class="admin-list">
-                                <div class="admin-list-item">
-                                    <div class="item-icon bg-primary-light"><i class="fa-solid fa-file-signature text-primary"></i></div>
-                                    <div class="item-content">
-                                        <h4>Cambio de Modalidad</h4>
-                                        <p>Estudiante: Torres Rojas, Jesus</p>
-                                    </div>
-                                    <button class="btn-outline-small" onclick="window.location.href='sae_tramites.html'">Revisar</button>
-                                </div>
-                                <div class="admin-list-item">
-                                    <div class="item-icon bg-primary-light"><i class="fa-solid fa-graduation-cap text-primary"></i></div>
-                                    <div class="item-content">
-                                        <h4>Solicitud de Beca</h4>
-                                        <p>Estudiante: López Ramírez, Ana</p>
-                                    </div>
-                                    <button class="btn-outline-small" onclick="window.location.href='sae_tramites.html'">Revisar</button>
-                                </div>
+                            <div class="admin-list" id="lista-tramites-preview">
+                                <p class="text-center text-muted" style="font-size: 13px;">Cargando trámites...</p>
                             </div>
                         </div>
                     </div>
                 </section>
 
-                <section id="seccion-perfil" class="content-section">
-                    <div class="perfil-layout">
-                        <div class="perfil-left">
-                            <div class="user-avatar-text bg-darkblue text-white" style="width: 150px; height: 150px; font-size: 60px; margin-bottom: 15px; border-radius: 50%; display: flex; justify-content: center; align-items: center; box-shadow: 0 5px 15px rgba(0,0,0,0.1);">
-                                <span id="perfilInitial">A</span>
+<section id="seccion-perfil" class="content-section">
+    <div class="welcome-header">
+        <div>
+            <h2 class="section-title">Configuración de Perfil</h2>
+            <p class="text-muted">Gestión de tu información personal y cuenta administrativa.</p>
+        </div>
+    </div>
+
+    <div class="bg-card shadow-card border-card mt-20" style="padding: 30px; display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
+        <div style="text-align: center; flex: 1; min-width: 200px;">
+            <div style="width: 130px; height: 130px; background: #fff7ed; color: #ea580c; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; margin: 0 auto 15px auto; border: 4px solid #fdba74;">
+                <span id="perfilInitial">A</span> </div>
+            <h3 id="perfilFullName" style="margin-bottom: 5px; color: #1e293b;">Cargando...</h3> <p class="text-muted" style="font-size: 14px;"><i class="fa-solid fa-shield-check"></i> Acceso: <strong>ADMINISTRADOR</strong></p>
+        </div>
+
+        <div style="flex: 2; min-width: 300px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px;">
+            <div class="form-group">
+                <label style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Número de DNI</label>
+                <p style="font-weight: 500; font-size: 15px; color: #334155; margin-top: 5px;" id="perfilDni">---</p> </div>
+            <div class="form-group">
+                <label style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Correo Electrónico</label>
+                <p style="font-weight: 500; font-size: 15px; color: #334155; margin-top: 5px;" id="perfilEmail">---</p> </div>
+            <div class="form-group">
+                <label style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Rol del Sistema</label>
+                <p style="margin-top: 5px;"><span class="badge badge-admin">ADMINISTRADOR GLOBAL</span></p>
+            </div>
+            <div class="form-group">
+                <label style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase;">Estado de Cuenta</label>
+                <p style="margin-top: 5px;"><span class="badge badge-active">ACTIVO</span></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+                <section id="seccion-usuarios" class="content-section">
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Gestión de Usuarios</h2>
+                            <p class="text-muted">Administra las cuentas de alumnos, docentes y personal administrativo.</p>
+                        </div>
+                        <button class="btn-primary" onclick="abrirModalUsuario()"><i class="fa-solid fa-plus"></i> Nuevo Usuario</button>
+                    </div>
+
+                    <div class="bg-card shadow-card border-card mt-20">
+                        <div class="filter-bar border-bottom" style="display: flex; gap: 15px; padding: 20px;">
+                            <div class="search-box" style="flex-grow: 1;">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                                <input type="text" id="buscadorUsuarios" placeholder="Buscar por nombre, apellidos o DNI...">
                             </div>
-                            <button class="btn-outline-primary" style="width: 100%;">Actualizar foto</button>
+                            <select id="filtroRolUsuarios" class="custom-select" style="min-width: 200px;">
+                                <option value="TODOS">Todos los Roles</option>
+                                <option value="ALUMNO">Solo Alumnos</option>
+                                <option value="DOCENTE">Solo Docentes</option>
+                                <option value="ADMINISTRADOR">Solo Administradores</option>
+                            </select>
                         </div>
                         
-                        <div class="perfil-right">
-                            <h2 class="section-title" id="perfilFullName" style="margin-bottom: 20px;">Administrador</h2>
-                            
-                            <table class="modern-table" style="background-color: white; border-radius: 8px; overflow: hidden; border: 1px solid #eee;">
-                                <tbody>
+                        <div class="table-responsive" style="padding: 20px;">
+                            <table class="modern-table">
+                                <thead>
                                     <tr>
-                                        <td style="font-weight: 600; width: 35%; border-right: 1px solid #eee;">Rol Institucional</td>
-                                        <td class="text-muted">Administrador Global / Director</td>
+                                        <th>DNI</th>
+                                        <th>Nombres y Apellidos</th>
+                                        <th>Correo Electrónico</th>
+                                        <th>Rol</th>
+                                        <th style="text-align: right;">Acciones</th>
                                     </tr>
-                                    <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Sede</td>
-                                        <td class="text-muted">Principal - Ica</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">DNI</td>
-                                        <td class="text-muted">12345678</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="font-weight: 600; border-right: 1px solid #eee;">Correo Institucional</td>
-                                        <td class="text-muted">admin@instituto.edu.pe</td>
-                                    </tr>
+                                </thead>
+                                <tbody id="tabla-usuarios-body">
+                                    <tr><td colspan="5" class="text-center text-muted">Cargando cuentas...</td></tr>
                                 </tbody>
                             </table>
-                            
-                            <div style="background-color: #e2eef8; padding: 15px 20px; border-radius: 8px; display: flex; align-items: center; gap: 12px; margin-top: 20px; font-size: 14px; color: #333;">
-                                <i class="fa-solid fa-shield-halved text-primary" style="font-size: 18px;"></i>
-                                <span>Posees privilegios de administrador global. Cualquier cambio afecta a todo el instituto.</span>
-                            </div>
                         </div>
                     </div>
                 </section>
+                <section id="seccion-finanzas" class="content-section"><h2>Finanzas</h2><p class="text-muted">Módulo en construcción...</p></section>
+                <section id="seccion-reportes" class="content-section"><h2>Reportes</h2><p class="text-muted">Módulo en construcción...</p></section>
+                <section id="seccion-configuracion" class="content-section"><h2>Configuración</h2><p class="text-muted">Módulo en construcción...</p></section>
 
+<div id="modalUsuario" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-user-plus text-primary" id="iconoModalUsuario"></i> <span id="tituloModalUsuario">Nuevo Usuario</span></h3>
+                <button class="close-modal" onclick="cerrarModalUsuario()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <form id="formUsuario">
+                    <input type="hidden" id="usuarioIdInput">
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>DNI / Documento</label>
+                            <input type="text" id="usuarioDni" class="custom-input" required maxlength="8" pattern="\d{8}" placeholder="Ej. 70123456">
+                        </div>
+                        <div class="form-group">
+                            <label>Rol Institucional</label>
+                            <select id="usuarioRol" class="custom-select" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label>Nombres</label>
+                            <input type="text" id="usuarioNombres" class="custom-input" required placeholder="Nombres completos">
+                        </div>
+                        <div class="form-group">
+                            <label>Apellidos</label>
+                            <input type="text" id="usuarioApellidos" class="custom-input" required placeholder="Apellidos completos">
+                        </div>
+                        <div class="form-group" style="grid-column: 1 / -1;">
+                            <label>Correo Electrónico</label>
+                            <input type="email" id="usuarioEmail" class="custom-input" required placeholder="correo@instituto.edu.pe">
+                        </div>
+                    </div>
+                    <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; padding: 12px; border-radius: 6px; margin-top: 20px; font-size: 13px; color: #166534; display: flex; gap: 10px;">
+                        <i class="fa-solid fa-shield-halved" style="font-size: 18px;"></i>
+                        <span>La contraseña inicial será el <strong>número de DNI</strong>. El sistema la encriptará por seguridad.</span>
+                    </div>
+                    <div class="form-actions mt-20" style="padding-top: 15px; border-top: 1px solid #f1f5f9; display: flex; justify-content: flex-end; gap: 10px;">
+                        <button type="button" class="btn-cancel" style="background: #f1f5f9; color: #475569; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer;" onclick="cerrarModalUsuario()">Cancelar</button>
+                        <button type="submit" class="btn-primary" id="btnGuardarUsuario" style="padding: 8px 20px;">Guardar Usuario</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    </div>
+    
             </div>
         </main>
     </div>
-    <script src="/js/auth.js"></script>
     <script src="/js/intranet/dashboard_admin.js"></script>
 </body>
 </html>

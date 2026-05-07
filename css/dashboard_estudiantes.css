@@ -68,6 +68,8 @@
     box-shadow: 0 4px 10px rgba(0, 86, 179, 0.2);
 }
 
+.btn-info-small { background: transparent; border: 1px solid var(--color-primary); color: var(--color-primary); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: 0.2s;}
+.btn-info-small:hover { background: var(--color-primary); color: white; }
 /* --- CABECERA (TOPBAR) --- */
 .portal-main {
     margin-left: 240px;
@@ -699,6 +701,34 @@ textarea.custom-input {
 
 .notif-item strong {
     color: var(--color-primary);
+}
+
+.notification-bell-wrapper {
+    position: relative;
+    cursor: pointer;
+}
+
+.bell-badge {
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 10px;
+    height: 10px;
+    background-color: #ff4d4d;
+    border: 2px solid white;
+    border-radius: 50%;
+    display: none; /* Se activa con JS */
+}
+
+.bell-badge.active {
+    display: block;
+    animation: pulse-red 2s infinite;
+}
+
+@keyframes pulse-red {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 77, 77, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
 }
 
 /* --- RESPONSIVIDAD --- */

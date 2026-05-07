@@ -13,12 +13,39 @@
     <link rel="stylesheet" href="/css/styles/base.css">
     <link rel="stylesheet" href="/css/dashboard_estudiantes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* Estilos para la campanita de notificaciones real */
+        .notification-bell-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        .bell-badge {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 10px;
+            height: 10px;
+            background-color: #ff4d4d;
+            border: 2px solid white;
+            border-radius: 50%;
+            display: none; /* Se activa vía JS */
+            animation: pulse-red 2s infinite;
+        }
+        @keyframes pulse-red {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(255, 77, 77, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+        }
+        .notif-item:hover {
+            background-color: #f8fafc;
+        }
+    </style>
 </head>
 <body class="bg-main">
 
     <div class="portal-layout" id="portalLayout">
         
-        <!-- SIDEBAR -->
         <aside class="portal-sidebar bg-card border-right" id="sidebar">
             <div class="sidebar-logo-container border-bottom">
                 <img src="/public/img/Jhalabet.png" alt="Logo" class="sidebar-logo">
@@ -52,10 +79,8 @@
             </nav>
         </aside>
 
-        <!-- MAIN CONTENT -->
         <main class="portal-main">
             
-            <!-- HEADER -->
             <header class="portal-header bg-card border-bottom">
                 <div class="header-left">
                     <button id="btnMenuToggle" class="toggle-sidebar-btn"><i class="fa-solid fa-bars-staggered"></i></button>
@@ -64,26 +89,23 @@
                 <div class="header-right">
                     <div class="header-actions" style="display: flex; align-items: center; gap: 25px;">
                         
-                        <!-- CAMPANITA DE NOTIFICACIONES -->
-                        <div style="position: relative;">
-                            <button class="icon-btn" id="btnNotificaciones" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666; position: relative;">
-                                <i class="fa-regular fa-bell"></i>
-                                <span class="badge-notification" id="badge-notif" style="display: none;">0</span>
-                            </button>
-                            <!-- CAJA FLOTANTE DE NOTIFICACIONES -->
-                            <div class="notification-dropdown shadow-card border-card" id="notif-dropdown" style="display: none;">
-                                <h4 style="margin: 0 0 10px 0; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Notificaciones</h4>
-                                <div id="lista-notificaciones">
-                                    <p class="text-muted text-center" style="font-size:12px; margin: 10px 0;">No tienes notificaciones.</p>
-                                </div>
-                            </div>
-                        </div>
+                        <div class="notification-bell-wrapper">
+    <button class="icon-btn" id="btnNotificaciones" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666; position: relative;">
+        <i class="fa-regular fa-bell"></i>
+        <span class="bell-badge badge-notification" id="badge-notif" style="display: none;">0</span>
+    </button>
+    <div class="notification-dropdown shadow-card border-card" id="notif-dropdown" style="display: none; position: absolute; right: 0; top: 40px; width: 280px; background: white; z-index: 1000; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+        <h4 style="margin: 0 0 10px 0; font-size: 14px; border-bottom: 1px solid #eee; padding-bottom: 10px; color: #333;">Notificaciones</h4>
+        <div id="lista-notificaciones">
+            <p class="text-muted text-center" style="font-size:12px; margin: 10px 0;">Cargando avisos...</p>
+        </div>
+    </div>
+</div>
 
-                        <!-- PERFIL USUARIO -->
                         <div class="user-profile-header dropdown">
                             <div class="user-text">
                                 <span class="user-greeting"><strong id="userNameHeader">Cargando...</strong></span>
-                                <span class="user-code">Ciclo I - 2026</span>
+                                <span class="user-code">Portal Estudiante</span>
                             </div>
                             <div class="user-avatar-text" style="width: 40px; height: 40px; background: var(--color-primary); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 18px;">
                                 <span id="userInitial">A</span>
@@ -103,12 +125,11 @@
 
             <div class="portal-content">
                 
-                <!-- SECCIÓN: INICIO / DASHBOARD -->
                 <section id="seccion-inicio" class="content-section active">
                     <div class="welcome-header">
                         <div>
                             <h2 class="section-title">Resumen Académico</h2>
-                            <p class="text-muted">Aquí tienes un vistazo rápido de tu actividad de hoy.</p>
+                            <p class="text-muted">Aquí tienes un vistazo rápido de tu actividad académica.</p>
                         </div>
                         <span class="badge-modalidad"><i class="fa-solid fa-building-user"></i> Modalidad Presencial</span>
                     </div>
@@ -131,7 +152,7 @@
                         <div class="metric-card bg-card shadow-card border-card" style="border-left: 4px solid var(--accent-red);">
                             <div class="metric-icon bg-danger-light"><i class="fa-solid fa-file-invoice-dollar text-danger"></i></div>
                             <div class="metric-info">
-                                <p>Próximo Pago</p>
+                                <p>Pendiente de Pago</p>
                                 <h3 class="text-danger" id="metric-pago">...</h3>
                             </div>
                         </div>
@@ -173,41 +194,36 @@
                     </div>
                 </section>
 
-                <!-- SECCIÓN: MIS CURSOS -->
                 <section id="seccion-cursos" class="content-section">
                     <h2 class="section-title">Mis Cursos</h2>
-                    <p class="text-muted mb-40">Periodo Académico: 2026 - Ciclo 1</p>
+                    <p class="text-muted mb-40">Periodo Académico Actual</p>
 
                     <div class="cursos-cards-grid" id="grid-mis-cursos">
                         <p class="text-muted" style="grid-column: 1/-1;">Cargando tus cursos matriculados...</p>
                     </div>
                 </section>
 
-                <!-- SECCIÓN: FINANZAS -->
                 <section id="seccion-pagos" class="content-section">
                     <h2 class="section-title">Gestión Financiera</h2>
-                    <p class="text-muted mb-40">Revisa tu estado de cuenta y selecciona las cuotas que deseas pagar.</p>
+                    <p class="text-muted mb-40">Revisa tu estado de cuenta y realiza tus pagos en línea.</p>
                     
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 30px;">
-                        
-                        <!-- Deudas Pendientes (Carrito de Pago) -->
                         <div class="bg-card shadow-card border-card">
                             <h3 class="border-bottom" style="padding: 20px; font-size: 18px; color: #dc3545;"><i class="fa-solid fa-circle-exclamation"></i> Cuotas Pendientes</h3>
                             <div id="lista-deudas-pendientes" style="padding: 20px; display: flex; flex-direction: column; gap: 10px; max-height: 400px; overflow-y: auto;">
                                 <p class="text-center text-muted">Buscando cuotas...</p>
                             </div>
-                            <div class="resumen-pago border-top" style="padding: 20px; background: #fcfcfc; border-bottom-left-radius: 8px; border-bottom-right-radius: 8px;">
+                            <div class="resumen-pago border-top" style="padding: 20px; background: #fcfcfc;">
                                 <div style="display: flex; justify-content: space-between; margin-bottom: 15px;">
                                     <span style="font-weight: 500; color: #555;">Total Seleccionado:</span>
                                     <h3 id="total-pago-seleccionado" style="color: #222; font-size: 24px;">S/ 0.00</h3>
                                 </div>
-                                <button class="btn-entrar-curso  pulse-btn" id="btnIrPasarela" style="width: 100%; font-size: 16px; padding: 14px;" disabled>
+                                <button class="btn-entrar-curso" id="btnIrPasarela" style="width: 100%; font-size: 16px; padding: 14px;" disabled>
                                     <i class="fa-solid fa-lock"></i> Procesar Pago Seguro
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Historial de Pagos -->
                         <div class="bg-card shadow-card border-card">
                             <h3 class="border-bottom" style="padding: 20px; font-size: 18px; color: #28a745;"><i class="fa-solid fa-clock-rotate-left"></i> Historial de Pagos</h3>
                             <div class="lista-pagos" id="lista-historial-pagos" style="max-height: 480px; overflow-y: auto;">
@@ -217,14 +233,12 @@
                     </div>
                 </section>
 
-                <!-- SECCIÓN: HORARIO -->
                 <section id="seccion-calendario" class="content-section">
                     <h2 class="section-title">Mi Horario de Clases</h2>
                     <p class="text-muted">Cursos matriculados ordenados por día y hora.</p>
                     
                     <div class="bg-card shadow-card border-card mt-20" style="padding: 20px; overflow-x: auto;">
                         <div class="calendario-grid-container" id="calendario-container">
-                            <!-- Fila 1: Cabeceras fijadas -->
                             <div class="cal-hora-header" style="grid-column: 1; grid-row: 1;">Horas</div>
                             <div class="cal-dia-header" style="grid-column: 2; grid-row: 1;">Lunes</div>
                             <div class="cal-dia-header" style="grid-column: 3; grid-row: 1;">Martes</div>
@@ -233,37 +247,34 @@
                             <div class="cal-dia-header" style="grid-column: 6; grid-row: 1;">Viernes</div>
                             <div class="cal-dia-header" style="grid-column: 7; grid-row: 1;">Sábado</div>
                             <div class="cal-dia-header" style="grid-column: 8; grid-row: 1;">Domingo</div>
-                            
-                            <!-- El JS inyectará el fondo y los cursos aquí -->
                             <div id="calendario-body" style="display: contents;"></div>
                         </div>
                     </div>
                 </section>
 
-                <!-- SECCIÓN: TRÁMITES -->
                 <section id="seccion-tramites" class="content-section">
                     <div class="welcome-header">
                         <div>
                             <h2 class="section-title">Mesa de Partes Virtual</h2>
-                            <p class="text-muted">Gestiona tus trámites académicos y revisa la respuesta del Coordinador.</p>
+                            <p class="text-muted">Consulta el estado de tus solicitudes y la respuesta de la coordinación.</p>
                         </div>
                         <button class="btn-entrar-curso" onclick="abrirModalTramite()"><i class="fa-solid fa-plus"></i> Nueva Solicitud SAE</button>
                     </div>
                     
                     <div class="bg-card shadow-card border-card mt-20">
                         <div class="table-responsive" style="padding: 20px;">
-                            <table class="modern-table" style="width: 100%; border-collapse: collapse;">
+                            <table class="modern-table" style="width: 100%;">
                                 <thead>
                                     <tr>
-                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Nº Trámite</th>
-                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Fecha</th>
-                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Tipo</th>
-                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Curso Relacionado</th>
-                                        <th style="text-align: center; padding-bottom: 10px; border-bottom: 2px solid #eee;">Estado</th>
-                                        <th style="text-align: left; padding-bottom: 10px; border-bottom: 2px solid #eee;">Respuesta Administrativa</th>
+                                        <th>Nº Trámite</th>
+                                        <th>Fecha Solicitud</th>
+                                        <th>Tipo de Trámite</th>
+                                        <th>Curso/Sección</th>
+                                        <th>Estado Actual</th>
+                                        <th style="text-align: right;">Acción</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabla-mis-tramites">
+                                <tbody id="tabla-mis-tramites-body">
                                     <tr><td colspan="6" class="text-center text-muted" style="padding: 20px;">Cargando trámites...</td></tr>
                                 </tbody>
                             </table>
@@ -271,60 +282,42 @@
                     </div>
                 </section>
                 
-                <!-- SECCIÓN: MATRÍCULA -->
                 <section id="seccion-matricula" class="content-section">
                     <div class="welcome-header">
                         <div>
                             <h2 class="section-title">Matrícula en Línea 2026-II</h2>
-                            <p class="text-muted">Realiza tu matrícula para el siguiente ciclo académico en 2 simples pasos.</p>
+                            <p class="text-muted">Proceso de inscripción para el siguiente ciclo académico.</p>
                         </div>
                     </div>
-
                     <div class="bg-card shadow-card border-card mt-20" style="padding: 40px;">
-                        
                         <div id="mat-step-1">
-                            <!-- El JS inyectará aquí si está habilitado o bloqueado por deudas -->
                             <p class="text-center text-muted">Verificando estado financiero...</p>
                         </div>
-
                         <div id="mat-step-2" style="display: none;">
-                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Selección de Cursos - Ciclo II</h3>
-                            
-                            <!-- CONTENEDOR VACÍO CON ID -->
+                            <h3 style="margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 10px;">Selección de Cursos</h3>
                             <div class="cursos-matricula-list" id="lista-matricula-proximo" style="display: flex; flex-direction: column; gap: 15px;">
                                 <p class="text-muted">Buscando cursos programados...</p>
                             </div>
-
                             <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #eee; padding-top: 20px;">
                                 <button class="btn-outline-small" id="btnMatVolver1"><i class="fa-solid fa-arrow-left"></i> Volver</button>
                                 <div>
-                                    <!-- SPAN CON ID PARA SUMAR CRÉDITOS -->
                                     <span style="margin-right: 20px; font-weight: 600;">Total Créditos: <span class="text-primary" id="total-creditos-mat">0</span></span>
-                                    <button class="btn-entrar-curso" id="btnConfirmarMatricula" style="font-size: 16px; padding: 12px 30px;"><i class="fa-solid fa-check-double"></i> Confirmar Matrícula</button>
+                                    <button class="btn-entrar-curso" id="btnConfirmarMatricula" style="font-size: 16px; padding: 12px 30px;">Confirmar Matrícula</button>
                                 </div>
                             </div>
                         </div>
-
-                        <div id="mat-step-3" style="display: none; text-align: center; padding: 40px 20px;">
-                            <div style="width: 80px; height: 80px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;">
-                                <i class="fa-solid fa-check"></i>
-                            </div>
-                            <h2 style="color: #28a745; margin-bottom: 10px;">¡Matrícula Confirmada!</h2>
-                            <p class="text-muted" style="margin-bottom: 30px;">Tus cursos han sido registrados exitosamente para el Ciclo 2026-II.</p>
-                            <button class="btn-outline-primary nav-trigger" data-target="seccion-calendario">Ver mi horario</button>
+                        <div id="mat-step-3" style="display: none; text-align: center; padding: 40px;">
+                            <div style="width: 80px; height: 80px; background: #28a745; color: white; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 40px; margin: 0 auto 20px auto;"><i class="fa-solid fa-check"></i></div>
+                            <h2>¡Matrícula Exitosa!</h2>
+                            <p class="text-muted">Tus cursos han sido registrados correctamente.</p>
                         </div>
-
                     </div>
                 </section>
 
-                <!-- SECCIÓN: MI PERFIL (DINÁMICO) -->
                 <section id="seccion-perfil" class="content-section">
                     <h2 class="section-title">Mi Perfil</h2>
                     <p class="text-muted mb-40">Información personal y estado académico.</p>
-                    
-                    <div class="bg-card shadow-card border-card" style="padding: 30px; display: flex; gap: 40px; align-items: flex-start; flex-wrap: wrap;">
-                        
-                        <!-- Columna Foto -->
+                    <div class="bg-card shadow-card border-card" style="padding: 30px; display: flex; gap: 40px; flex-wrap: wrap;">
                         <div style="text-align: center; flex: 1; min-width: 200px;">
                             <div style="width: 130px; height: 130px; background: #e8f4fd; color: var(--color-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 50px; margin: 0 auto 15px auto; border: 4px solid var(--color-primary);">
                                 <i class="fa-solid fa-user-graduate"></i>
@@ -332,23 +325,21 @@
                             <h3 id="profileFullname" style="margin-bottom: 5px; color: #222;">Cargando...</h3>
                             <p class="text-muted" style="font-size: 14px;"><i class="fa-solid fa-id-card"></i> DNI: <span id="profileDni">---</span></p>
                         </div>
-
-                        <!-- Columna Datos -->
                         <div style="flex: 2; min-width: 300px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 25px;">
                             <div class="form-group">
-                                <label class="text-muted" style="font-size: 12px; font-weight: 600; text-transform: uppercase;">Correo Institucional</label>
-                                <p style="font-weight: 500; font-size: 15px; color: #333;" id="profileEmail">---</p>
+                                <label style="font-size: 12px; font-weight: 600; color: #888;">CORREO INSTITUCIONAL</label>
+                                <p style="font-weight: 500;" id="profileEmail">---</p>
                             </div>
                             <div class="form-group">
-                                <label class="text-muted" style="font-size: 12px; font-weight: 600; text-transform: uppercase;">Carrera Profesional</label>
-                                <p style="font-weight: 500; font-size: 15px; color: #333;" id="profileCarrera">---</p>
+                                <label style="font-size: 12px; font-weight: 600; color: #888;">CARRERA PROFESIONAL</label>
+                                <p style="font-weight: 500;" id="profileCarrera">---</p>
                             </div>
                             <div class="form-group">
-                                <label class="text-muted" style="font-size: 12px; font-weight: 600; text-transform: uppercase;">Fecha de Ingreso</label>
-                                <p style="font-weight: 500; font-size: 15px; color: #333;" id="profileIngreso">---</p>
+                                <label style="font-size: 12px; font-weight: 600; color: #888;">FECHA DE INGRESO</label>
+                                <p style="font-weight: 500;" id="profileIngreso">---</p>
                             </div>
                             <div class="form-group">
-                                <label class="text-muted" style="font-size: 12px; font-weight: 600; text-transform: uppercase;">Estado del Alumno</label>
+                                <label style="font-size: 12px; font-weight: 600; color: #888;">ESTADO ACADÉMICO</label>
                                 <p style="margin-top: 5px;"><span class="badge badge-active" id="profileEstado">---</span></p>
                             </div>
                         </div>
@@ -359,7 +350,6 @@
         </main>
     </div>
 
-    <!-- MODAL DETALLES DEL CURSO -->
     <div id="modalDetalleCurso" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
@@ -371,29 +361,17 @@
                     <span class="badge" style="background:#e0f2f1; color:#00897b;" id="modalCursoCreditos">Créditos: 3</span>
                     <span class="badge" style="background:#f0f2f5; color:#555;" id="modalCursoModalidad">PRESENCIAL</span>
                 </div>
-                
-                <h4 style="margin-bottom: 10px; color: #333;"><i class="fa-solid fa-circle-info"></i> Descripción del Curso</h4>
-                <div id="modalCursoDesc" class="text-muted" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 20px;">
-                    Sin descripción.
-                </div>
-                
-                <h4 style="margin-bottom: 10px; color: #333;"><i class="fa-solid fa-book-open"></i> Temario / Sílabo</h4>
-                <div id="modalCursoTemario" class="text-muted" style="background: #f8f9fa; padding: 15px; border-radius: 8px; border: 1px dashed #ccc;">
-                    Sin temario disponible.
-                </div>
-                
-                <div class="form-actions mt-20" style="display: flex; justify-content: space-between; align-items: center;">
-                    <button type="button" class="btn-outline-small" onclick="cerrarModal('modalDetalleCurso')">Cerrar</button>
-                    
-                    <button type="button" class="btn-entrar-curso" onclick="cerrarModal('modalDetalleCurso'); alert('Conectando con la plataforma educativa (Zoom/Moodle)...');">
-                        <i class="fa-solid fa-satellite-dish"></i> Entrar al Aula Virtual
-                    </button>
+                <h4 style="margin-bottom: 10px; color: #333;">Descripción</h4>
+                <div id="modalCursoDesc" class="text-muted" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">Sin descripción.</div>
+                <h4 style="margin-bottom: 10px; color: #333;">Temario</h4>
+                <div id="modalCursoTemario" class="text-muted" style="background: #f8f9fa; padding: 15px; border-radius: 8px;">Sin temario.</div>
+                <div class="form-actions mt-20" style="display: flex; justify-content: flex-end;">
+                    <button type="button" class="btn-entrar-curso" onclick="cerrarModal('modalDetalleCurso')">Cerrar</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL NUEVO TRÁMITE (SAE) -->
     <div id="modalNuevoTramite" class="modal-overlay">
         <div class="modal-card">
             <div class="modal-header">
@@ -415,23 +393,57 @@
                         <label>Curso Relacionado (Opcional)</label>
                         <select id="tramiteSeccion" class="custom-select">
                             <option value="">Ninguno / No aplica</option>
-                            <!-- El JS inyectará los cursos en los que el alumno está matriculado -->
                         </select>
                     </div>
                     <div class="form-group" style="margin-top: 15px;">
-                        <label>Justificación / Detalle de la solicitud</label>
-                        <textarea id="tramiteDesc" class="custom-input" rows="4" placeholder="Explica detalladamente el motivo de tu trámite para que el coordinador pueda evaluarlo..." required></textarea>
+                        <label>Justificación / Detalle</label>
+                        <textarea id="tramiteDesc" class="custom-input" rows="4" placeholder="Explica detalladamente tu solicitud..." required></textarea>
                     </div>
-                    
-                    <div class="form-actions mt-20" style="display: flex; justify-content: space-between; align-items: center;">
+                    <div class="form-actions mt-20" style="display: flex; justify-content: space-between;">
                         <button type="button" class="btn-outline-small" onclick="cerrarModal('modalNuevoTramite')">Cancelar</button>
-                        <button type="submit" class="btn-entrar-curso" id="btnEnviarTramite"><i class="fa-solid fa-paper-plane"></i> Enviar Solicitud</button>
+                        <button type="submit" class="btn-entrar-curso" id="btnEnviarTramite">Enviar Solicitud</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
+    <div id="modalDetalleTramite" class="modal-overlay">
+        <div class="modal-card" style="max-width: 500px;">
+            <div class="modal-header" style="background: linear-gradient(to right, #f8f9fa, #ffffff);">
+                <h3 style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa-solid fa-file-signature text-primary"></i> 
+                    Detalle de Solicitud <span id="detalleTramiteId" class="text-muted" style="font-size: 14px;"></span>
+                </h3>
+                <button class="close-modal" onclick="cerrarModal('modalDetalleTramite')"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body" style="padding: 25px;">
+                
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; border-bottom: 1px solid #eee; padding-bottom: 15px;">
+                    <div>
+                        <p class="text-muted" style="font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 5px;">Estado Actual</p>
+                        <span id="detalleTramiteEstado" class="badge">---</span>
+                    </div>
+                    <div style="text-align: right;">
+                        <p class="text-muted" style="font-size: 12px; font-weight: 600; text-transform: uppercase; margin-bottom: 5px;">Fecha de Respuesta</p>
+                        <p id="detalleTramiteFecha" style="font-size: 14px; font-weight: 500; color: #333; margin: 0;">---</p>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 8px;">Respuesta del Administrador / Coordinador</label>
+                    <div id="detalleTramiteObs" style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; color: #334155; font-size: 14px; line-height: 1.6; min-height: 80px;">
+                        Cargando observación...
+                    </div>
+                </div>
+
+                <div class="form-actions mt-20" style="display: flex; justify-content: flex-end; padding-top: 15px; border-top: 1px solid #f1f5f9;">
+                    <button type="button" class="btn-entrar-curso" onclick="cerrarModal('modalDetalleTramite')" style="padding: 8px 24px;">Entendido</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <script src="/js/auth.js"></script>
     <script src="/js/intranet/dashboard_estudiante.js"></script>
 </body>

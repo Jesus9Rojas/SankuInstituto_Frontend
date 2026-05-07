@@ -1,4 +1,3 @@
-// /js/intranet/dashboard_estudiante.js
 document.addEventListener("DOMContentLoaded", () => {
     
     // ==========================================
@@ -19,19 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
     let misSeccionesGlobal = [];
 
     // 2. Nombre del usuario
-const nombreUsuario = localStorage.getItem("usuarioNombre");
+    const nombreUsuario = localStorage.getItem("usuarioNombre");
     if (nombreUsuario) {
         const primerNombre = nombreUsuario.split(' ')[0];
-        
-        // Poner el nombre en el header
         const spanNombre = document.getElementById("userNameHeader");
         if(spanNombre) spanNombre.textContent = primerNombre;
 
-        // Poner el nombre completo en la sección Mi Perfil
         const perfilFull = document.getElementById("perfilFullName");
         if(perfilFull) perfilFull.textContent = nombreUsuario;
         
-        // ¡NUEVO! Poner la primera letra en el círculo del avatar
         const spanInitial = document.getElementById("userInitial");
         if(spanInitial) spanInitial.textContent = primerNombre.charAt(0).toUpperCase();
     }
@@ -54,9 +49,8 @@ const nombreUsuario = localStorage.getItem("usuarioNombre");
             e.preventDefault();
             sections.forEach(s => s.classList.remove("active"));
             menuBtns.forEach(b => b.classList.remove("active"));
-
             if (this.classList.contains("menu-btn")) this.classList.add("active");
-
+            
             const targetId = this.getAttribute("data-target");
             const targetSection = document.getElementById(targetId);
             if(targetSection) targetSection.classList.add("active");
@@ -78,21 +72,15 @@ const nombreUsuario = localStorage.getItem("usuarioNombre");
         });
     }
 
-    const btnCerrarSesion = document.getElementById("btnCerrarSesion");
-    if (btnCerrarSesion) {
-        btnCerrarSesion.addEventListener("click", (e) => {
-            e.preventDefault();
-            localStorage.clear();
-            window.location.href = "/html/index.html";
-        });
-    }
+    document.getElementById("btnCerrarSesion")?.addEventListener("click", (e) => {
+        e.preventDefault(); localStorage.clear(); window.location.href = "/html/index.html";
+    });
 
     // ==========================================
     // 4. LÓGICA CORE: CARGA DINÁMICA
     // ==========================================
     const agendaHoyList = document.getElementById("agenda-hoy-list");
     const gridMisCursos = document.getElementById("grid-mis-cursos");
-    const tablaCalendario = document.getElementById("tabla-calendario-lista"); // Lo reusaremos para inyectar grid
     const diasSemana = ["", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"];
     const coloresCursos = ['#0056b3', '#f39c12', '#00897b', '#9b59b6', '#e74c3c'];
 
@@ -102,42 +90,36 @@ const nombreUsuario = localStorage.getItem("usuarioNombre");
         try {
             const headers = { 'Authorization': `Bearer ${token}` };
 
-            // A. Perfil del Alumno
+            // Perfil del Alumno
             const resPerfil = await fetch(`http://localhost:8080/api/v1/alumnos/perfil/${usuarioId}`, { headers });
             if (!resPerfil.ok) throw new Error("No se pudo cargar el perfil");
             const perfil = await resPerfil.json();
+            
             document.getElementById("profileFullname").textContent = perfil.usuario.nombreCompleto;
             document.getElementById("profileDni").textContent = perfil.usuario.dni;
             document.getElementById("profileEmail").textContent = perfil.usuario.email;
             document.getElementById("profileCarrera").textContent = perfil.nombreCarrera;
             document.getElementById("profileEstado").textContent = perfil.estado;
-            
-            // Formatear la fecha (Ej: 2026-05-04 -> 04/05/2026)
-            const fIngreso = new Date(perfil.fechaIngreso + "T00:00:00").toLocaleDateString('es-ES');
-            document.getElementById("profileIngreso").textContent = fIngreso;
-
-            idAlumnoGlobal = perfil.idAlumno;
-            
+            document.getElementById("profileIngreso").textContent = new Date(perfil.fechaIngreso + "T00:00:00").toLocaleDateString('es-ES');
             document.getElementById("metric-promedio").textContent = perfil.promedioHistorico;
 
-            // B. Cargar la Carrera y todos los cursos del instituto
+            idAlumnoGlobal = perfil.idAlumno;
+
+            // Cursos y Secciones
             const resCarreras = await fetch(`http://localhost:8080/api/v1/carreras`, { headers });
             const carreras = await resCarreras.json();
             const miCarrera = carreras.find(c => c.nombre === perfil.nombreCarrera);
             
             const resCursos = await fetch(`http://localhost:8080/api/v1/cursos`, { headers });
-            infoCursosGlobal = await resCursos.json(); // Se guarda globalmente
+            infoCursosGlobal = await resCursos.json();
             
-            // C. Filtramos los cursos de SU carrera
             const misCursosValidos = infoCursosGlobal.filter(c => c.carreraId === miCarrera.idCarrera);
             const idsCursosValidos = misCursosValidos.map(c => c.idCurso);
 
-            // D. Obtener TODAS las secciones de 2026-I y filtrar solo las de SU carrera
             const resSeccionesI = await fetch(`http://localhost:8080/api/v1/secciones/ciclo/2026-I`, { headers });
             const todasSeccionesI = await resSeccionesI.json();
             const miHorarioActual = todasSeccionesI.filter(s => idsCursosValidos.includes(s.cursoId));
 
-            // E. Obtener secciones para Matrícula de 2026-II
             const resSeccionesII = await fetch(`http://localhost:8080/api/v1/secciones/ciclo/2026-II`, { headers });
             let miMatriculaFutura = [];
             if(resSeccionesII.ok) {
@@ -145,101 +127,136 @@ const nombreUsuario = localStorage.getItem("usuarioNombre");
                 miMatriculaFutura = todasSeccionesII.filter(s => idsCursosValidos.includes(s.cursoId));
             }
 
-            // F. RENDERIZAR VISTAS
+            // Renderizados
             misSeccionesGlobal = miHorarioActual;
             renderizarAgendaHoy(miHorarioActual);
             renderizarMisCursos(miHorarioActual);
-            renderizarCalendarioGrid(miHorarioActual); // Llamamos a la nueva función de cuadrícula
+            renderizarCalendarioGrid(miHorarioActual);
             renderizarMatricula(miMatriculaFutura, misCursosValidos);
 
-            // G. Obtener Pagos
             cargarProximoPago(idAlumnoGlobal, headers);
             cargarMisTramites();
 
         } catch (e) {
             console.error("Error cargando los datos:", e);
-            if(gridMisCursos) gridMisCursos.innerHTML = `<p class="text-danger" style="grid-column:1/-1;">Error de conexión.</p>`;
         }
     }
 
 
+    // ==========================================
+    // 5. TRÁMITES Y NOTIFICACIONES
+    // ==========================================
     async function cargarMisTramites() {
-        const tbody = document.getElementById("tabla-mis-tramites");
-        if (!tbody || !usuarioId) return;
+        const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
 
         try {
-            const res = await fetch(`http://localhost:8080/api/v1/solicitudes/usuario/${usuarioId}`, {
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            
+            const res = await fetch(`http://localhost:8080/api/v1/solicitudes/mis-solicitudes/${usuarioId}`, { headers });
             if (res.ok) {
-                const tramites = await res.json();
-                
-                if (tramites.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Aún no has registrado ningún trámite en el sistema.</td></tr>`;
+                const solicitudes = await res.json();
+                const tablaBody = document.getElementById("tabla-mis-tramites-body");
+                const bellBadge = document.getElementById("bell-badge"); 
+                const listaNotif = document.getElementById("lista-notificaciones");
+
+                if (!tablaBody) return;
+
+                if (solicitudes.length === 0) {
+                    tablaBody.innerHTML = '<tr><td colspan="6" class="text-center">No has realizado trámites aún.</td></tr>';
                     return;
                 }
 
-                // Ordenamos para que los trámites más recientes salgan arriba
-                tramites.sort((a, b) => b.idSolicitud - a.idSolicitud);
-
-                const respondidos = tramites.filter(t => t.estado === 'APROBADO' || t.estado === 'RECHAZADO');
-                const badgeNotif = document.getElementById("badge-notif");
-                const listaNotif = document.getElementById("lista-notificaciones");
-
-                if (respondidos.length > 0) {
-                    badgeNotif.style.display = "block";
-                    badgeNotif.textContent = respondidos.length;
+                // Notificaciones (Campana)
+                const respondidos = solicitudes.filter(s => s.estado !== "PENDIENTE");
+                if (respondidos.length > 0 && bellBadge) {
+                    bellBadge.style.display = "flex";
+                    bellBadge.style.position = "absolute";
+                    bellBadge.style.top = "-5px";
+                    bellBadge.style.right = "-5px";
+                    bellBadge.style.backgroundColor = "#ff4d4d";
+                    bellBadge.style.color = "white";
+                    bellBadge.style.borderRadius = "50%";
+                    bellBadge.style.width = "18px";
+                    bellBadge.style.height = "18px";
+                    bellBadge.style.fontSize = "11px";
+                    bellBadge.style.fontWeight = "bold";
+                    bellBadge.style.alignItems = "center";
+                    bellBadge.style.justifyContent = "center";
+                    bellBadge.textContent = respondidos.length;
                     
-                    listaNotif.innerHTML = respondidos.map(t => {
-                        const colorWord = t.estado === 'APROBADO' ? '#28a745' : '#dc3545';
-                        return `
-                        <div class="notif-item" onclick="irATramites()">
-                            <p>Tu <strong>Trámite #${t.idSolicitud}</strong> ha sido evaluado y marcado como <b style="color: ${colorWord};">${t.estado}</b>.</p>
-                            <span style="font-size: 10px; color: #888;"><i class="fa-regular fa-clock"></i> Revisa la Mesa de Partes</span>
-                        </div>`;
-                    }).join('');
-                } else {
-                    badgeNotif.style.display = "none";
-                    listaNotif.innerHTML = '<p class="text-muted text-center" style="font-size:12px; margin: 10px 0;">No tienes respuestas nuevas.</p>';
+                    if(listaNotif) {
+                        listaNotif.innerHTML = respondidos.map(r => `
+                            <div style="padding: 10px; border-bottom: 1px solid #eee; cursor:pointer;" onclick="document.querySelector('[data-target=\\'seccion-tramites\\']').click()">
+                                <small style="color:var(--color-primary); font-weight:700;">ACTUALIZACIÓN</small>
+                                <p style="margin:0; font-size:12px;">Tu trámite #${r.idSolicitud} fue <strong>${r.estado}</strong></p>
+                            </div>
+                        `).join('');
+                    }
+                } else if (bellBadge) {
+                    bellBadge.style.display = "none";
                 }
 
-                tbody.innerHTML = tramites.map(t => {
-                    // Colores de los estados
-                    let badgeClass = 'badge-admin'; // PENDIENTE (Naranja)
-                    if (t.estado === 'APROBADO') badgeClass = 'badge-active'; // Verde
-                    if (t.estado === 'RECHAZADO') badgeClass = 'badge-suspended'; // Rojo
-
-                    const fechaFormat = new Date(t.fechaSolicitud).toLocaleDateString('es-ES');
-                    const respuesta = t.observacionCoordinador ? t.observacionCoordinador : '<span style="color: #bbb; font-style: italic;">En espera de revisión...</span>';
+                // Llenar tabla
+                tablaBody.innerHTML = solicitudes.map(s => {
+                    let statusClass = "badge-pending";
+                    if (s.estado === "APROBADO") statusClass = "badge-success";
+                    if (s.estado === "RECHAZADO") statusClass = "badge-danger";
 
                     return `
                     <tr>
-                        <td><strong>#TRM-${t.idSolicitud}</strong></td>
-                        <td>${fechaFormat}</td>
-                        <td>${t.tipo.replace('_', ' ')}</td>
-                        <td>${t.cursoYSeccion !== 'N/A' ? t.cursoYSeccion : '<span class="text-muted">General</span>'}</td>
-                        <td><span class="badge ${badgeClass}">${t.estado}</span></td>
-                        <td style="font-size: 13px; max-width: 250px;">${respuesta}</td>
-                    </tr>`;
+                        <td><strong>#TRM-${s.idSolicitud}</strong></td>
+                        <td>${s.tipo}</td>
+                        <td>${new Date(s.fechaSolicitud).toLocaleDateString()}</td>
+                        <td><span class="badge ${statusClass}">${s.estado}</span></td>
+                        <td>${s.observacionCoordinador || '<i class="text-muted">En espera de revisión...</i>'}</td>
+                        <td>
+                            <button class="btn-info-small" style="padding: 6px 12px; border-radius: 6px; font-weight: 500;" onclick='verDetalleTramite(${JSON.stringify(s)})'>
+                                <i class="fa-solid fa-eye"></i> Detalle
+                            </button>
+                        </td>
+                    </tr>
+                    `;
                 }).join('');
             }
-        } catch(e) {
-            console.error("Error cargando trámites:", e);
-        }
+        } catch (error) { console.error("Error al cargar trámites:", error); }
     }
+
+    // 🚀 NUEVA FUNCIÓN: ABRIR MODAL DE DETALLES DEL TRÁMITE
+    window.verDetalleTramite = function(s) {
+        document.getElementById("detalleTramiteId").textContent = `#TRM-${s.idSolicitud}`;
+        
+        const badgeEstado = document.getElementById("detalleTramiteEstado");
+        badgeEstado.textContent = s.estado;
+        
+        // Pinta el badge del modal del color correcto
+        badgeEstado.className = "badge"; // Reset clases
+        if (s.estado === "APROBADO") badgeEstado.classList.add("badge-success");
+        else if (s.estado === "RECHAZADO") badgeEstado.classList.add("badge-danger");
+        else badgeEstado.classList.add("badge-pending");
+
+        const fechaRes = s.fechaRespuesta ? new Date(s.fechaRespuesta).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : "Aún sin respuesta";
+        document.getElementById("detalleTramiteFecha").textContent = fechaRes;
+
+        const obsContainer = document.getElementById("detalleTramiteObs");
+        if (s.observacionCoordinador) {
+            obsContainer.innerHTML = s.observacionCoordinador;
+            obsContainer.style.fontStyle = "normal";
+            obsContainer.style.color = "#334155";
+        } else {
+            obsContainer.innerHTML = '<i class="fa-solid fa-clock-rotate-left"></i> Tu solicitud está en bandeja de entrada esperando ser revisada por la coordinación académica.';
+            obsContainer.style.fontStyle = "italic";
+            obsContainer.style.color = "#94a3b8";
+        }
+
+        document.getElementById("modalDetalleTramite").classList.add("show");
+    };
 
     window.abrirModalTramite = function() {
         const form = document.getElementById("formNuevoTramite");
         if(form) form.reset();
-        
-        // Cargar los cursos actuales en el Select (Combo Box)
         const selSeccion = document.getElementById("tramiteSeccion");
         if(selSeccion) {
             selSeccion.innerHTML = '<option value="">Ninguno / Consulta General</option>' + 
                 misSeccionesGlobal.map(s => `<option value="${s.idSeccion}">${s.nombreCurso}</option>`).join('');
         }
-        
         document.getElementById("modalNuevoTramite").classList.add("show");
     }
 
@@ -248,16 +265,13 @@ const nombreUsuario = localStorage.getItem("usuarioNombre");
         formTramite.addEventListener("submit", async (e) => {
             e.preventDefault();
             const btn = document.getElementById("btnEnviarTramite");
-            const ogText = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Enviando al Coordinador...';
             btn.disabled = true;
 
-            const idSeccionElegida = document.getElementById("tramiteSeccion").value;
-            
+            const idSec = document.getElementById("tramiteSeccion").value;
             const payload = {
                 emisorId: parseInt(usuarioId),
                 tipo: document.getElementById("tramiteTipo").value,
-                seccionId: idSeccionElegida ? parseInt(idSeccionElegida) : null,
+                seccionId: (idSec && idSec !== "") ? parseInt(idSec) : null,
                 descripcion: document.getElementById("tramiteDesc").value
             };
 
@@ -267,38 +281,29 @@ const nombreUsuario = localStorage.getItem("usuarioNombre");
                     headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
                     body: JSON.stringify(payload)
                 });
-
                 if(res.ok) {
-                    alert("¡Trámite enviado con éxito! El coordinador lo revisará pronto.");
-                    cerrarModal('modalNuevoTramite');
-                    cargarMisTramites(); // Refrescamos la tabla instantáneamente
-                } else {
-                    alert("Ocurrió un problema al enviar el trámite.");
-                }
-            } catch(err) {
-                console.error("Error enviando trámite:", err);
-                alert("Error de conexión con el servidor.");
-            } finally {
-                btn.innerHTML = ogText;
-                btn.disabled = false;
-            }
+                    alert("¡Solicitud enviada!");
+                    document.getElementById("modalNuevoTramite").classList.remove("show");
+                    cargarMisTramites(); 
+                } else { alert("Ocurrió un problema al enviar el trámite."); }
+            } catch(err) { alert("Error de conexión."); } 
+            finally { btn.disabled = false; }
         });
     }
-    
-async function cargarProximoPago(idAlum, headers) {
+
+    // ==========================================
+    // 6. FINANZAS Y PAGOS
+    // ==========================================
+    async function cargarProximoPago(idAlum, headers) {
         const resPagos = await fetch(`http://localhost:8080/api/v1/cuotas/alumno/${idAlum}`, { headers });
         if(resPagos.ok) {
             const cuotas = await resPagos.json();
-            
-            // Separar Pendientes y Pagados
             const cuotasPendientes = cuotas.filter(c => c.estado === 'PENDIENTE' || c.estado === 'VENCIDO');
             const cuotasPagadas = cuotas.filter(c => c.estado === 'PAGADO');
 
-            // Filtro para el bloqueo de matrícula (Si hay deudas vencidas o matrícula sin pagar)
             const deudasBloqueantes = cuotasPendientes.filter(c => c.estado === 'VENCIDO' || (c.estado === 'PENDIENTE' && c.mesCorrespondiente.includes("Matrícula")));
             renderizarEstadoMatricula(deudasBloqueantes);
 
-            // Renderizar Historial de Pagos (Verdes)
             const listaHistorial = document.getElementById("lista-historial-pagos");
             if (listaHistorial) {
                 if (cuotasPagadas.length === 0) {
@@ -319,19 +324,16 @@ async function cargarProximoPago(idAlum, headers) {
                 }
             }
 
-            // Renderizar Lista Seleccionable de Deudas (Múltiples Cuotas)
             const listaPendientes = document.getElementById("lista-deudas-pendientes");
             const btnPasarela = document.getElementById("btnIrPasarela");
             const lblTotal = document.getElementById("total-pago-seleccionado");
 
             if(cuotasPendientes.length > 0) {
-                // Ordenar por fecha de vencimiento
                 cuotasPendientes.sort((a,b) => new Date(a.fechaVencimiento) - new Date(b.fechaVencimiento));
                 
                 listaPendientes.innerHTML = cuotasPendientes.map((c, i) => {
                     const isVencido = c.estado === 'VENCIDO';
                     const bgBadge = isVencido ? 'background: #ffebee; color: #dc3545;' : 'background: #e8f4fd; color: #0056b3;';
-                    
                     return `
                     <label style="display: flex; align-items: center; justify-content: space-between; padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
                         <div style="display: flex; align-items: center; gap: 15px;">
@@ -342,34 +344,26 @@ async function cargarProximoPago(idAlum, headers) {
                             </div>
                         </div>
                         <strong style="font-size: 16px; color: #222;">S/ ${c.montoTotal.toFixed(2)}</strong>
-                    </label>
-                    `;
+                    </label>`;
                 }).join('');
 
-                // Función interna para recalcular el precio al hacer clic en los checks
                 function calcularTotal() {
                     let total = 0;
                     let cuotasSeleccionadas = [];
                     document.querySelectorAll('.chk-cuota:checked').forEach(chk => {
                         total += parseFloat(chk.getAttribute('data-monto'));
                         cuotasSeleccionadas.push({
-                            id: chk.getAttribute('data-id'),
-                            concepto: chk.getAttribute('data-concepto'),
-                            monto: chk.getAttribute('data-monto')
+                            id: chk.getAttribute('data-id'), concepto: chk.getAttribute('data-concepto'), monto: chk.getAttribute('data-monto')
                         });
                     });
-                    
                     lblTotal.textContent = `S/ ${total.toFixed(2)}`;
                     btnPasarela.disabled = cuotasSeleccionadas.length === 0;
                     
-                    // Empaquetamos todo en formato JSON para mandarlo a la pasarela
                     localStorage.setItem("pasarela_cuotas_array", JSON.stringify(cuotasSeleccionadas));
                     localStorage.setItem("pasarela_total_suma", total.toFixed(2));
                 }
 
                 document.querySelectorAll('.chk-cuota').forEach(chk => chk.addEventListener('change', calcularTotal));
-                
-                // Acción del botón
                 btnPasarela.onclick = () => { window.location.href = "pasarela.html"; };
 
             } else {
@@ -385,12 +379,12 @@ async function cargarProximoPago(idAlum, headers) {
         }
     }
 
+    // ... (El resto de funciones de renderizarMatricula, renderizarAgendaHoy y renderizarCalendarioGrid se mantienen igual) ...
     function renderizarEstadoMatricula(deudas) {
         const step1 = document.getElementById("mat-step-1");
         if (!step1) return;
 
         if (deudas.length > 0) {
-            // BLOQUEADO: TIENE DEUDAS
             step1.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 20px; background: #fff3f3; border: 1px solid #ffcaca; padding: 25px; border-radius: 8px;">
                     <i class="fa-solid fa-circle-xmark text-danger" style="font-size: 40px;"></i>
@@ -406,7 +400,6 @@ async function cargarProximoPago(idAlum, headers) {
                 </div>
             `;
         } else {
-            // HABILITADO: AL DÍA
             step1.innerHTML = `
                 <div style="display: flex; align-items: center; gap: 20px; background: #f0fdf4; border: 1px solid #c3e6cb; padding: 25px; border-radius: 8px;">
                     <i class="fa-solid fa-circle-check text-success" style="font-size: 40px;"></i>
@@ -420,7 +413,6 @@ async function cargarProximoPago(idAlum, headers) {
                 </div>
             `;
             
-            // Asignar el evento para pasar al Paso 2 de la Matrícula
             document.getElementById("btnMatPaso2").addEventListener("click", () => {
                 document.getElementById("mat-step-1").style.display = "none";
                 document.getElementById("mat-step-2").style.display = "block";
@@ -428,13 +420,10 @@ async function cargarProximoPago(idAlum, headers) {
         }
     }
 
-    // Función Global para redirigir a la Pasarela de Pagos
     window.irAPasarela = function(idCuota, concepto, monto) {
-        // Guardamos en el localStorage lo que vamos a pagar para que la pasarela lo lea
         localStorage.setItem("pasarela_idCuota", idCuota);
         localStorage.setItem("pasarela_concepto", concepto);
         localStorage.setItem("pasarela_monto", monto);
-        
         window.location.href = "pasarela.html";
     };
 
@@ -487,7 +476,6 @@ async function cargarProximoPago(idAlum, headers) {
                         <div class="stat"><span>Día</span><strong>${diasSemana[s.diaSemana]}</strong></div>
                         <div class="stat"><span>Modalidad</span><strong>${s.modalidad}</strong></div>
                     </div>
-                    <!-- Llamado a Función para Modal Info -->
                     <button class="btn-entrar-curso full-width mt-15" onclick="abrirDetalleCursoPorNombre('${s.nombreCurso}', '${s.modalidad}')">Entrar al Curso</button>
                 </div>
             </div>`;
@@ -506,7 +494,6 @@ async function cargarProximoPago(idAlum, headers) {
         let minHora = 24;
         let maxHora = 0;
 
-        // 1. Calcular la hora más temprana y más tardía
         secciones.forEach(s => {
             const hInicio = parseInt(s.horaInicio.split(":")[0]);
             const hFin = parseInt(s.horaFin.split(":")[0]) + (s.horaFin.split(":")[1] > "00" ? 1 : 0); 
@@ -519,21 +506,17 @@ async function cargarProximoPago(idAlum, headers) {
 
         let htmlGrid = '';
 
-        // 2. DIBUJAR FONDO EXACTO (Horas a la izquierda y celdas blancas)
         for (let horaActual = minHora; horaActual < maxHora; horaActual++) {
-            const fila = horaActual - minHora + 2; // Fila 1 es cabecera, por eso sumamos 2
+            const fila = horaActual - minHora + 2; 
             const horaTexto = `${horaActual.toString().padStart(2, '0')}:00`;
             
-            // Inyectar celda de hora
             htmlGrid += `<div class="cal-celda-hora" style="grid-column: 1; grid-row: ${fila};">${horaTexto}</div>`;
             
-            // Inyectar las 7 celdas blancas del fondo de esa fila
             for (let dia = 1; dia <= 7; dia++) {
                 htmlGrid += `<div class="cal-celda-vacia" style="grid-column: ${dia + 1}; grid-row: ${fila};"></div>`;
             }
         }
 
-        // 3. DIBUJAR CURSOS (Superpuestos con sus coordenadas exactas)
         for (let dia = 1; dia <= 7; dia++) {
             let cursosDia = secciones.filter(s => s.diaSemana === dia);
             if (cursosDia.length === 0) continue;
@@ -549,7 +532,6 @@ async function cargarProximoPago(idAlum, headers) {
             let clusters = [];
             let clusterActual = [cursosMapeados[0]];
 
-            // Lógica para detectar solapamientos/cruces
             for (let i = 1; i < cursosMapeados.length; i++) {
                 let curso = cursosMapeados[i];
                 let finMaximoDelCluster = Math.max(...clusterActual.map(c => c.endDecimal));
@@ -563,14 +545,12 @@ async function cargarProximoPago(idAlum, headers) {
             }
             clusters.push(clusterActual);
 
-            // Pintar los bloques encima de la cuadrícula blanca
             clusters.forEach(cluster => {
                 let inicioFila = Math.floor(Math.min(...cluster.map(c => c.startDecimal))) - minHora + 2;
                 let finFila = Math.ceil(Math.max(...cluster.map(c => c.endDecimal))) - minHora + 2;
                 let spanFilas = finFila - inicioFila;
 
                 if (cluster.length === 1) {
-                    // CURSO NORMAL
                     let c = cluster[0];
                     const colorFondo = coloresCursos[c.cursoId % coloresCursos.length];
                     
@@ -584,7 +564,6 @@ async function cargarProximoPago(idAlum, headers) {
                         </div>
                     </div>`;
                 } else {
-                    // CRUCE ROJO
                     let htmlNombresCursos = cluster.map(c => `<b>${c.nombreCurso}</b><br><span style="font-size:10px;">(${formatearHora(c.horaInicio)} a ${formatearHora(c.horaFin)})</span>`).join('<hr style="border-color: rgba(255,255,255,0.3); margin: 6px 0;">');
 
                     htmlGrid += `
@@ -604,7 +583,6 @@ async function cargarProximoPago(idAlum, headers) {
         calBody.innerHTML = htmlGrid;
     }
 
-    // Modal para ver los detalles del curso (Desde Mis Cursos, Agenda y Horario)
     window.abrirDetalleCursoPorNombre = function(nombreCurso, modalidad) {
         const curso = infoCursosGlobal.find(c => c.nombre === nombreCurso);
         if(!curso) return;
@@ -613,7 +591,6 @@ async function cargarProximoPago(idAlum, headers) {
         document.getElementById("modalCursoCreditos").textContent = "Créditos: " + curso.creditos;
         document.getElementById("modalCursoModalidad").textContent = "Modalidad: " + modalidad;
         
-        // Pinta el HTML (si existe) que viene de Quill o BD
         document.getElementById("modalCursoDesc").innerHTML = curso.descripcionInformativa || "Este curso aún no tiene una descripción informativa cargada.";
         document.getElementById("modalCursoTemario").innerHTML = curso.temarioUrl || "El sílabo aún no se ha adjuntado.";
 
@@ -637,7 +614,7 @@ async function cargarProximoPago(idAlum, headers) {
    
     if (btnMatVolver1) btnMatVolver1.addEventListener("click", () => { step2.style.display = "none"; step1.style.display = "block"; });
 
-function renderizarMatricula(secciones2026II, infoCursos) {
+    function renderizarMatricula(secciones2026II, infoCursos) {
         const step1 = document.getElementById("mat-step-1");
         const listContainer = document.getElementById("lista-matricula-proximo");
         if(!listContainer) return;
@@ -654,7 +631,7 @@ function renderizarMatricula(secciones2026II, infoCursos) {
                     </div>
                 `;
             }
-            return; // Cortamos la ejecución para que no cargue el paso 2
+            return; 
         }
 
         listContainer.innerHTML = secciones2026II.map(sec => {
@@ -692,7 +669,6 @@ function renderizarMatricula(secciones2026II, infoCursos) {
             btnConfirmarMatricula.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Inscribiendo...';
             btnConfirmarMatricula.disabled = true;
 
-            // Enviamos al backend curso por curso de forma automática
             for(let chk of seleccionados) {
                 const idSec = chk.getAttribute('data-id');
                 try {
@@ -702,7 +678,7 @@ function renderizarMatricula(secciones2026II, infoCursos) {
                         body: JSON.stringify({
                             idAlumno: idAlumnoGlobal,
                             idSeccion: parseInt(idSec),
-                            montoPago: 350.00 // Cuota de pensión generada por el backend
+                            montoPago: 350.00 
                         })
                     });
                 } catch(e) { console.error("Error al matricular", e); }
@@ -725,7 +701,8 @@ function renderizarMatricula(secciones2026II, infoCursos) {
         btnNotif.addEventListener("click", (e) => {
             e.stopPropagation();
             dropNotif.style.display = dropNotif.style.display === "none" ? "block" : "none";
-            menuPerfil.classList.remove("show"); // Cierra el menú de perfil si estaba abierto
+            const menuPerfil = document.getElementById("menuPerfil");
+            if (menuPerfil) menuPerfil.classList.remove("show"); 
         });
         
         document.addEventListener("click", (e) => {
@@ -735,7 +712,6 @@ function renderizarMatricula(secciones2026II, infoCursos) {
         });
     }
 
-    // Redirige a Trámites desde la campanita
     window.irATramites = function() {
         if(dropNotif) dropNotif.style.display = "none";
         document.querySelector('.menu-btn[data-target="seccion-tramites"]').click();
