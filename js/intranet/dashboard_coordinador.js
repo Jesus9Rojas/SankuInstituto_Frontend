@@ -61,10 +61,20 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    document.getElementById("btnCerrarSesion")?.addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.clear();
-        window.location.href = "/html/index.html";
+const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElementById("btnCerrarSesionLateral")];
+    logoutBtns.forEach(btn => {
+        if(btn) btn.addEventListener("click", (e) => {
+            e.preventDefault(); 
+            
+            // 🚀 BORRADO SELECTIVO
+            localStorage.removeItem("token");
+            localStorage.removeItem("usuarioId");
+            localStorage.removeItem("usuarioRol");
+            localStorage.removeItem("usuarioNombre");
+            localStorage.removeItem("sesionActiva");
+            
+            window.location.href = "/html/index.html";
+        });
     });
 
     // ==========================================

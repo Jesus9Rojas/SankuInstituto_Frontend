@@ -56,17 +56,17 @@
                             <i class="fa-solid fa-magnifying-glass"></i>
                             <input type="text" id="buscadorSae" placeholder="Buscar por alumno o trámite...">
                         </div>
-                        <select class="custom-select">
+                        <select class="custom-select" id="filtroSaeEstado">
                             <option value="todos">Todos los Estados</option>
-                            <option value="pendiente">Pendientes</option>
-                            <option value="aprobado">Aprobados</option>
-                            <option value="rechazado">Rechazados</option>
+                            <option value="PENDIENTE">Pendientes</option>
+                            <option value="APROBADO">Aprobados</option>
+                            <option value="RECHAZADO">Rechazados</option>
                         </select>
-                        <select class="custom-select">
+                        <select class="custom-select" id="filtroSaeTipo">
                             <option value="todos">Tipo de Trámite</option>
-                            <option value="modalidad">Cambio Modalidad</option>
-                            <option value="beca">Solicitud Beca</option>
-                            <option value="certificado">Certificados</option>
+                            <option value="REPROGRAMACION">Reprogramación de Examen / Clase</option>
+                            <option value="VERIFICACION_NOTA">Verificación o Reclamo de Nota</option>
+                            <option value="OTROS">Consulta General / Otros</option>
                         </select>
                     </div>
                     
@@ -103,7 +103,7 @@
                 <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
                     <p style="margin-bottom: 5px;"><strong>Estudiante:</strong> <span id="modal-sae-alumno"></span></p>
                     <p style="margin-bottom: 5px;"><strong>Trámite:</strong> <span id="modal-sae-tipo"></span></p>
-                    <p><strong>Justificación:</strong> "<span id="modal-sae-desc" style="font-style: italic;"></span>" <a href="#" style="color:var(--color-primary)">Ver adjunto.pdf</a></p>
+                    <p><strong>Justificación:</strong> "<span id="modal-sae-desc" style="font-style: italic;"></span>"</p>
                 </div>
                 
                 <div class="form-group">

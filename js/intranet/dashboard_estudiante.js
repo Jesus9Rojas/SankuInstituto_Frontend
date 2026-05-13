@@ -75,15 +75,13 @@ const btnCerrarSesion = document.getElementById("btnCerrarSesion");
     if (btnCerrarSesion) {
         btnCerrarSesion.addEventListener("click", (e) => {
             e.preventDefault();
-            
-            // 🚀 CAMBIO CLAVE: No uses .clear(), borra uno por uno lo necesario
+
             localStorage.removeItem("token");
             localStorage.removeItem("usuarioId");
             localStorage.removeItem("usuarioRol");
             localStorage.removeItem("usuarioNombre");
             localStorage.removeItem("sesionActiva");
             
-            // Así, las llaves como "notif_leidas_..." se quedarán guardadas
             window.location.href = "/html/index.html";
         });
     }

@@ -71,10 +71,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElementById("btnCerrarSesionLateral")];
     logoutBtns.forEach(btn => {
         if(btn) btn.addEventListener("click", (e) => {
-            e.preventDefault(); localStorage.clear(); window.location.href = "/html/index.html";
+            e.preventDefault(); 
+            
+            // 🚀 BORRADO SELECTIVO
+            localStorage.removeItem("token");
+            localStorage.removeItem("usuarioId");
+            localStorage.removeItem("usuarioRol");
+            localStorage.removeItem("usuarioNombre");
+            localStorage.removeItem("sesionActiva");
+            
+            window.location.href = "/html/index.html";
         });
     });
-
+    
     // ==========================================
     // 3. CARGA DE DATOS (DASHBOARD Y SAE)
     // ==========================================
@@ -116,15 +125,38 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch(e => console.error("Error al cargar métricas:", e));
 
-        // --- C. Cargar Buzón SAE (Peticiones) ---
-        fetch('http://localhost:8080/api/v1/solicitudes/pendientes', { headers })
-            .then(res => res.json())
+        // --- C. Cargar Buzón SAE ---
+        cargarBuzonSae();
+
+        // Cargar tabla de gestión de usuarios
+        cargarUsuarios();
+    }
+
+    // ==========================================
+    // 🚀 LÓGICA DE TRÁMITES SAE Y FILTROS
+    // ==========================================
+    let listaSolicitudesGlobal = []; // Base de datos local para los filtros
+
+    function cargarBuzonSae() {
+        const tablaSae = document.getElementById("tabla-solicitudes-body");
+        
+        // 🚀 CORRECCIÓN: Tu backend Java solo tiene el endpoint "/pendientes"
+        const endpoint = 'http://localhost:8080/api/v1/solicitudes/pendientes';
+
+        fetch(endpoint, { headers })
+            .then(res => {
+                if (!res.ok) throw new Error("Error en la petición al servidor");
+                return res.json();
+            })
             .then(solicitudes => {
-                // 1. Llenar el cuadro de resumen pequeño
+                listaSolicitudesGlobal = Array.isArray(solicitudes) ? solicitudes : [];
+                
+                // 1. Cuadro de resumen (Solo en Dashboard)
                 const preview = document.getElementById("lista-tramites-preview");
-                if(preview) {
-                    preview.innerHTML = solicitudes.length === 0 ? '<p class="text-center text-muted" style="padding: 20px;">Bandeja limpia.</p>' :
-                        solicitudes.slice(0,3).map(s => `
+                if (preview) {
+                    const soloPendientes = listaSolicitudesGlobal.filter(s => s.estado === 'PENDIENTE');
+                    preview.innerHTML = soloPendientes.length === 0 ? '<p class="text-center text-muted" style="padding: 20px;">Bandeja limpia.</p>' :
+                        soloPendientes.slice(0,3).map(s => `
                             <div class="admin-list-item">
                                 <div class="item-icon bg-primary-light"><i class="fa-solid fa-file-signature text-primary"></i></div>
                                 <div class="item-content">
@@ -136,27 +168,76 @@ document.addEventListener("DOMContentLoaded", () => {
                         `).join('');
                 }
                 
-                // 2. LLENAR LA TABLA PRINCIPAL DEL BUZÓN (Esto es lo que faltaba)
-                const tablaSae = document.getElementById("tabla-solicitudes-body");
+                // 2. Llenar la tabla principal si estamos en la vista de SAE
                 if (tablaSae) {
-                    tablaSae.innerHTML = solicitudes.length === 0 ? '<tr><td colspan="6" class="text-center text-muted" style="padding: 30px;">No hay trámites pendientes.</td></tr>' :
-                        solicitudes.map(s => `
-                            <tr>
-                                <td><strong>#TRM-${s.idSolicitud}</strong></td>
-                                <td>${new Date(s.fechaSolicitud).toLocaleDateString('es-ES')}</td>
-                                <td>${s.nombreEmisor}</td>
-                                <td>${s.tipo}</td>
-                                <td><span class="badge badge-admin">${s.estado}</span></td>
-                                <td style="text-align: right;"><button class="btn-primary" style="padding: 5px 15px; font-size: 12px; border-radius: 6px;" onclick='abrirRevision(${JSON.stringify(s)})'>Revisar</button></td>
-                            </tr>
-                        `).join('');
+                    renderizarTablaSae(listaSolicitudesGlobal);
                 }
             })
             .catch(e => console.error("Error SAE:", e));
-
-        // Cargar tabla de gestión de usuarios
-        cargarUsuarios();
     }
+
+    function renderizarTablaSae(solicitudesParaMostrar) {
+        const tablaSae = document.getElementById("tabla-solicitudes-body");
+        if (!tablaSae) return;
+
+        if (solicitudesParaMostrar.length === 0) {
+            tablaSae.innerHTML = '<tr><td colspan="6" class="text-center text-muted" style="padding: 30px;">No se encontraron trámites.</td></tr>';
+            return;
+        }
+
+        const copiaSolicitudes = [...solicitudesParaMostrar];
+
+        copiaSolicitudes.sort((a, b) => {
+            if (a.estado === 'PENDIENTE' && b.estado !== 'PENDIENTE') return -1;
+            if (a.estado !== 'PENDIENTE' && b.estado === 'PENDIENTE') return 1;
+            return new Date(b.fechaSolicitud) - new Date(a.fechaSolicitud);
+        });
+
+        tablaSae.innerHTML = copiaSolicitudes.map(s => {
+            let statusClass = "badge-pending";
+            if (s.estado === "APROBADO") statusClass = "badge-success";
+            if (s.estado === "RECHAZADO") statusClass = "badge-danger";
+
+            return `
+                <tr>
+                    <td><strong>#TRM-${s.idSolicitud}</strong></td>
+                    <td>${new Date(s.fechaSolicitud).toLocaleDateString('es-ES')}</td>
+                    <td>${s.nombreEmisor}</td>
+                    <td>${s.tipo}</td>
+                    <td><span class="badge ${statusClass}">${s.estado}</span></td>
+                    <td style="text-align: right;"><button class="btn-primary" style="padding: 5px 15px; font-size: 12px; border-radius: 6px;" onclick='abrirRevision(${JSON.stringify(s)})'>${s.estado === 'PENDIENTE' ? 'Revisar' : 'Ver Detalle'}</button></td>
+                </tr>
+            `;
+        }).join('');
+    }
+
+    // Filtros del SAE
+    const buscadorSae = document.getElementById("buscadorSae");
+    const filtroSaeEstado = document.getElementById("filtroSaeEstado");
+    const filtroSaeTipo = document.getElementById("filtroSaeTipo");
+
+    function aplicarFiltrosSae() {
+        const texto = (buscadorSae?.value || "").toLowerCase();
+        const estado = filtroSaeEstado?.value || "todos";
+        const tipo = filtroSaeTipo?.value || "todos";
+
+        const filtrados = listaSolicitudesGlobal.filter(s => {
+            const nombre = (s.nombreEmisor || "").toLowerCase();
+            const idTexto = (s.idSolicitud || "").toString();
+            
+            const matchTxt = nombre.includes(texto) || idTexto.includes(texto);
+            const matchEstado = (estado === "todos" || s.estado.toUpperCase() === estado.toUpperCase());
+            const matchTipo = (tipo === "todos" || s.tipo.toUpperCase() === tipo.toUpperCase());
+            
+            return matchTxt && matchEstado && matchTipo;
+        });
+
+        renderizarTablaSae(filtrados);
+    }
+
+    if(buscadorSae) buscadorSae.addEventListener("keyup", aplicarFiltrosSae);
+    if(filtroSaeEstado) filtroSaeEstado.addEventListener("change", aplicarFiltrosSae);
+    if(filtroSaeTipo) filtroSaeTipo.addEventListener("change", aplicarFiltrosSae);
 
     // ==========================================
     // 4. MÓDULO DE USUARIOS (CRUD Y FILTROS)
@@ -335,7 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.ok) {
                 alert(`Trámite ${nuevoEstado} con éxito.`);
                 cerrarRevision();
-                inicializarAdmin(); 
+                cargarBuzonSae(); 
             }
         } catch (e) { console.error(e); }
     };
