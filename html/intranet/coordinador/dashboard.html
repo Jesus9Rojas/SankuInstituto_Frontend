@@ -38,7 +38,22 @@
                     <button id="btnMenuToggle" class="toggle-sidebar-btn"><i class="fa-solid fa-bars-staggered"></i></button>
                 </div>
                 <div class="header-right">
-                    <button class="icon-btn notification-btn"><i class="fa-regular fa-bell"></i><span class="notification-dot"></span></button>
+                    <div class="notification-bell-wrapper" style="position: relative;">
+    <button class="icon-btn" id="btnNotificacionesCoord" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #666; position: relative;">
+        <i class="fa-regular fa-bell"></i>
+        <span class="bell-badge badge-notification" id="badge-notif-coord" style="display: none; position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 18px; height: 18px; font-size: 11px; font-weight: bold; align-items: center; justify-content: center;">0</span>
+    </button>
+    
+    <div class="notification-dropdown shadow-card border-card" id="notif-dropdown-coord" style="display: none; position: absolute; right: 0; top: 40px; width: 320px; background: white; z-index: 1000; padding: 15px; border-radius: 12px; border: 1px solid #eee;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+            <h4 style="margin: 0; font-size: 14px; color: #333;">Alertas Académicas</h4>
+        </div>
+        
+        <div id="lista-notificaciones-coord" style="max-height: 300px; overflow-y: auto; padding-right: 5px;">
+            <p class="text-muted text-center" style="font-size:12px; margin: 10px 0;">Cargando alertas...</p>
+        </div>
+    </div>
+</div>
                     <div class="user-profile-header dropdown">
                         <div class="user-text">
                             <span class="user-greeting">Coord. <strong id="userNameHeader">Cargando...</strong></span>

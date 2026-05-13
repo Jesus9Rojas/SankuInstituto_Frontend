@@ -48,7 +48,12 @@ document.addEventListener("DOMContentLoaded", () => {
             const menuPerfil = document.getElementById("menuPerfil");
             if (menuPerfil && menuPerfil.classList.contains("show")) menuPerfil.classList.remove("show");
 
-            if(targetId === 'seccion-inicio') renderizarGraficoAsistencia();
+            // 🚀 ESTO ES CLAVE: Le damos 100ms al DOM para que pinte el bloque antes de dibujar el canvas
+            if(targetId === 'seccion-inicio') {
+                setTimeout(() => {
+                    renderizarGraficoAsistencia();
+                }, 100);
+            }
         });
     });
 
@@ -58,6 +63,20 @@ document.addEventListener("DOMContentLoaded", () => {
         btnDropdownChevron.addEventListener("click", (e) => { e.stopPropagation(); menuPerfil.classList.toggle("show"); });
         document.addEventListener("click", (e) => {
             if (!menuPerfil.contains(e.target) && e.target !== btnDropdownChevron) menuPerfil.classList.remove("show");
+        });
+    }
+
+    const btnNotifCoord = document.getElementById("btnNotificacionesCoord");
+    const dropdownNotifCoord = document.getElementById("notif-dropdown-coord");
+    if(btnNotifCoord && dropdownNotifCoord) {
+        btnNotifCoord.addEventListener("click", (e) => {
+            e.stopPropagation();
+            dropdownNotifCoord.style.display = dropdownNotifCoord.style.display === "none" ? "block" : "none";
+        });
+        document.addEventListener("click", (e) => {
+            if (!dropdownNotifCoord.contains(e.target) && e.target !== btnNotifCoord) {
+                dropdownNotifCoord.style.display = "none";
+            }
         });
     }
 
@@ -82,18 +101,24 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
     // ==========================================
     
     // A. Postulantes Web
-    const tablaPostulantes = document.getElementById("tabla-postulantes-pendientes");
+   const tablaPostulantes = document.getElementById("tabla-postulantes-pendientes");
+    
     async function cargarPostulantesPendientes() {
         if (!tablaPostulantes) return;
         try {
-            const res = await fetch('http://localhost:8080/api/v1/postulantes/pendientes', { headers: { 'Authorization': `Bearer ${token}` } });
+            const res = await fetch('http://localhost:8080/api/v1/postulantes/pendientes', { 
+                headers: { 'Authorization': `Bearer ${token}` } 
+            });
+            
             if (res.ok) {
                 const postulantes = await res.json();
                 tablaPostulantes.innerHTML = "";
+                
                 if (postulantes.length === 0) {
                     tablaPostulantes.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No hay solicitudes web pendientes.</td></tr>`;
                     return;
                 }
+                
                 postulantes.forEach(p => {
                     tablaPostulantes.innerHTML += `
                         <tr>
@@ -112,19 +137,51 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
                 document.querySelectorAll('.btn-aprobar-postulante').forEach(btn => {
                     btn.addEventListener('click', async function() {
                         const id = this.getAttribute('data-id');
-                        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                        
+                        // 1. Guardamos el botón original para restaurarlo si falla
+                        const textoOriginal = this.innerHTML; 
+                        this.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Procesando...';
                         this.disabled = true;
+                        
                         try {
                             const resAprobar = await fetch(`http://localhost:8080/api/v1/postulantes/${id}/aprobar`, {
-                                method: 'POST', headers: { 'Authorization': `Bearer ${token}` }
+                                method: 'POST', 
+                                headers: { 
+                                    'Authorization': `Bearer ${token}`,
+                                    'Content-Type': 'application/json' 
+                                }
                             });
-                            if (resAprobar.ok) { alert(await resAprobar.text()); cargarPostulantesPendientes(); } 
-                            else alert("Error al aprobar.");
-                        } catch (e) { alert("Error de conexión."); }
+                            
+                            if (resAprobar.ok) { 
+                                alert(await resAprobar.text()); 
+                                cargarPostulantesPendientes(); 
+                            } else { 
+                                // 2. SI FALLA, LEEMOS EL ERROR EXACTO DE JAVA
+                                let errorMsg = "";
+                                try {
+                                    const errorJson = await resAprobar.json();
+                                    errorMsg = errorJson.message || errorJson.error || JSON.stringify(errorJson);
+                                } catch(e) {
+                                    errorMsg = await resAprobar.text();
+                                }
+                                
+                                alert("❌ No se pudo aprobar. Motivo del servidor:\n" + (errorMsg || "Error interno de base de datos"));
+                                
+                                // 3. Restauramos el botón para poder volver a intentarlo
+                                this.innerHTML = textoOriginal;
+                                this.disabled = false;
+                            }
+                        } catch (e) { 
+                            alert("❌ Error crítico de red o el servidor está apagado."); 
+                            this.innerHTML = textoOriginal;
+                            this.disabled = false;
+                        }
                     });
                 });
             }
-        } catch (e) { console.error(e); }
+        } catch (e) { 
+            console.error("Error al cargar postulantes:", e); 
+        }
     }
 
     // B. Alertas Académicas
@@ -136,24 +193,56 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
             if (res.ok) {
                 const alertas = await res.json();
                 listaAlertas.innerHTML = "";
+                
+                // Obtenemos los elementos de la campanita
+                const badgeNotif = document.getElementById("badge-notif-coord");
+                const listaNotif = document.getElementById("lista-notificaciones-coord");
+                
                 if(document.getElementById("count-alertas")) document.getElementById("count-alertas").textContent = alertas.length;
 
+                // SI NO HAY ALERTAS
                 if (alertas.length === 0) {
                     listaAlertas.innerHTML = `<p class="text-muted text-center" style="padding: 20px;">Todo en orden. No hay alertas.</p>`;
+                    if(badgeNotif) badgeNotif.style.display = "none";
+                    if(listaNotif) listaNotif.innerHTML = '<p class="text-muted text-center" style="font-size:12px; margin: 20px 0;">No tienes alertas pendientes.</p>';
                     return;
                 }
 
+                // SI HAY ALERTAS: Mostramos el número rojo en la campana
+                if(badgeNotif) {
+                    badgeNotif.style.display = "flex";
+                    badgeNotif.textContent = alertas.length;
+                }
+                if(listaNotif) listaNotif.innerHTML = ""; // Limpiamos para inyectar
+
+                // Dibujamos las alertas en ambos lados
                 alertas.forEach(a => {
                     let color = a.tipo === 'NOTAS_ATRASADAS' ? 'var(--accent-red)' : '#f39c12';
+                    let tituloAmigable = a.tipo.replace('_', ' ');
+
+                    // 1. Inyectar en el Dashboard Principal
                     listaAlertas.innerHTML += `
                         <div class="admin-list-item" style="border-left: 3px solid ${color}; padding-left: 15px; display:flex; justify-content:space-between;">
                             <div class="item-content">
-                                <h4 style="color: ${color};">${a.tipo.replace('_', ' ')}</h4>
+                                <h4 style="color: ${color};">${tituloAmigable}</h4>
                                 <p>Sección: ${a.nombreSeccion}</p>
                                 <p class="text-muted" style="font-size: 11px;">Docente: ${a.nombreDocente}</p>
                             </div>
                             <button onclick="resolverAlerta(${a.idAlerta})" class="btn-outline-small" style="color:#555; border-color:#ccc;"><i class="fa-solid fa-check"></i> Resolver</button>
                         </div>`;
+                        
+                    // 2. Inyectar en la Campanita Desplegable
+                    if(listaNotif) {
+                        listaNotif.innerHTML += `
+                            <div style="padding: 12px; border-bottom: 1px solid #f1f5f9; background-color: #f8fafc; border-radius: 6px; margin-bottom: 5px; position: relative;">
+                                <small style="color:${color}; font-weight:700;">${tituloAmigable}</small>
+                                <p style="margin:5px 0 5px 0; font-size:12px; color:#334155;">Sec: <strong>${a.nombreSeccion}</strong> <br>Prof: ${a.nombreDocente}</p>
+                                <button onclick="resolverAlerta(${a.idAlerta})" style="background: none; border: none; color: #00897b; cursor: pointer; font-size: 12px; padding: 0; font-weight: bold;">
+                                    <i class="fa-solid fa-check"></i> Marcar Resuelto
+                                </button>
+                            </div>
+                        `;
+                    }
                 });
             }
         } catch (e) { console.error(e); }
@@ -634,23 +723,110 @@ window.registrarAlumnoManual = async function() {
     };
 
     let chartInstance = null;
-    function renderizarGraficoAsistencia() {
+async function renderizarGraficoAsistencia() {
         const ctx = document.getElementById('asistenciaChart');
-        if (ctx) {
+        if (!ctx) return;
+
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', {
+                headers: { 'Authorization': `Bearer ${localStorage.getItem("token")}` }
+            });
+            
+            if (!res.ok) throw new Error("Error al obtener datos de rendimiento");
+            const alumnos = await res.json();
+
+            const asistenciaPorCarrera = {};
+
+            alumnos.forEach(a => {
+                const carrera = a.carrera || "General";
+                const diasAsistidos = parseInt(a.dias_asistidos || 0);
+                const diasTotales = parseInt(a.dias_totales || 0);
+
+                if (!asistenciaPorCarrera[carrera]) {
+                    asistenciaPorCarrera[carrera] = { asistidos: 0, totales: 0 };
+                }
+                
+                asistenciaPorCarrera[carrera].asistidos += diasAsistidos;
+                asistenciaPorCarrera[carrera].totales += diasTotales;
+            });
+
+            const etiquetasCarreras = [];
+            const porcentajesReales = [];
+            const porcentajesEsperados = []; 
+
+            Object.keys(asistenciaPorCarrera).forEach(carrera => {
+                etiquetasCarreras.push(carrera);
+                const datos = asistenciaPorCarrera[carrera];
+                
+                let porcentaje = 0;
+                if (datos.totales > 0) {
+                    porcentaje = Math.round((datos.asistidos / datos.totales) * 100);
+                }
+                
+                porcentajesReales.push(porcentaje);
+                porcentajesEsperados.push(100);
+            });
+
+            if (etiquetasCarreras.length === 0) {
+                etiquetasCarreras.push("Sin datos");
+                porcentajesReales.push(0);
+                porcentajesEsperados.push(100);
+            }
+
             if (chartInstance) chartInstance.destroy(); 
+            
+            // 🚀 DIBUJO DIRECTO Y AGRESIVO
             chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4'],
+                    labels: etiquetasCarreras,
                     datasets: [
-                        { label: 'Asistencia Esperada (%)', data: [100, 100, 100, 100], backgroundColor: 'rgba(200, 200, 200, 0.3)' },
-                        { label: 'Asistencia Real (%)', data: [95, 92, 88, 85], backgroundColor: '#00897b', borderRadius: 4 }
+                        { 
+                            label: 'Asistencia Esperada (%)', 
+                            data: porcentajesEsperados, 
+                            backgroundColor: 'rgba(200, 200, 200, 0.3)' 
+                        },
+                        { 
+                            label: 'Asistencia Real (%)', 
+                            data: porcentajesReales, 
+                            backgroundColor: '#00897b', 
+                            borderRadius: 4 
+                        }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { y: { beginAtZero: true, max: 100 } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false,
+                    // 🚀 ESTA PROPIEDAD FUERZA A CHART.JS A REDIBUJARSE AUNQUE ESTÉ OCULTO
+                    animation: {
+                        onComplete: () => {
+                            chartInstance.resize();
+                        }
+                    },
+                    scales: { 
+                        y: { 
+                            beginAtZero: true, 
+                            max: 100,
+                            ticks: { callback: function(value) { return value + "%" } }
+                        } 
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.dataset.label + ': ' + context.parsed.y + '%';
+                                }
+                            }
+                        }
+                    }
+                }
             });
+
+        } catch (error) {
+            console.error("Error al renderizar el gráfico de asistencia:", error);
         }
     }
+
 const tablaProgramas = document.getElementById("tabla-programas-coordinador");
     const formPrograma = document.getElementById("formPrograma");
 
@@ -878,6 +1054,14 @@ async function cargarPerfilCoordinador() {
     // Ejecutamos la carga inicial del perfil
     cargarPerfilCoordinador();
     cargarRendimientoAlumnos();
+    setTimeout(() => {
+        const btnInicio = document.querySelector('.menu-btn[data-target="seccion-inicio"]');
+        if (btnInicio) {
+            btnInicio.click(); 
+        } else {
+            renderizarGraficoAsistencia();
+        }
+    }, 100);
 
     const inputBuscador = document.getElementById("buscadorRendimiento");
     
