@@ -182,8 +182,8 @@ document.addEventListener("DOMContentLoaded", () => {
                             <td>${s.nombreCurso}</td>
                             <td><span class="badge" style="background:#e0f2f1; color:#00897b;">${s.nombreDocente}</span></td>
                             <td>${s.modalidad}</td>
-                            <td style="text-align: right;">
-                                <button class="btn-action edit" onclick='abrirEditarModal(${JSON.stringify(s)})' title="Editar Asignación">
+                            <td style="text-align: center">
+                                <button class="btn-action edit" style= "margin-right: 2rem;" onclick='abrirEditarModal(${JSON.stringify(s)})' title="Editar Asignación">
                                     <i class="fa-solid fa-user-pen"></i>
                                 </button>
                             </td>
@@ -678,8 +678,8 @@ const tablaProgramas = document.getElementById("tabla-programas-coordinador");
                             <td><span class="badge" style="background: rgba(0,0,0,0.05); color: ${badgeColor};">${p.tipo.replace('_', ' ')}</span></td>
                             <td>${p.nombre}</td>
                             <td>${estadoFila}</td>
-                            <td style="text-align: right;">
-                                <button class="btn-action edit" onclick='prepararEdicionPrograma(${JSON.stringify(p)})' title="Editar Programa">
+                            <td style="text-align: center;">
+                                <button class="btn-action edit" style= "margin-right: -4rem;" onclick='prepararEdicionPrograma(${JSON.stringify(p)})' title="Editar Programa">
                                     <i class="fa-solid fa-pen"></i>
                                 </button>
                             </td>

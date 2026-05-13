@@ -71,10 +71,22 @@ document.addEventListener("DOMContentLoaded", () => {
             if (!menuPerfil.contains(e.target) && e.target !== btnDropdownChevron) menuPerfil.classList.remove("show");
         });
     }
-
-    document.getElementById("btnCerrarSesion")?.addEventListener("click", (e) => {
-        e.preventDefault(); localStorage.clear(); window.location.href = "/html/index.html";
-    });
+const btnCerrarSesion = document.getElementById("btnCerrarSesion");
+    if (btnCerrarSesion) {
+        btnCerrarSesion.addEventListener("click", (e) => {
+            e.preventDefault();
+            
+            // 🚀 CAMBIO CLAVE: No uses .clear(), borra uno por uno lo necesario
+            localStorage.removeItem("token");
+            localStorage.removeItem("usuarioId");
+            localStorage.removeItem("usuarioRol");
+            localStorage.removeItem("usuarioNombre");
+            localStorage.removeItem("sesionActiva");
+            
+            // Así, las llaves como "notif_leidas_..." se quedarán guardadas
+            window.location.href = "/html/index.html";
+        });
+    }
 
     // ==========================================
     // 4. LÓGICA CORE: CARGA DINÁMICA
@@ -154,8 +166,9 @@ document.addEventListener("DOMContentLoaded", () => {
             if (res.ok) {
                 const solicitudes = await res.json();
                 const tablaBody = document.getElementById("tabla-mis-tramites-body");
-                const bellBadge = document.getElementById("bell-badge"); 
+                const bellBadge = document.getElementById("badge-notif"); 
                 const listaNotif = document.getElementById("lista-notificaciones");
+                const btnLimpiar = document.getElementById("btnLimpiarNotif");
 
                 if (!tablaBody) return;
 
@@ -164,9 +177,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     return;
                 }
 
-                // Notificaciones (Campana)
-                const respondidos = solicitudes.filter(s => s.estado !== "PENDIENTE");
-                if (respondidos.length > 0 && bellBadge) {
+                // 🚀 LÓGICA DE NOTIFICACIONES CON "LEÍDO"
+                // Obtenemos los IDs de las notificaciones que el alumno ya cerró
+                let notificacionesLeidas = JSON.parse(localStorage.getItem(`notif_leidas_${usuarioId}`)) || [];
+                
+                // Filtramos: Que no estén PENDIENTES y que NO estén en la lista de leídas
+                const respondidosNuevos = solicitudes.filter(s => s.estado !== "PENDIENTE" && !notificacionesLeidas.includes(s.idSolicitud));
+                
+                if (respondidosNuevos.length > 0 && bellBadge) {
                     bellBadge.style.display = "flex";
                     bellBadge.style.position = "absolute";
                     bellBadge.style.top = "-5px";
@@ -180,21 +198,30 @@ document.addEventListener("DOMContentLoaded", () => {
                     bellBadge.style.fontWeight = "bold";
                     bellBadge.style.alignItems = "center";
                     bellBadge.style.justifyContent = "center";
-                    bellBadge.textContent = respondidos.length;
+                    bellBadge.textContent = respondidosNuevos.length;
                     
+                    if (btnLimpiar) btnLimpiar.style.display = "block";
+
                     if(listaNotif) {
-                        listaNotif.innerHTML = respondidos.map(r => `
-                            <div style="padding: 10px; border-bottom: 1px solid #eee; cursor:pointer;" onclick="document.querySelector('[data-target=\\'seccion-tramites\\']').click()">
-                                <small style="color:var(--color-primary); font-weight:700;">ACTUALIZACIÓN</small>
-                                <p style="margin:0; font-size:12px;">Tu trámite #${r.idSolicitud} fue <strong>${r.estado}</strong></p>
+                        listaNotif.innerHTML = respondidosNuevos.map(r => `
+                            <div id="notif-item-${r.idSolicitud}" style="padding: 12px; border-bottom: 1px solid #f1f5f9; cursor:pointer; background-color: #f8fafc; border-radius: 6px; margin-bottom: 5px; position: relative;">
+                                <div onclick="document.querySelector('[data-target=\\'seccion-tramites\\']').click(); document.getElementById('notif-dropdown').style.display='none';">
+                                    <small style="color:var(--color-primary); font-weight:700;">ACTUALIZACIÓN SAE</small>
+                                    <p style="margin:5px 0 0 0; font-size:12px; color:#334155;">Tu solicitud <strong>#TRM-${r.idSolicitud}</strong> fue <strong>${r.estado}</strong></p>
+                                </div>
+                                <button onclick="marcarNotificacionLeida(event, ${r.idSolicitud})" style="position: absolute; top: 10px; right: 10px; background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px;">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
                             </div>
                         `).join('');
                     }
-                } else if (bellBadge) {
-                    bellBadge.style.display = "none";
+                } else {
+                    if (bellBadge) bellBadge.style.display = "none";
+                    if (btnLimpiar) btnLimpiar.style.display = "none";
+                    if (listaNotif) listaNotif.innerHTML = '<p class="text-muted text-center" style="font-size:12px; margin: 20px 0;">No tienes notificaciones nuevas.</p>';
                 }
 
-                // Llenar tabla
+                // Llenar tabla del Buzón
                 tablaBody.innerHTML = solicitudes.map(s => {
                     let statusClass = "badge-pending";
                     if (s.estado === "APROBADO") statusClass = "badge-success";
@@ -203,11 +230,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     return `
                     <tr>
                         <td><strong>#TRM-${s.idSolicitud}</strong></td>
-                        <td>${s.tipo}</td>
                         <td>${new Date(s.fechaSolicitud).toLocaleDateString()}</td>
+                        <td>${s.tipo}</td>
+                        <td>${s.cursoYSeccion || 'N/A'}</td>
                         <td><span class="badge ${statusClass}">${s.estado}</span></td>
-                        <td>${s.observacionCoordinador || '<i class="text-muted">En espera de revisión...</i>'}</td>
-                        <td>
+                        <td style="text-align: right;">
                             <button class="btn-info-small" style="padding: 6px 12px; border-radius: 6px; font-weight: 500;" onclick='verDetalleTramite(${JSON.stringify(s)})'>
                                 <i class="fa-solid fa-eye"></i> Detalle
                             </button>
@@ -218,6 +245,41 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         } catch (error) { console.error("Error al cargar trámites:", error); }
     }
+
+    // 🚀 NUEVA FUNCIÓN: Ocultar una notificación específica
+    window.marcarNotificacionLeida = function(event, idSolicitud) {
+        event.stopPropagation(); // Evita que se abra la sección de trámites al darle a la X
+        
+        // Guardar el ID en el localStorage para no volver a mostrarlo
+        let leidas = JSON.parse(localStorage.getItem(`notif_leidas_${usuarioId}`)) || [];
+        if (!leidas.includes(idSolicitud)) {
+            leidas.push(idSolicitud);
+            localStorage.setItem(`notif_leidas_${usuarioId}`, JSON.stringify(leidas));
+        }
+        
+        // Efecto visual de desvanecimiento
+        const item = document.getElementById(`notif-item-${idSolicitud}`);
+        if(item) {
+            item.style.opacity = '0';
+            setTimeout(() => {
+                item.remove();
+                cargarMisTramites(); // Recalcular el número en la campana
+            }, 200);
+        }
+    };
+
+    // Botón para limpiar todas las notificaciones de golpe
+    document.getElementById("btnLimpiarNotif")?.addEventListener("click", () => {
+        // En lugar de borrar una a una, forzamos a que todas las visibles se marquen
+        const headers = { 'Authorization': `Bearer ${token}` };
+        fetch(`http://localhost:8080/api/v1/solicitudes/mis-solicitudes/${usuarioId}`, { headers })
+            .then(res => res.json())
+            .then(solicitudes => {
+                let leidas = solicitudes.filter(s => s.estado !== "PENDIENTE").map(s => s.idSolicitud);
+                localStorage.setItem(`notif_leidas_${usuarioId}`, JSON.stringify(leidas));
+                cargarMisTramites();
+            });
+    });
 
     // 🚀 NUEVA FUNCIÓN: ABRIR MODAL DE DETALLES DEL TRÁMITE
     window.verDetalleTramite = function(s) {

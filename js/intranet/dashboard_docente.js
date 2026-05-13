@@ -323,7 +323,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         btn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Guardar Asistencia';
         btn.disabled = false;
-        alert(`¡Asistencia guardada exitosamente en la Base de Datos!`);
+        alert(`¡Asistencia guardada exitosamente!`);
     });
 
     // ==========================================
@@ -637,4 +637,10 @@ document.addEventListener("DOMContentLoaded", () => {
             console.error("No se pudo resolver la alerta:", error);
         }
     };
+
+        const btnMenuToggle = document.getElementById("btnMenuToggle");
+    const portalLayout = document.getElementById("portalLayout");
+    if (btnMenuToggle && portalLayout) {
+        btnMenuToggle.addEventListener("click", () => portalLayout.classList.toggle("sidebar-collapsed"));
+    }
 }); 
