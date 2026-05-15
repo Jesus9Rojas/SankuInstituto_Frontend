@@ -599,40 +599,42 @@ document.addEventListener("DOMContentLoaded", () => {
         if (!tbody) return;
 
         try {
-            // USAMOS TU ENDPOINT EXACTO: /rendimiento
+            // Consulta al endpoint de rendimiento
             const res = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', { headers });
             if (!res.ok) return;
             const data = await res.json();
             
-            console.log("Datos Alertas:", data); // Para depurar
-
             if (data.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">Todo en orden. No hay alumnos en riesgo.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" class="text-center text-muted">No hay alumnos registrados.</td></tr>';
                 return;
             }
 
             // Inyectamos las filas dinámicamente
             tbody.innerHTML = data.slice(0, 8).map(item => {
-                // Busca dinámicamente las llaves sin importar si Spring Boot las pone en mayúscula
+                // Búsqueda dinámica de llaves
                 const keyNombre = Object.keys(item).find(k => k.toLowerCase().includes('alumno') || k.toLowerCase().includes('nombre'));
                 const keyPromedio = Object.keys(item).find(k => k.toLowerCase().includes('promedio') || k.toLowerCase().includes('nota'));
                 
                 const nombre = item[keyNombre] || 'Alumno Desconocido';
                 const promedio = parseFloat(item[keyPromedio] || 0);
                 
-                let motivo = "Bajo Rendimiento";
-                let nivel = "ALTO RIESGO";
-                let badgeColor = "badge-rejected"; // Rojo
+                let motivo = "";
+                let nivel = "";
+                let badgeColor = "";
 
-                // Lógica de semaforización (Promedio aprobatorio en Perú suele ser 13)
-                if (promedio >= 11 && promedio < 13) {
-                    nivel = "RIESGO MEDIO";
-                    badgeColor = "badge-admin"; // Naranja
-                    motivo = "Promedio al límite";
-                } else if (promedio >= 13) {
+                // NUEVA LÓGICA DE ESCALA DE CALIFICACIONES (0-20)
+                if (promedio <= 12) {
+                    nivel = "ALTO RIESGO";
+                    badgeColor = "badge-danger"; // Rojo
+                    motivo = "Bajo Rendimiento";
+                } else if (promedio >= 13 && promedio <= 17) {
                     nivel = "REGULAR";
-                    badgeColor = "badge-student"; // Azul
-                    motivo = "Observación estándar";
+                    badgeColor = "badge-pending"; // Amarillo/Naranja
+                    motivo = "Rendimiento Estándar";
+                } else if (promedio >= 18 && promedio <= 20) {
+                    nivel = "EXCELENCIA";
+                    badgeColor = "badge-success"; // Verde
+                    motivo = "Rendimiento Sobresaliente";
                 }
 
                 return `
@@ -644,7 +646,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 `;
             }).join('');
 
-        } catch (error) { console.error("Error Alertas:", error); }
+        } catch (error) { 
+            console.error("Error Alertas:", error); 
+        }
     }
    // ==========================================
     // 8. EVOLUCIÓN DE MATRÍCULAS (Reutilizable y Blindado)
