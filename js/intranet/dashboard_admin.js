@@ -713,75 +713,263 @@ document.addEventListener("DOMContentLoaded", () => {
         } catch (error) { console.error("Error Gráfico Matrículas:", error); }
     }
     // ==========================================
-    // 9. EXPORTACIÓN A CSV (Excel)
+    // 9. EXPORTACIÓN A CSV (Reporte BI Consolidado de 4 Bloques)
     // ==========================================
     window.exportarCSV = async function() {
         try {
-            // Descargamos la data de rendimiento para el reporte
-            const res = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', { headers });
-            if (!res.ok) throw new Error("No se pudo obtener la data");
-            const data = await res.json();
+            // Dar feedback visual en el botón
+            const btn = document.querySelector('button[onclick="exportarCSV()"]');
+            const txtOriginal = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando Excel...';
+            btn.disabled = true;
 
-            if (data.length === 0) return alert("No hay datos para exportar.");
+            // Iniciamos el contenido del CSV
+            let csvContent = "REPORTE GENERAL DE INTELIGENCIA DE NEGOCIOS (BI)\n";
+            csvContent += `Generado el: ${new Date().toLocaleString('es-ES')}\n\n`;
 
-            // 1. Crear las cabeceras del CSV
-            let csvContent = "DNI,Alumno,Carrera,Promedio Historico,Asistencia (%)\n";
+            // ---------------------------------------------------------
+            // BLOQUE 1: DESEMPEÑO FINANCIERO MENSUAL
+            // ---------------------------------------------------------
+            csvContent += "--- 1. GRAFICO: DESEMPENO FINANCIERO MENSUAL ---\n";
+            csvContent += "Periodo,Ingresos Totales (S/)\n";
+            try {
+                const resFin = await fetch('http://localhost:8080/api/v1/reportes/financiero', { headers });
+                if (resFin.ok) {
+                    const dataFin = await resFin.json();
+                    dataFin.forEach(item => {
+                        const keyMes = Object.keys(item).find(k => k.toLowerCase().includes('mes'));
+                        const keyTotal = Object.keys(item).find(k => k.toLowerCase().includes('ingreso') || k.toLowerCase().includes('total'));
+                        
+                        let mesTexto = item[keyMes];
+                        if (Array.isArray(mesTexto)) {
+                            mesTexto = `${mesTexto[0]}-${mesTexto[1].toString().padStart(2,'0')}`;
+                        } else if (mesTexto) {
+                            mesTexto = mesTexto.toString().split('T')[0].substring(0, 7);
+                        } else {
+                            mesTexto = "Desconocido";
+                        }
+                        
+                        const monto = parseFloat(item[keyTotal] || 0).toFixed(2);
+                        csvContent += `"${mesTexto}","${monto}"\n`;
+                    });
+                }
+            } catch (e) { csvContent += "Error obteniendo datos financieros\n"; }
+            csvContent += "\n"; // Fila en blanco separadora
 
-            // 2. Llenar las filas
-            data.forEach(item => {
-                const dni = item.dni || item.DNI || 'N/A';
-                const alumno = item.alumno || item.nombre || 'Desconocido';
-                const carrera = item.carrera || 'No registrada';
-                const promedio = parseFloat(item.promedio_historico || item.promedio || 0).toFixed(2);
-                
-                const diasAsistidos = parseInt(item.dias_asistidos || 0);
-                const diasTotales = parseInt(item.dias_totales || 1); // Evitar división por cero
-                const porcentaje = ((diasAsistidos / diasTotales) * 100).toFixed(0);
+            // ---------------------------------------------------------
+            // BLOQUE 2: EVOLUCIÓN DE MATRÍCULAS
+            // ---------------------------------------------------------
+            csvContent += "--- 2. GRAFICO: EVOLUCION DE MATRICULAS ---\n";
+            csvContent += "Mes,Total Nuevas Matriculas\n";
+            try {
+                const resMat = await fetch('http://localhost:8080/api/v1/reportes/matriculas-chart', { headers });
+                if (resMat.ok) {
+                    const dataMat = await resMat.json();
+                    dataMat.forEach(item => {
+                        const keyMes = Object.keys(item).find(k => k.toLowerCase() === 'mes');
+                        const keyTotal = Object.keys(item).find(k => k.toLowerCase() === 'total');
+                        const mes = item[keyMes] || 'Desconocido';
+                        const total = item[keyTotal] || 0;
+                        csvContent += `"${mes}","${total}"\n`;
+                    });
+                }
+            } catch (e) { csvContent += "Error obteniendo datos de matriculas\n"; }
+            csvContent += "\n"; 
 
-                // Añadimos la fila escapando comas en los nombres
-                csvContent += `"${dni}","${alumno}","${carrera}","${promedio}","${porcentaje}%"\n`;
-            });
+            // ---------------------------------------------------------
+            // BLOQUE 3: SEMÁFORO DOCENTE
+            // ---------------------------------------------------------
+            csvContent += "--- 3. GRAFICO: SEMAFORO DOCENTE (ENTREGA DE NOTAS) ---\n";
+            csvContent += "Estado de Entrega,Cantidad de Docentes\n";
+            try {
+                const resSem = await fetch('http://localhost:8080/api/v1/reportes/semaforo-global', { headers });
+                if (resSem.ok) {
+                    const dataSem = await resSem.json();
+                    let aTiempo = 0, porVencer = 0, retrasado = 0;
+                    
+                    dataSem.forEach(item => {
+                        const estado = Object.values(item).join(' ').toLowerCase();
+                        if (estado.includes('retrasado') || estado.includes('vencido')) {
+                            retrasado++;
+                        } else if (estado.includes('vencer') || estado.includes('peligro') || estado.includes('alerta')) {
+                            porVencer++;
+                        } else {
+                            aTiempo++;
+                        }
+                    });
 
-            // 3. Crear el archivo descargable
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                    // Añadimos los consolidados al CSV
+                    csvContent += `"Al Dia","${aTiempo}"\n`;
+                    csvContent += `"Por Vencer","${porVencer}"\n`;
+                    csvContent += `"Retrasados","${retrasado}"\n`;
+                }
+            } catch (e) { csvContent += "Error obteniendo datos del semaforo docente\n"; }
+            csvContent += "\n"; 
+
+            // ---------------------------------------------------------
+            // BLOQUE 4: ALERTAS ACADÉMICAS
+            // ---------------------------------------------------------
+            csvContent += "--- 4. TABLA: ALERTAS ACADEMICAS (RIESGO) ---\n";
+            csvContent += "DNI,Alumno,Carrera,Promedio Historico,Asistencia (%)\n";
+            try {
+                const resAcad = await fetch('http://localhost:8080/api/v1/reportes/rendimiento', { headers });
+                if (resAcad.ok) {
+                    const dataAcad = await resAcad.json();
+                    if (dataAcad.length === 0) {
+                        csvContent += "No hay alumnos en riesgo actualmente.\n";
+                    } else {
+                        dataAcad.forEach(item => {
+                            const dni = item.dni || item.DNI || 'N/A';
+                            const alumno = item.alumno || item.nombre || 'Desconocido';
+                            const carrera = item.carrera || 'No registrada';
+                            const promedio = parseFloat(item.promedio_historico || item.promedio || 0).toFixed(2);
+                            const diasAsistidos = parseInt(item.dias_asistidos || 0);
+                            const diasTotales = parseInt(item.dias_totales || 1);
+                            const porcentaje = ((diasAsistidos / diasTotales) * 100).toFixed(0);
+                            csvContent += `"${dni}","${alumno}","${carrera}","${promedio}","${porcentaje}%"\n`;
+                        });
+                    }
+                }
+            } catch (e) { csvContent += "Error obteniendo datos academicos\n"; }
+
+            // ---------------------------------------------------------
+            // PROCESAMIENTO Y DESCARGA DEL ARCHIVO
+            // ---------------------------------------------------------
+            // BOM para correcta lectura de tildes y eñes en Excel
+            const bom = "\uFEFF"; 
+            const blob = new Blob([bom + csvContent], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
+            
             const link = document.createElement("a");
             link.setAttribute("href", url);
-            link.setAttribute("download", `Reporte_Academico_${new Date().toLocaleDateString('es-ES')}.csv`);
+            const nombreArchivo = `Reportes_BI_SankuInstituto_${new Date().toLocaleDateString('es-ES').replace(/\//g, '-')}.csv`;
+            link.setAttribute("download", nombreArchivo);
+            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
 
+            // Restaurar el botón
+            btn.innerHTML = txtOriginal;
+            btn.disabled = false;
+
         } catch (error) {
-            console.error(error);
-            alert("Hubo un error al generar el archivo CSV.");
+            console.error("Error global exportando CSV:", error);
+            alert("Hubo un error al generar el archivo Excel.");
         }
     };
     // ==========================================
-    // 10. EXPORTACIÓN A PDF (Pantalla Completa BI)
+    // 10. EXPORTACIÓN A PDF (Páginas Independientes + Tabla Vectorial)
     // ==========================================
     window.exportarPDF = function() {
-        // Seleccionamos todo el contenedor de los reportes
-        const elemento = document.getElementById('seccion-reportes');
-        
-        // Ocultamos temporalmente los botones de descarga para que no salgan impresos en el PDF
-        const botonesHeader = elemento.querySelector('.welcome-header div:nth-child(2)');
-        if (botonesHeader) botonesHeader.style.display = 'none';
+        // Mostrar estado de carga en el botón
+        const btn = document.querySelector('button[onclick="exportarPDF()"]');
+        const txtOriginal = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Generando PDF...';
+        btn.disabled = true;
 
-        // Configuración profesional del PDF
-        const opciones = {
-            margin:       10,
-            filename:     `Reporte_BI_Jhalebet_${new Date().toLocaleDateString('es-ES')}.pdf`,
-            image:        { type: 'jpeg', quality: 0.98 },
-            html2canvas:  { scale: 2, useCORS: true }, // scale 2 mejora la nitidez de los gráficos
-            jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
-        };
+        setTimeout(() => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('l', 'mm', 'a4'); // Formato horizontal (Landscape)
+                
+                // Configuración de los gráficos
+                const canvasIds = ['ingresosChart', 'matriculasReportesChart', 'semaforoChart'];
+                const titulosGraficos = [
+                    'Desempeño Financiero Mensual', 
+                    'Evolución de Matrículas', 
+                    'Semáforo Docente (Entrega de Notas)'
+                ];
 
-        // Generamos el PDF
-        html2pdf().set(opciones).from(elemento).save().then(() => {
-            // Cuando termina la descarga, volvemos a mostrar los botones
-            if (botonesHeader) botonesHeader.style.display = 'flex';
-        });
+                let pageCount = 0;
+
+                // --- PÁGINAS 1, 2 Y 3: LOS GRÁFICOS ---
+                canvasIds.forEach((id, index) => {
+                    const canvas = document.getElementById(id);
+                    if (canvas) {
+                        if (pageCount > 0) doc.addPage();
+                        
+                        // Fondo blanco estricto
+                        doc.setFillColor(255, 255, 255);
+                        doc.rect(0, 0, 297, 210, 'F');
+
+                        // Título de la hoja
+                        doc.setFontSize(22);
+                        doc.setTextColor(30, 41, 59);
+                        doc.text(`Reporte BI: ${titulosGraficos[index]}`, 15, 20);
+
+                        // Extraer imagen del canvas a su máxima calidad original
+                        const imgData = canvas.toDataURL('image/png', 1.0);
+                        
+                        // Cálculos precisos para evitar que se estire y se ponga borroso
+                        const ratio = canvas.width / canvas.height;
+                        let imgWidth = 267; // Ancho máximo (297mm - 30mm de márgenes)
+                        let imgHeight = imgWidth / ratio;
+
+                        // Si la imagen calculada es muy alta, limitamos su altura y ajustamos el ancho
+                        if (imgHeight > 150) { 
+                            imgHeight = 150;
+                            imgWidth = imgHeight * ratio;
+                        }
+
+                        const xOffset = (297 - imgWidth) / 2; // Centrar horizontalmente
+                        
+                        // Insertar imagen
+                        doc.addImage(imgData, 'PNG', xOffset, 35, imgWidth, imgHeight);
+                        pageCount++;
+                    }
+                });
+
+                // --- PÁGINA 4: TABLA DE ALERTAS (DIBUJADA COMO TEXTO) ---
+                if (pageCount > 0) doc.addPage();
+                
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, 297, 210, 'F');
+                doc.setFontSize(22);
+                doc.setTextColor(231, 76, 60); // Título en rojo suave por ser una alerta
+                doc.text("Reporte BI: Alertas Académicas (Riesgo)", 15, 20);
+
+                // Extraer datos directamente de las celdas del HTML
+                const filasDatos = [];
+                const tbody = document.getElementById("cuerpo-tabla-riesgo");
+                
+                if (tbody) {
+                    const trs = tbody.querySelectorAll("tr");
+                    trs.forEach(tr => {
+                        const celdas = [];
+                        tr.querySelectorAll("td").forEach(td => {
+                            // Extraemos solo el texto limpio (sin las etiquetas de spans o badges)
+                            celdas.push(td.innerText.trim());
+                        });
+                        filasDatos.push(celdas);
+                    });
+                }
+
+                // Generar tabla vectorial (Ultra nítida)
+                doc.autoTable({
+                    startY: 35,
+                    head: [['Alumno Evaluado', 'Motivo del Riesgo', 'Nivel de Gravedad']],
+                    body: filasDatos.length > 0 && filasDatos[0][0] !== "Cargando alertas..." ? filasDatos : [['No hay alumnos en riesgo actualmente.', '', '']],
+                    theme: 'grid',
+                    headStyles: { fillColor: [44, 62, 80], fontSize: 13, textColor: 255, fontStyle: 'bold' },
+                    bodyStyles: { fontSize: 12, textColor: 50 },
+                    alternateRowStyles: { fillColor: [248, 250, 252] },
+                    margin: { left: 15, right: 15 }
+                });
+
+                // Descargar el documento
+                const fecha = new Date().toLocaleDateString('es-ES').replace(/\//g, '-');
+                doc.save(`Reportes_BI_SankuInstituto_${fecha}.pdf`);
+
+            } catch (error) {
+                console.error("Error generando PDF:", error);
+                alert("Ocurrió un error al generar el PDF. Verifica la consola.");
+            } finally {
+                // Restaurar el botón a la normalidad
+                btn.innerHTML = txtOriginal;
+                btn.disabled = false;
+            }
+        }, 500); // Pequeño retraso para que el botón tenga tiempo de mostrar el ícono de carga
     };
 
     // ==========================================
