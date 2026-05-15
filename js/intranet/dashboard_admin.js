@@ -1066,6 +1066,104 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Error de conexión con el servidor.");
         }
     };
+    // ==========================================
+    // SISTEMA DE NOTIFICACIONES (FRONTEND)
+    // ==========================================
+    
+    // 1. Datos simulados (Mock) - Luego vendrán del Backend
+    let notificacionesGlobales = [
+        { id: 101, tipo: 'SAE', titulo: 'Nuevo Trámite SAE', desc: 'Juan Pérez solicitó un Certificado de Estudios.', tiempo: 'Hace 10 min' },
+        { id: 102, tipo: 'ALERTA', titulo: 'Alerta Académica', desc: 'María López entró en riesgo alto (Promedio: 10.5).', tiempo: 'Hace 1 hora' },
+        { id: 103, tipo: 'CONTACTO', titulo: 'Mensaje Web', desc: 'Nuevo prospecto interesado en Ingeniería de Sistemas.', tiempo: 'Hace 3 horas' }
+    ];
+
+    const btnCampanaToggle = document.getElementById("btnCampanaToggle");
+    const panelNotificaciones = document.getElementById("panelNotificaciones");
+    const listaNotificacionesUI = document.getElementById("listaNotificacionesUI");
+    const badgeNotificacionesCount = document.getElementById("badgeNotificacionesCount");
+    const btnLimpiarNotificaciones = document.getElementById("btnLimpiarNotificaciones");
+
+    // 2. Función para pintar la lista y actualizar el contador
+    function renderizarNotificaciones() {
+        // Actualizar la "burbuja" roja de la campana
+        if (notificacionesGlobales.length > 0) {
+            badgeNotificacionesCount.style.display = 'flex';
+            badgeNotificacionesCount.textContent = notificacionesGlobales.length;
+        } else {
+            badgeNotificacionesCount.style.display = 'none';
+        }
+
+        // Pintar el HTML interior
+        if (notificacionesGlobales.length === 0) {
+            listaNotificacionesUI.innerHTML = `
+                <div class="notif-empty">
+                    <i class="fa-regular fa-bell-slash" style="font-size: 24px; margin-bottom: 10px; color: #cbd5e1;"></i>
+                    <p style="margin:0;">No tienes notificaciones nuevas</p>
+                </div>`;
+            return;
+        }
+
+        listaNotificacionesUI.innerHTML = notificacionesGlobales.map(notif => {
+            // Asignar un color de icono según el tipo
+            let iconColor = notif.tipo === 'ALERTA' ? '#ef4444' : notif.tipo === 'SAE' ? '#3b82f6' : '#f59e0b';
+            let iconClass = notif.tipo === 'ALERTA' ? 'fa-triangle-exclamation' : notif.tipo === 'SAE' ? 'fa-file-signature' : 'fa-envelope';
+
+            return `
+            <div class="notif-item" id="notif-${notif.id}">
+                <div style="margin-right: 12px; color: ${iconColor}; margin-top: 2px;">
+                    <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <div class="notif-content">
+                    <h5 class="notif-title">${notif.titulo}</h5>
+                    <p class="notif-desc">${notif.desc}</p>
+                    <span class="notif-time">${notif.tiempo}</span>
+                </div>
+                <button class="notif-close" onclick="eliminarNotificacion(${notif.id})">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            `;
+        }).join('');
+    }
+
+    // 3. Abrir/Cerrar el panel de notificaciones
+    if (btnCampanaToggle && panelNotificaciones) {
+        btnCampanaToggle.addEventListener("click", (e) => {
+            e.stopPropagation();
+            // Alternamos entre block y none
+            if (panelNotificaciones.style.display === "none") {
+                panelNotificaciones.style.display = "block";
+                renderizarNotificaciones();
+            } else {
+                panelNotificaciones.style.display = "none";
+            }
+        });
+
+        // Cerrar panel al hacer clic en cualquier otra parte de la pantalla
+        document.addEventListener("click", (e) => {
+            if (!panelNotificaciones.contains(e.target) && e.target !== btnCampanaToggle) {
+                panelNotificaciones.style.display = "none";
+            }
+        });
+    }
+
+    // 4. Eliminar una sola notificación (La "X")
+    window.eliminarNotificacion = function(id) {
+        notificacionesGlobales = notificacionesGlobales.filter(n => n.id !== id);
+        renderizarNotificaciones();
+    };
+
+    // 5. Limpiar TODAS las notificaciones
+    if (btnLimpiarNotificaciones) {
+        btnLimpiarNotificaciones.addEventListener("click", (e) => {
+            e.stopPropagation(); // Evitar que el panel se cierre al hacer clic
+            notificacionesGlobales = []; // Vaciamos el arreglo
+            renderizarNotificaciones();
+        });
+    }
+
+    // Llamada inicial para pintar el número en la campana al cargar la página
+    renderizarNotificaciones();
 
     // Inicializar arranque
     inicializarAdmin();

@@ -269,3 +269,64 @@
     border-radius: 6px;
     font-weight: 600;
 }
+
+/* ==========================================
+   PANEL DE NOTIFICACIONES
+   ========================================== */
+.notif-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f1f5f9;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    transition: background 0.2s;
+}
+
+.notif-item:hover {
+    background-color: #f8fafc;
+}
+
+.notif-content {
+    flex-grow: 1;
+    padding-right: 10px;
+}
+
+.notif-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #334155;
+    margin: 0 0 4px 0;
+}
+
+.notif-desc {
+    font-size: 12px;
+    color: #64748b;
+    margin: 0 0 6px 0;
+    line-height: 1.4;
+}
+
+.notif-time {
+    font-size: 10px;
+    color: #94a3b8;
+}
+
+.notif-close {
+    background: none;
+    border: none;
+    color: #cbd5e1;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px;
+    transition: color 0.2s;
+}
+
+.notif-close:hover {
+    color: #ef4444; /* Rojo al pasar el mouse */
+}
+
+.notif-empty {
+    padding: 30px 15px;
+    text-align: center;
+    color: #94a3b8;
+    font-size: 13px;
+}
