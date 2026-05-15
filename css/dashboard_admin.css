@@ -330,3 +330,38 @@
     color: #94a3b8;
     font-size: 13px;
 }
+
+/* ==========================================
+   ESTILOS DE LA CAMPANA Y BADGE ROJO
+   ========================================== */
+
+/* 1. El botón de la campana debe ser 'relative' para atrapar al círculo rojo */
+.notification-btn {
+    position: relative !important; 
+    background: transparent;
+    border: none;
+    font-size: 20px; /* Tamaño de la campana */
+    cursor: pointer;
+    color: #475569;  /* Color gris de la campana */
+    padding: 5px;
+}
+
+/* 2. El círculo rojo llamativo con el número */
+.notification-dot {
+    position: absolute;
+    top: -2px;          /* Sube el círculo por encima de la campana */
+    right: -4px;        /* Lo empuja hacia la esquina derecha */
+    background-color: #ef4444; /* Rojo alerta vibrante */
+    color: white;       /* Número en blanco */
+    font-size: 10px;    /* Tamaño del número más chico */
+    font-weight: 700;
+    width: 18px;        /* Ancho del círculo */
+    height: 18px;       /* Alto del círculo (igual al ancho para que sea perfecto) */
+    border-radius: 50%; /* Hace que sea completamente redondo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #ffffff; /* Borde blanco para que no se mezcle con la campana */
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3); /* Sombra roja sutil para que resalte más */
+    z-index: 10;
+}
