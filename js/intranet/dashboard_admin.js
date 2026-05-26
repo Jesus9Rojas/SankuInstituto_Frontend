@@ -1066,108 +1066,140 @@ document.addEventListener("DOMContentLoaded", () => {
             alert("Error de conexión con el servidor.");
         }
     };
+// ==========================================
+    // SISTEMA DE NOTIFICACIONES (CON TRAZABILIDAD E HISTORIAL)
     // ==========================================
-    // SISTEMA DE NOTIFICACIONES (CONEXIÓN REAL AL BACKEND)
-    // ==========================================
-    
-    // 1. Iniciamos el arreglo vacío (ya no hay datos simulados)
     let notificacionesGlobales = [];
+    let mostrandoLeidos = false; // 🔄 Controla si vemos pendientes o el historial
 
     const btnCampanaToggle = document.getElementById("btnCampanaToggle");
     const panelNotificaciones = document.getElementById("panelNotificaciones");
     const listaNotificacionesUI = document.getElementById("listaNotificacionesUI");
     const badgeNotificacionesCount = document.getElementById("badgeNotificacionesCount");
     const btnLimpiarNotificaciones = document.getElementById("btnLimpiarNotificaciones");
+    const btnToggleLeidos = document.getElementById("btnToggleLeidos");
+    const txtToggleLeidos = document.getElementById("txtToggleLeidos");
+    const iconoToggleLeidos = document.getElementById("iconoToggleLeidos");
 
-    // 2. NUEVA FUNCIÓN: Consulta a tu API de Spring Boot
+    // --- FUNCIONES AUXILIARES DE PERSISTENCIA ---
+    function obtenerLlaveOcultas() {
+        const uId = usuarioId || "global"; 
+        return `notif_ocultas_admin_${uId}`;
+    }
+
+    function obtenerIdsOcultos() {
+        const lista = localStorage.getItem(obtenerLlaveOcultas());
+        return lista ? JSON.parse(lista) : [];
+    }
+
+    function registrarIdOculto(idOrigen, tipo) {
+        const ocultas = obtenerIdsOcultos();
+        const identificadorUnico = `${tipo}_${idOrigen}`;
+        if (!ocultas.includes(identificadorUnico)) {
+            ocultas.push(identificadorUnico);
+            localStorage.setItem(obtenerLlaveOcultas(), JSON.stringify(ocultas));
+        }
+    }
+
+    // Remueve una notificación del baúl para volver a verla en pendientes
+    function removerIdOculto(idOrigen, tipo) {
+        let ocultas = obtenerIdsOcultos();
+        const identificadorUnico = `${tipo}_${idOrigen}`;
+        ocultas = ocultas.filter(id => id !== identificadorUnico);
+        localStorage.setItem(obtenerLlaveOcultas(), JSON.stringify(ocultas));
+    }
+
+    // --- LÓGICA PRINCIPAL ---
     async function cargarNotificacionesReales() {
         try {
-            // Llamamos a tu nuevo NotificacionController
             const res = await fetch('http://localhost:8080/api/v1/notificaciones/admin', { headers });
             
             if (res.ok) {
-                notificacionesGlobales = await res.json();
-                renderizarNotificaciones(); // Pintamos la campana
+                const datosDelServidor = await res.json();
+                const ocultas = obtenerIdsOcultos();
+                
+                // 📊 CALCULAR EL BADGE: Siempre debe reflejar la cantidad de no leídos reales
+                const pendientesReales = datosDelServidor.filter(n => !ocultas.includes(`${n.tipo}_${n.idOrigen}`));
+                if (pendientesReales.length > 0) {
+                    badgeNotificacionesCount.style.display = 'flex';
+                    badgeNotificacionesCount.textContent = pendientesReales.length;
+                } else {
+                    badgeNotificacionesCount.style.display = 'none';
+                }
+
+                // 🔀 FILTRADO SEGÚN LA PESTAÑA ACTIVA
+                if (!mostrandoLeidos) {
+                    notificacionesGlobales = datosDelServidor.filter(n => !ocultas.includes(`${n.tipo}_${n.idOrigen}`));
+                    if (btnLimpiarNotificaciones) btnLimpiarNotificaciones.style.display = 'block';
+                } else {
+                    // Modo historial: Filtra únicamente las que ya fueron archivadas
+                    notificacionesGlobales = datosDelServidor.filter(n => ocultas.includes(`${n.tipo}_${n.idOrigen}`));
+                    if (btnLimpiarNotificaciones) btnLimpiarNotificaciones.style.display = 'none';
+                }
+
+                renderizarNotificaciones();
             } else {
-                console.warn("No se pudieron cargar las notificaciones (Error del servidor).");
+                console.warn("No se pudieron cargar las notificaciones desde el servidor.");
             }
         } catch (error) {
             console.error("Error de red al cargar la campana:", error);
         }
     }
 
-    // 3. Función para pintar la lista en el HTML
     function renderizarNotificaciones() {
-        // Mostrar u ocultar el circulito rojo con el número
-        if (notificacionesGlobales.length > 0) {
-            badgeNotificacionesCount.style.display = 'flex';
-            badgeNotificacionesCount.textContent = notificacionesGlobales.length;
-        } else {
-            badgeNotificacionesCount.style.display = 'none';
-        }
-
-        // Si no hay nada, mostrar mensaje vacío
         if (notificacionesGlobales.length === 0) {
+            const msjVacio = mostrandoLeidos ? "No tienes notificaciones leídas en el historial." : "No tienes notificaciones pendientes.";
             listaNotificacionesUI.innerHTML = `
                 <div class="notif-empty">
                     <i class="fa-regular fa-bell-slash" style="font-size: 24px; margin-bottom: 10px; color: #cbd5e1;"></i>
-                    <p style="margin:0;">No tienes notificaciones pendientes</p>
+                    <p style="margin:0;">${msjVacio}</p>
                 </div>`;
             return;
         }
 
-        // Pintar cada notificación con su color respectivo
         listaNotificacionesUI.innerHTML = notificacionesGlobales.map(notif => {
-            // Lógica de colores según el TIPO que manda tu Java
-            let iconColor = '#cbd5e1'; // Gris por defecto
+            let iconColor = '#cbd5e1'; 
             let iconClass = 'fa-bell';
 
-            if (notif.tipo === 'ALERTA') { 
-                iconColor = '#ef4444'; // Rojo
-                iconClass = 'fa-triangle-exclamation'; 
-            } else if (notif.tipo === 'SAE') { 
-                iconColor = '#3b82f6'; // Azul
-                iconClass = 'fa-file-signature'; 
-            } else if (notif.tipo === 'POSTULANTE') { 
-                iconColor = '#10b981'; // Verde
-                iconClass = 'fa-user-plus'; 
-            } else if (notif.tipo === 'CONTACTO') { 
-                iconColor = '#8b5cf6'; // Morado
-                iconClass = 'fa-envelope'; 
-            }
+            if (notif.tipo === 'ALERTA') { iconColor = '#ef4444'; iconClass = 'fa-triangle-exclamation'; } 
+            else if (notif.tipo === 'SAE') { iconColor = '#3b82f6'; iconClass = 'fa-file-signature'; } 
+            else if (notif.tipo === 'POSTULANTE') { iconColor = '#10b981'; iconClass = 'fa-user-plus'; } 
+            else if (notif.tipo === 'CONTACTO') { iconColor = '#8b5cf6'; iconClass = 'fa-envelope'; }
+
+            // 🔀 ACCIÓN DINÁMICA: Si es historial muestra una flecha de retorno; si es pendiente muestra la equis
+            const botonAccion = !mostrandoLeidos 
+                ? `<button class="notif-close" title="Marcar como leído" onclick="eliminarNotificacion(${notif.idOrigen}, '${notif.tipo}')"><i class="fa-solid fa-xmark"></i></button>`
+                : `<button class="notif-close" title="Restaurar a no leídos" style="color: #3b82f6;" onclick="restaurarNotificacion(${notif.idOrigen}, '${notif.tipo}')"><i class="fa-solid fa-arrow-rotate-left"></i></button>`;
 
             return `
-            <div class="notif-item" id="notif-${notif.idOrigen}">
+            <div class="notif-item" id="notif-${notif.idOrigen}" style="${mostrandoLeidos ? 'opacity: 0.8; background: #f8fafc;' : ''}">
                 <div style="margin-right: 12px; color: ${iconColor}; margin-top: 2px;">
                     <i class="fa-solid ${iconClass}"></i>
                 </div>
                 <div class="notif-content">
-                    <h5 class="notif-title">${notif.titulo}</h5>
+                    <h5 class="notif-title">${notif.titulo} ${mostrandoLeidos ? '<span style="font-size:10px; font-weight:normal; color:#94a3b8;">(Leído)</span>' : ''}</h5>
                     <p class="notif-desc">${notif.desc}</p>
                     <span class="notif-time">${notif.tiempo}</span>
                 </div>
-                <button class="notif-close" onclick="eliminarNotificacion(${notif.idOrigen})">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
+                ${botonAccion}
             </div>
             `;
         }).join('');
     }
 
-    // 4. Abrir/Cerrar el panel al hacer clic en la campana
     if (btnCampanaToggle && panelNotificaciones) {
         btnCampanaToggle.addEventListener("click", (e) => {
             e.stopPropagation();
             if (panelNotificaciones.style.display === "none") {
                 panelNotificaciones.style.display = "block";
-                // Cada vez que abre la campana, consulta al backend para datos frescos
+                mostrandoLeidos = false; // Restablecer a pendientes al abrir la campana
+                actualizarEstiloBotonToggle();
                 cargarNotificacionesReales(); 
             } else {
                 panelNotificaciones.style.display = "none";
             }
         });
 
-        // Cerrar panel si hace clic afuera
         document.addEventListener("click", (e) => {
             if (!panelNotificaciones.contains(e.target) && e.target !== btnCampanaToggle) {
                 panelNotificaciones.style.display = "none";
@@ -1175,23 +1207,55 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // 5. Botón 'X' - Eliminar (Frontend)
-    window.eliminarNotificacion = function(idOrigen) {
-        notificacionesGlobales = notificacionesGlobales.filter(n => n.idOrigen !== idOrigen);
-        renderizarNotificaciones();
-    };
-
-    // 6. Botón 'Limpiar Todas' (Frontend)
-    if (btnLimpiarNotificaciones) {
-        btnLimpiarNotificaciones.addEventListener("click", (e) => {
+    // 🔄 Control del botón interruptor del Historial
+    if (btnToggleLeidos) {
+        btnToggleLeidos.addEventListener("click", (e) => {
             e.stopPropagation();
-            notificacionesGlobales = []; 
-            renderizarNotificaciones();
+            mostrandoLeidos = !mostrandoLeidos;
+            actualizarEstiloBotonToggle();
+            cargarNotificacionesReales(); // Recargamos para aplicar el filtro correspondiente
         });
     }
 
-    // 7. ARRANQUE: Llamada inicial silenciosa al cargar el Dashboard
-    // Esto hace que el numerito rojo aparezca apenas el admin inicia sesión
+    function actualizarEstiloBotonToggle() {
+        if (!mostrandoLeidos) {
+            txtToggleLeidos.textContent = "Ver historial de leídos";
+            iconoToggleLeidos.className = "fa-solid fa-archive";
+            btnToggleLeidos.style.color = "#475569";
+        } else {
+            txtToggleLeidos.textContent = "Volver a no leídos";
+            iconoToggleLeidos.className = "fa-solid fa-arrow-left";
+            btnToggleLeidos.style.color = "#3b82f6";
+        }
+    }
+
+    // Acción de la equis (Archivar)
+    window.eliminarNotificacion = function(idOrigen, tipo) {
+        registrarIdOculto(idOrigen, tipo);
+        notificacionesGlobales = notificacionesGlobales.filter(n => !(n.idOrigen === idOrigen && n.tipo === tipo));
+        renderizarNotificaciones();
+        cargarNotificacionesReales(); // Fuerza el cálculo del contador
+    };
+
+    // Acción de la flecha de retorno (Desarchivar)
+    window.restaurarNotificacion = function(idOrigen, tipo) {
+        removerIdOculto(idOrigen, tipo);
+        notificacionesGlobales = notificacionesGlobales.filter(n => !(n.idOrigen === idOrigen && n.tipo === tipo));
+        renderizarNotificaciones();
+        cargarNotificacionesReales();
+    };
+
+    if (btnLimpiarNotificaciones) {
+        btnLimpiarNotificaciones.addEventListener("click", (e) => {
+            e.stopPropagation();
+            notificacionesGlobales.forEach(notif => registrarIdOculto(notif.idOrigen, notif.tipo));
+            notificacionesGlobales = []; 
+            renderizarNotificaciones();
+            badgeNotificacionesCount.style.display = 'none';
+        });
+    }
+
+    // Ejecutar el primer fetch al cargar la página
     cargarNotificacionesReales();
 
     // Inicializar arranque
