@@ -1161,10 +1161,11 @@ document.addEventListener("DOMContentLoaded", () => {
             let iconColor = '#cbd5e1'; 
             let iconClass = 'fa-bell';
 
-            if (notif.tipo === 'ALERTA') { iconColor = '#ef4444'; iconClass = 'fa-triangle-exclamation'; } 
-            else if (notif.tipo === 'SAE') { iconColor = '#3b82f6'; iconClass = 'fa-file-signature'; } 
-            else if (notif.tipo === 'POSTULANTE') { iconColor = '#10b981'; iconClass = 'fa-user-plus'; } 
+            if (notif.tipo === 'ALERTA') { iconColor = '#ef4444'; iconClass = 'fa-triangle-exclamation'; }
+            else if (notif.tipo === 'SAE') { iconColor = '#3b82f6'; iconClass = 'fa-file-signature'; }
+            else if (notif.tipo === 'POSTULANTE') { iconColor = '#10b981'; iconClass = 'fa-user-plus'; }
             else if (notif.tipo === 'CONTACTO') { iconColor = '#8b5cf6'; iconClass = 'fa-envelope'; }
+            else if (notif.tipo === 'MATRICULA') { iconColor = '#f59e0b'; iconClass = 'fa-graduation-cap'; }
 
             // 🔀 ACCIÓN DINÁMICA: Si es historial muestra una flecha de retorno; si es pendiente muestra la equis
             const botonAccion = !mostrandoLeidos 

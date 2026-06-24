@@ -184,7 +184,7 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
         }
     }
 
-    // B. Alertas Académicas
+    // B. Alertas Académicas (solo actualiza el panel principal del dashboard)
     const listaAlertas = document.getElementById("lista-alertas-coordinador");
     async function cargarAlertas() {
         if (!listaAlertas) return;
@@ -193,34 +193,16 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
             if (res.ok) {
                 const alertas = await res.json();
                 listaAlertas.innerHTML = "";
-                
-                // Obtenemos los elementos de la campanita
-                const badgeNotif = document.getElementById("badge-notif-coord");
-                const listaNotif = document.getElementById("lista-notificaciones-coord");
-                
-                if(document.getElementById("count-alertas")) document.getElementById("count-alertas").textContent = alertas.length;
+                if (document.getElementById("count-alertas")) document.getElementById("count-alertas").textContent = alertas.length;
 
-                // SI NO HAY ALERTAS
                 if (alertas.length === 0) {
                     listaAlertas.innerHTML = `<p class="text-muted text-center" style="padding: 20px;">Todo en orden. No hay alertas.</p>`;
-                    if(badgeNotif) badgeNotif.style.display = "none";
-                    if(listaNotif) listaNotif.innerHTML = '<p class="text-muted text-center" style="font-size:12px; margin: 20px 0;">No tienes alertas pendientes.</p>';
                     return;
                 }
 
-                // SI HAY ALERTAS: Mostramos el número rojo en la campana
-                if(badgeNotif) {
-                    badgeNotif.style.display = "flex";
-                    badgeNotif.textContent = alertas.length;
-                }
-                if(listaNotif) listaNotif.innerHTML = ""; // Limpiamos para inyectar
-
-                // Dibujamos las alertas en ambos lados
                 alertas.forEach(a => {
-                    let color = a.tipo === 'NOTAS_ATRASADAS' ? 'var(--accent-red)' : '#f39c12';
-                    let tituloAmigable = a.tipo.replace('_', ' ');
-
-                    // 1. Inyectar en el Dashboard Principal
+                    const color = a.tipo === 'NOTAS_ATRASADAS' ? 'var(--accent-red)' : '#f39c12';
+                    const tituloAmigable = a.tipo.replace('_', ' ');
                     listaAlertas.innerHTML += `
                         <div class="admin-list-item" style="border-left: 3px solid ${color}; padding-left: 15px; display:flex; justify-content:space-between;">
                             <div class="item-content">
@@ -230,23 +212,73 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
                             </div>
                             <button onclick="resolverAlerta(${a.idAlerta})" class="btn-outline-small" style="color:#555; border-color:#ccc;"><i class="fa-solid fa-check"></i> Resolver</button>
                         </div>`;
-                        
-                    // 2. Inyectar en la Campanita Desplegable
-                    if(listaNotif) {
-                        listaNotif.innerHTML += `
-                            <div style="padding: 12px; border-bottom: 1px solid #f1f5f9; background-color: #f8fafc; border-radius: 6px; margin-bottom: 5px; position: relative;">
-                                <small style="color:${color}; font-weight:700;">${tituloAmigable}</small>
-                                <p style="margin:5px 0 5px 0; font-size:12px; color:#334155;">Sec: <strong>${a.nombreSeccion}</strong> <br>Prof: ${a.nombreDocente}</p>
-                                <button onclick="resolverAlerta(${a.idAlerta})" style="background: none; border: none; color: #00897b; cursor: pointer; font-size: 12px; padding: 0; font-weight: bold;">
-                                    <i class="fa-solid fa-check"></i> Marcar Resuelto
-                                </button>
-                            </div>
-                        `;
-                    }
                 });
             }
         } catch (e) { console.error(e); }
     }
+
+    // Campana de notificaciones del coordinador (matrículas + alertas académicas)
+    const badgeNotifCoord = document.getElementById("badge-notif-coord");
+    const listaNotifCoord = document.getElementById("lista-notificaciones-coord");
+    const COORD_LEIDAS_KEY = "notif_coord_leidas";
+
+    function getCoordLeidas() {
+        try { return JSON.parse(localStorage.getItem(COORD_LEIDAS_KEY) || "[]"); } catch { return []; }
+    }
+    function markCoordLeida(tipo, idOrigen) {
+        const leidas = getCoordLeidas();
+        const key = `${tipo}_${idOrigen}`;
+        if (!leidas.includes(key)) leidas.push(key);
+        localStorage.setItem(COORD_LEIDAS_KEY, JSON.stringify(leidas));
+    }
+
+    async function cargarNotificacionesCoord() {
+        if (!listaNotifCoord) return;
+        try {
+            const res = await fetch('http://localhost:8080/api/v1/notificaciones/coordinador', { headers: { 'Authorization': `Bearer ${token}` } });
+            if (!res.ok) return;
+            const notifs = await res.json();
+            const leidas = getCoordLeidas();
+            const pendientes = notifs.filter(n => !leidas.includes(`${n.tipo}_${n.idOrigen}`));
+
+            if (badgeNotifCoord) {
+                if (pendientes.length > 0) {
+                    badgeNotifCoord.style.display = "flex";
+                    badgeNotifCoord.textContent = pendientes.length;
+                } else {
+                    badgeNotifCoord.style.display = "none";
+                }
+            }
+
+            if (pendientes.length === 0) {
+                listaNotifCoord.innerHTML = `<p class="text-muted text-center" style="font-size:12px; margin: 20px 0;">Sin notificaciones nuevas.</p>`;
+                return;
+            }
+
+            listaNotifCoord.innerHTML = pendientes.map(n => {
+                let iconColor = '#f59e0b'; let iconClass = 'fa-graduation-cap';
+                if (n.tipo === 'ALERTA') { iconColor = '#ef4444'; iconClass = 'fa-triangle-exclamation'; }
+                return `
+                <div style="display:flex; align-items:flex-start; gap:10px; padding:12px; border-bottom:1px solid #f1f5f9; position:relative;">
+                    <i class="fa-solid ${iconClass}" style="color:${iconColor}; margin-top:2px; font-size:14px;"></i>
+                    <div style="flex:1; min-width:0;">
+                        <p style="margin:0 0 3px; font-size:13px; font-weight:600; color:#1e293b;">${n.titulo}</p>
+                        <p style="margin:0 0 4px; font-size:12px; color:#475569; word-break:break-word;">${n.desc}</p>
+                        <span style="font-size:11px; color:#94a3b8;">${n.tiempo}</span>
+                    </div>
+                    <button title="Marcar como leída" onclick="window.marcarCoordLeida('${n.tipo}', ${n.idOrigen})"
+                        style="background:none; border:none; color:#94a3b8; cursor:pointer; padding:2px; flex-shrink:0;">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>`;
+            }).join('');
+        } catch (e) { console.error(e); }
+    }
+
+    window.marcarCoordLeida = function(tipo, idOrigen) {
+        markCoordLeida(tipo, idOrigen);
+        cargarNotificacionesCoord();
+    };
 
     window.resolverAlerta = async function(idAlerta) {
         if(!confirm("¿Estás seguro de marcar esta alerta como resuelta?")) return;
@@ -270,7 +302,7 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
                 if(document.getElementById("count-cursos")) document.getElementById("count-cursos").textContent = secciones.length;
 
                 if (secciones.length === 0) {
-                    tablaSecciones.innerHTML = `<tr><td colspan="5" class="text-center text-muted">No hay secciones programadas.</td></tr>`;
+                    tablaSecciones.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No hay secciones programadas.</td></tr>`;
                     return;
                 }
 
@@ -280,6 +312,7 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
                             <td><strong>SEC-${s.idSeccion}</strong></td>
                             <td>${s.nombreCurso}</td>
                             <td><span class="badge" style="background:#e0f2f1; color:#00897b;">${s.nombreDocente}</span></td>
+                            <td><span class="badge" style="background:#f0f4ff; color:#0056b3;">${s.cicloAcademico}</span></td>
                             <td>${s.modalidad}</td>
                             <td style="text-align: center">
                                 <button class="btn-action edit" style= "margin-right: 2rem;" onclick='abrirEditarModal(${JSON.stringify(s)})' title="Editar Asignación">
@@ -396,6 +429,7 @@ const logoutBtns = [document.getElementById("btnCerrarSesion"), document.getElem
 
     cargarPostulantesPendientes();
     cargarAlertas();
+    cargarNotificacionesCoord();
     cargarSecciones();
     cargarDocentes();
 
@@ -496,9 +530,28 @@ if(regCurCarrera) {
             const data = await res.json();
 
             if (res.ok) {
-                alert("¡Curso '" + payload.nombre + "' creado exitosamente!");
+                cursosList.push(data); // disponible de inmediato para llenarSelectsSeccion
                 formCrearCurso.reset();
                 if (typeof precargarListas === 'function') precargarListas();
+
+                const prev = document.getElementById('msg-curso-creado');
+                if (prev) prev.remove();
+
+                const successMsg = document.createElement('div');
+                successMsg.id = 'msg-curso-creado';
+                successMsg.style.cssText = 'background:#d4edda; border:1px solid #c3e6cb; border-radius:8px; padding:16px 20px; margin-top:15px; text-align:center;';
+                successMsg.innerHTML = `
+                    <i class="fa-solid fa-circle-check" style="color:#28a745; font-size:28px; margin-bottom:8px; display:block;"></i>
+                    <h4 style="color:#155724; margin:8px 0;">¡Curso "${data.nombre}" creado!</h4>
+                    <p style="color:#155724; font-size:13px; margin-bottom:14px;">¿Deseas programarlo para un ciclo académico?</p>
+                    <button class="btn-primary" style="margin-right:10px;" onclick="window.programarNuevoCurso(${data.idCurso})">
+                        <i class="fa-solid fa-calendar-plus"></i> Programar en Ciclo
+                    </button>
+                    <button class="btn-outline-small" style="color:#6c757d; border-color:#ced4da;" onclick="document.getElementById('msg-curso-creado').remove()">
+                        <i class="fa-solid fa-xmark"></i> Omitir
+                    </button>
+                `;
+                formCrearCurso.parentElement.appendChild(successMsg);
             } else {
                 alert("Error: " + (data.message || "Revisa los datos ingresados."));
             }
@@ -538,6 +591,7 @@ if(regCurCarrera) {
             document.getElementById("secId").value = "";
             document.getElementById("modalSeccionTitulo").textContent = "Abrir Nuevo Curso";
             llenarSelectsSeccion();
+            document.getElementById("secCiclo").value = `${new Date().getFullYear()}-I`;
             document.getElementById("modalSeccion").classList.add("show");
         });
     }
@@ -545,9 +599,38 @@ if(regCurCarrera) {
     function llenarSelectsSeccion() {
         const selCurso = document.getElementById("secCurso");
         const selDoc = document.getElementById("secDocente");
+        const selCiclo = document.getElementById("secCiclo");
         selCurso.innerHTML = cursosList.map(c => `<option value="${c.idCurso}">${c.nombre}</option>`).join('');
         selDoc.innerHTML = docentesList.map(d => `<option value="${d.idDocente}">${d.usuario.nombreCompleto}</option>`).join('');
+        const anioActual = new Date().getFullYear();
+        const ciclos = [];
+        for (let i = -2; i <= 2; i++) {
+            ciclos.push(`${anioActual + i}-I`);
+            ciclos.push(`${anioActual + i}-II`);
+        }
+        selCiclo.innerHTML = ciclos.map(c => `<option value="${c}">${c}</option>`).join('');
     }
+
+    window.programarNuevoCurso = function(idCurso) {
+        const msg = document.getElementById('msg-curso-creado');
+        if (msg) msg.remove();
+
+        // Navegar a Programación
+        sections.forEach(s => s.classList.remove('active'));
+        menuBtns.forEach(b => b.classList.remove('active'));
+        document.getElementById('seccion-programacion').classList.add('active');
+        const btnProg = document.querySelector('.menu-btn[data-target="seccion-programacion"]');
+        if (btnProg) btnProg.classList.add('active');
+
+        // Abrir modal con el nuevo curso pre-seleccionado
+        if (formSeccion) formSeccion.reset();
+        document.getElementById('secId').value = '';
+        document.getElementById('modalSeccionTitulo').textContent = 'Programar Curso en Ciclo';
+        llenarSelectsSeccion();
+        document.getElementById('secCurso').value = idCurso;
+        document.getElementById('secCiclo').value = `${new Date().getFullYear()}-I`;
+        document.getElementById('modalSeccion').classList.add('show');
+    };
 
     if (formSeccion) {
         formSeccion.addEventListener("submit", async (e) => {
