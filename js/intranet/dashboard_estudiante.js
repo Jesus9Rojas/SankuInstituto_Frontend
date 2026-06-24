@@ -13,9 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const token = localStorage.getItem("token");
     const usuarioId = localStorage.getItem("usuarioId");
-    let idAlumnoGlobal = null; 
+    let idAlumnoGlobal = null;
     let infoCursosGlobal = [];
     let misSeccionesGlobal = [];
+    let idsCursosValidosGlobal = [];
+    let añoIngreso = null;
 
     // 2. Nombre del usuario
     const nombreUsuario = localStorage.getItem("usuarioNombre");
@@ -114,6 +116,7 @@ const btnCerrarSesion = document.getElementById("btnCerrarSesion");
             document.getElementById("metric-promedio").textContent = perfil.promedioHistorico;
 
             idAlumnoGlobal = perfil.idAlumno;
+            añoIngreso = new Date(perfil.fechaIngreso + "T00:00:00").getFullYear();
 
             // Cursos y Secciones
             const resCarreras = await fetch(`http://localhost:8080/api/v1/carreras`, { headers });
@@ -125,6 +128,7 @@ const btnCerrarSesion = document.getElementById("btnCerrarSesion");
             
             const misCursosValidos = infoCursosGlobal.filter(c => c.carreraId === miCarrera.idCarrera);
             const idsCursosValidos = misCursosValidos.map(c => c.idCurso);
+            idsCursosValidosGlobal = idsCursosValidos;
 
             const resSeccionesI = await fetch(`http://localhost:8080/api/v1/secciones/ciclo/2026-I`, { headers });
             const todasSeccionesI = await resSeccionesI.json();
@@ -143,6 +147,7 @@ const btnCerrarSesion = document.getElementById("btnCerrarSesion");
             renderizarMisCursos(miHorarioActual);
             renderizarCalendarioGrid(miHorarioActual);
             renderizarMatricula(miMatriculaFutura, misCursosValidos);
+            renderizarPillsCiclos(generarCiclos(añoIngreso), '2026-I');
 
             cargarProximoPago(idAlumnoGlobal, headers);
             cargarMisTramites();
@@ -750,6 +755,55 @@ const btnCerrarSesion = document.getElementById("btnCerrarSesion");
             }, 1000);
         });
     }
+
+    // ==========================================
+    // FILTRO DE CICLOS ACADÉMICOS
+    // ==========================================
+    function generarCiclos(añoInicio) {
+        const ciclos = [];
+        for (let i = 0; i < 3; i++) {
+            ciclos.push(`${añoInicio + i}-I`);
+            ciclos.push(`${añoInicio + i}-II`);
+        }
+        return ciclos;
+    }
+
+    function renderizarPillsCiclos(ciclos, cicloActivo) {
+        const container = document.getElementById("ciclos-pills-cursos");
+        if (!container) return;
+        container.innerHTML = ciclos.map(c => `
+            <button class="pill-ciclo ${c === cicloActivo ? 'active' : ''}"
+                    onclick="seleccionarCiclo('${c}')"
+                    id="pill-${c.replace('-', '_')}">
+                ${c}
+            </button>
+        `).join('');
+        const lbl = document.getElementById("lbl-ciclo-activo");
+        if (lbl) lbl.textContent = cicloActivo;
+    }
+
+    window.seleccionarCiclo = async function(ciclo) {
+        document.querySelectorAll('.pill-ciclo').forEach(p => p.classList.remove('active'));
+        const pillActivo = document.getElementById(`pill-${ciclo.replace('-', '_')}`);
+        if (pillActivo) pillActivo.classList.add('active');
+
+        const lbl = document.getElementById("lbl-ciclo-activo");
+        if (lbl) lbl.textContent = ciclo;
+
+        const grid = document.getElementById("grid-mis-cursos");
+        if (grid) grid.innerHTML = `<p class="text-muted" style="grid-column: 1/-1;"><i class="fa-solid fa-spinner fa-spin"></i> Cargando cursos del ciclo ${ciclo}...</p>`;
+
+        try {
+            const headers = { 'Authorization': `Bearer ${token}` };
+            const res = await fetch(`http://localhost:8080/api/v1/secciones/ciclo/${ciclo}`, { headers });
+            const todasSecciones = await res.json();
+            const seccionesFiltradas = todasSecciones.filter(s => idsCursosValidosGlobal.includes(s.cursoId));
+            renderizarMisCursos(seccionesFiltradas);
+        } catch(e) {
+            console.error("Error al cargar ciclo:", e);
+            if (grid) grid.innerHTML = `<p class="text-muted" style="grid-column: 1/-1;">No se pudieron cargar los cursos del ciclo ${ciclo}.</p>`;
+        }
+    };
 
     // DISPARAR EJECUCIÓN INICIAL
     cargarDatosGlobales();

@@ -40,6 +40,20 @@
         .notif-item:hover {
             background-color: #f8fafc;
         }
+        .pill-ciclo {
+            padding: 7px 18px;
+            border: 2px solid var(--color-primary);
+            border-radius: 20px;
+            background: white;
+            color: var(--color-primary);
+            font-weight: 600;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Poppins', sans-serif;
+        }
+        .pill-ciclo:hover { background: #e8f4fd; }
+        .pill-ciclo.active { background: var(--color-primary); color: white; }
     </style>
 </head>
 <body class="bg-main">
@@ -200,8 +214,16 @@
                 </section>
 
                 <section id="seccion-cursos" class="content-section">
-                    <h2 class="section-title">Mis Cursos</h2>
-                    <p class="text-muted mb-40">Periodo Académico Actual</p>
+                    <div class="welcome-header">
+                        <div>
+                            <h2 class="section-title">Mis Cursos</h2>
+                            <p class="text-muted">Ciclo Académico: <strong id="lbl-ciclo-activo">--</strong></p>
+                        </div>
+                    </div>
+
+                    <div id="ciclos-pills-cursos" style="display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 25px 0;">
+                        <span class="text-muted" style="font-size: 13px;">Cargando ciclos...</span>
+                    </div>
 
                     <div class="cursos-cards-grid" id="grid-mis-cursos">
                         <p class="text-muted" style="grid-column: 1/-1;">Cargando tus cursos matriculados...</p>
